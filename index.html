@@ -2,18 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<meta name="theme-color" content="#4A5D4E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jell & James">
+
+<link rel="manifest" href="manifest.json">
 
 <title>Jell & James Movie</title>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
-
-/* =========================================================
-   COLORS
-========================================================= */
-
 :root {
     --sage-dark: #4A5D4E;
     --sage-primary: #87986A;
@@ -25,16 +29,11 @@
     --danger: #b85c5c;
 }
 
-
-/* =========================================================
-   RESET
-========================================================= */
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", sans-serif;
 }
 
 html,
@@ -49,28 +48,17 @@ body {
     overflow: hidden;
 }
 
-
-/* =========================================================
-   HEADER
-========================================================= */
+/* HEADER */
 
 header {
-    min-height: 65px;
+    height: 65px;
     background: var(--sage-dark);
     color: white;
-
     padding: 10px 18px;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     gap: 15px;
-
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-
-    position: relative;
-    z-index: 100;
 }
 
 header h1 {
@@ -84,46 +72,18 @@ header h1 {
     gap: 8px;
 }
 
-.url-bar {
-    display: flex;
-    gap: 6px;
-}
-
-input[type="text"] {
-    border: 1px solid var(--sage-medium);
-    padding: 9px 11px;
-    border-radius: 7px;
-    outline: none;
-    font-size: 0.9rem;
-}
-
-.url-bar input {
-    width: min(360px, 35vw);
-}
-
 button {
     border: none;
     border-radius: 7px;
-
     padding: 9px 13px;
-
     background: var(--sage-primary);
     color: white;
-
     font-weight: 600;
-
     cursor: pointer;
-
-    transition: background 0.2s ease;
 }
 
 button:hover {
     background: var(--sage-dark);
-}
-
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -131,61 +91,40 @@ button:disabled {
 }
 
 .status {
-    font-size: 0.8rem;
-
+    font-size: .8rem;
     padding: 6px 9px;
-
     border-radius: 20px;
-
-    background: rgba(255, 255, 255, 0.12);
-
-    white-space: nowrap;
+    background: rgba(255,255,255,.12);
 }
 
-
-/* =========================================================
-   MAIN LAYOUT
-========================================================= */
+/* MAIN */
 
 .main-container {
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        270px;
-
+    grid-template-columns: minmax(0, 1fr) 270px;
     gap: 14px;
-
     padding: 14px;
 
     height: calc(100vh - 65px);
+    height: calc(100dvh - 65px);
 
-    background: var(--sage-bg);
+    min-height: 0;
 }
 
-
-/* =========================================================
-   MOVIE AREA
-========================================================= */
+/* MOVIE */
 
 .movie-section {
     background: #000;
-
     border: 3px solid var(--sage-medium);
-
     border-radius: 12px;
-
     overflow: hidden;
-
     position: relative;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     min-width: 0;
-
     min-height: 0;
 }
 
@@ -193,17 +132,13 @@ button:disabled {
 .movie-section video {
     width: 100%;
     height: 100%;
-
     border: none;
-
     background: #000;
 }
 
 .movie-placeholder {
     color: var(--sage-light);
-
     text-align: center;
-
     padding: 30px;
 }
 
@@ -211,91 +146,29 @@ button:disabled {
     margin-bottom: 10px;
 }
 
-.movie-placeholder p {
-    opacity: 0.8;
-
-    line-height: 1.5;
-
-    max-width: 600px;
-}
-
-
-/* =========================================================
-   LARGE MOVIE BUTTON
-   THIS BUTTON IS INSIDE THE MOVIE SCREEN
-========================================================= */
-
-.movie-size-button {
-    position: absolute;
-
-    right: 14px;
-    bottom: 14px;
-
-    z-index: 50;
-
-    width: 48px;
-    height: 48px;
-
-    padding: 0;
-
-    border-radius: 50%;
-
-    background: rgba(74, 93, 78, 0.92);
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 22px;
-
-    box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.4);
-}
-
-.movie-size-button:hover {
-    background: var(--sage-primary);
-}
-
-
-/* =========================================================
-   SIDEBAR
-========================================================= */
+/* SIDEBAR */
 
 .sidebar {
     display: flex;
-
     flex-direction: column;
-
     gap: 10px;
 
     height: 100%;
-
     min-width: 0;
+    min-height: 0;
 }
-
-
-/* =========================================================
-   VIDEO CARDS
-========================================================= */
 
 .video-card {
     background: #1E251F;
-
     border: 3px solid var(--sage-primary);
-
     border-radius: 10px;
 
     height: 150px;
 
     position: relative;
-
     overflow: hidden;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -305,79 +178,136 @@ button:disabled {
 .video-card video {
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
     background: #111;
 
     /*
-       IMPORTANT:
-       Keep the camera upright.
-       Do NOT mirror the video.
-    */
-
-    transform: none !important;
-    -webkit-transform: none !important;
+     * Prevents the local camera from appearing mirrored.
+     */
+    transform: scaleX(1);
 }
 
 .video-placeholder {
     text-align: center;
-
     color: var(--sage-light);
-
-    font-size: 0.85rem;
-
-    padding: 10px;
+    font-size: .85rem;
 }
 
 .user-label {
     position: absolute;
-
     bottom: 7px;
     left: 7px;
 
-    background: rgba(0, 0, 0, 0.65);
-
+    background: rgba(0,0,0,.65);
     color: white;
 
     padding: 3px 8px;
-
     border-radius: 5px;
 
-    font-size: 0.72rem;
+    font-size: .72rem;
 }
 
 .media-controls {
     position: absolute;
-
     top: 7px;
     right: 7px;
 
     display: flex;
-
     gap: 5px;
 }
 
 .media-controls button {
-    padding: 5px 8px;
-
-    font-size: 0.72rem;
+    padding: 5px 7px;
+    font-size: .7rem;
 }
 
+/* CHAT */
 
-/* =========================================================
-   ROOM MODAL
-========================================================= */
+.chat-section {
+    background: var(--card-bg);
+    border: 3px solid var(--sage-dark);
+    border-radius: 10px;
+
+    flex: 1;
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.chat-header {
+    background: var(--sage-medium);
+    color: white;
+
+    padding: 8px 11px;
+
+    font-weight: bold;
+    font-size: .88rem;
+}
+
+.chat-messages {
+    flex: 1;
+
+    padding: 9px;
+
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    font-size: .82rem;
+}
+
+.message {
+    background: var(--sage-bg);
+
+    padding: 7px 9px;
+
+    border-radius: 7px;
+
+    word-break: break-word;
+}
+
+.message .author {
+    font-weight: bold;
+    color: var(--sage-dark);
+    margin-right: 4px;
+}
+
+.chat-input-area {
+    display: flex;
+
+    padding: 7px;
+    gap: 5px;
+
+    background: #f0f0f0;
+
+    border-top: 1px solid var(--sage-light);
+}
+
+.chat-input-area input {
+    flex: 1;
+    min-width: 0;
+
+    border: 1px solid var(--sage-medium);
+
+    padding: 8px;
+
+    border-radius: 6px;
+}
+
+/* ROOM MODAL */
 
 .room-modal {
     position: fixed;
-
     inset: 0;
 
-    background: rgba(20, 30, 22, 0.72);
+    background: rgba(20,30,22,.72);
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -395,13 +325,11 @@ button:disabled {
 
     padding: 25px;
 
-    box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
 }
 
 .room-box h2 {
     color: var(--sage-dark);
-
     margin-bottom: 8px;
 }
 
@@ -417,11 +345,16 @@ button:disabled {
     width: 100%;
 
     margin-bottom: 10px;
+
+    border: 1px solid var(--sage-medium);
+
+    padding: 10px;
+
+    border-radius: 7px;
 }
 
 .room-actions {
     display: flex;
-
     gap: 8px;
 }
 
@@ -429,10 +362,7 @@ button:disabled {
     flex: 1;
 }
 
-
-/* =========================================================
-   TOAST
-========================================================= */
+/* TOAST */
 
 .toast {
     position: fixed;
@@ -443,7 +373,6 @@ button:disabled {
     transform: translateX(-50%);
 
     background: var(--sage-dark);
-
     color: white;
 
     padding: 10px 16px;
@@ -451,10 +380,9 @@ button:disabled {
     border-radius: 8px;
 
     opacity: 0;
-
     pointer-events: none;
 
-    transition: opacity 0.25s;
+    transition: .25s;
 
     z-index: 2000;
 }
@@ -463,79 +391,13 @@ button:disabled {
     opacity: 1;
 }
 
+/* INSTALL BUTTON */
 
-/* =========================================================
-   LARGE MOVIE MODE
-========================================================= */
-
-body.movie-large {
-    overflow: hidden;
-
-    background: #000;
-}
-
-
-/*
-   Hide the complete header.
-*/
-
-body.movie-large header {
+.install-button {
     display: none;
 }
 
-
-/*
-   Movie becomes the entire screen.
-*/
-
-body.movie-large .main-container {
-    width: 100vw;
-    height: 100vh;
-
-    padding: 0;
-
-    display: block;
-
-    background: #000;
-}
-
-
-/*
-   Hide the video sidebar.
-*/
-
-body.movie-large .sidebar {
-    display: none;
-}
-
-
-/*
-   Movie fills the entire screen.
-*/
-
-body.movie-large .movie-section {
-    width: 100vw;
-    height: 100vh;
-
-    border: none;
-
-    border-radius: 0;
-}
-
-
-/*
-   Keep the large/small button visible.
-*/
-
-body.movie-large .movie-size-button {
-    right: 20px;
-    bottom: 20px;
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
+/* MOBILE */
 
 @media (max-width: 850px) {
 
@@ -544,46 +406,35 @@ body.movie-large .movie-size-button {
     }
 
     header {
+        height: auto;
+        min-height: 60px;
+
         flex-direction: column;
 
         align-items: stretch;
 
-        padding: 9px 10px;
-
-        min-height: auto;
+        padding: 10px;
     }
 
     header h1 {
         text-align: center;
-
-        font-size: 1.1rem;
     }
 
     .header-actions {
+        justify-content: center;
         flex-wrap: wrap;
-    }
-
-    .url-bar {
-        width: 100%;
-    }
-
-    .url-bar input {
-        width: 100%;
     }
 
     .main-container {
         height: auto;
 
-        min-height: calc(100vh - 110px);
+        min-height: calc(100dvh - 120px);
 
         grid-template-columns: 1fr;
-
-        padding: 7px;
     }
 
     .movie-section {
-        height: 55vh;
-
+        height: 55dvh;
         min-height: 300px;
     }
 
@@ -593,129 +444,81 @@ body.movie-large .movie-size-button {
         display: grid;
 
         grid-template-columns: 1fr 1fr;
-
-        gap: 8px;
     }
 
-    .video-card {
-        height: 145px;
+    .chat-section {
+        grid-column: 1 / -1;
+
+        height: 300px;
     }
 }
 
-
-/* =========================================================
-   SMALL PHONES
-========================================================= */
-
 @media (max-width: 520px) {
-
-    .header-actions {
-        flex-direction: column;
-    }
-
-    .url-bar {
-        width: 100%;
-    }
-
-    .url-bar button,
-    .header-actions > button {
-        width: 100%;
-    }
-
-    .status {
-        width: 100%;
-
-        text-align: center;
-    }
 
     .sidebar {
         grid-template-columns: 1fr;
     }
 
-    .video-card {
-        height: 180px;
+    .chat-section {
+        grid-column: auto;
     }
 
-    .movie-section {
-        height: 52vh;
+    .header-actions {
+        flex-direction: column;
     }
 
-    .movie-size-button {
-        width: 46px;
-        height: 46px;
+    .header-actions button {
+        width: 100%;
+    }
 
-        right: 10px;
-        bottom: 10px;
+    .status {
+        text-align: center;
     }
 }
-
 
 /*
-   When large mode is active on mobile,
-   everything except the movie disappears.
-*/
+ * Standalone PWA mode
+ */
 
-@media (max-width: 850px) {
+@media (display-mode: standalone) {
 
-    body.movie-large .movie-section {
-        width: 100vw;
-        height: 100vh;
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+    }
 
-        min-height: 0;
+    .install-button {
+        display: none !important;
     }
 }
-
 </style>
 </head>
 
-
 <body>
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
 
 <header>
 
-    <h1>
-        Jell & James Movie
-    </h1>
-
+    <h1>Jell & James Movie</h1>
 
     <div class="header-actions">
 
-
-        <div class="url-bar">
-
-            <input
-                type="text"
-                id="movieUrlInput"
-                placeholder="Paste YouTube, Vimeo, Twitch, MP4 or iframe link..."
-            >
-
-            <button
-                onclick="loadMovie(true)"
-            >
-                ▶ Play Movie
-            </button>
-
-        </div>
-
-
         <button
             class="btn-secondary"
-            onclick="copyInviteLink()"
-        >
+            onclick="copyInviteLink()">
             🔗 Copy Invite
         </button>
 
+        <button
+            class="install-button"
+            id="installButton"
+            onclick="installApp()">
+            📱 Install App
+        </button>
 
         <div
             class="status"
-            id="roomStatus"
-        >
-            Choose a room
+            id="roomStatus">
+            Connecting...
         </div>
 
     </div>
@@ -723,68 +526,34 @@ body.movie-large .movie-size-button {
 </header>
 
 
-
-<!-- =====================================================
-     MAIN
-===================================================== -->
-
 <div class="main-container">
 
-
-    <!-- =================================================
-         MOVIE
-    ================================================== -->
+    <!-- MOVIE -->
 
     <div
         class="movie-section"
-        id="movieContainer"
-    >
-
+        id="movieContainer">
 
         <div
             class="movie-placeholder"
-            id="placeholderText"
-        >
+            id="placeholderText">
 
-            <h2>
-                No movie loaded
-            </h2>
+            <h2>Jell & James Movie</h2>
 
             <p>
-                Paste a YouTube, Vimeo, Twitch,
-                direct MP4, or embeddable website
-                link above and click
-                <b>Play Movie</b>.
+                Your movie will appear here.
             </p>
 
         </div>
 
-
-        <!-- LARGE / SMALL BUTTON -->
-
-        <button
-            class="movie-size-button"
-            id="movieSizeButton"
-            onclick="toggleMovieSize()"
-            title="Make movie large"
-        >
-            ⛶
-        </button>
-
     </div>
 
 
-
-    <!-- =================================================
-         SIDEBAR
-    ================================================== -->
+    <!-- SIDEBAR -->
 
     <div class="sidebar">
 
-
-        <!-- =================================================
-             YOU
-        ================================================== -->
+        <!-- YOU -->
 
         <div class="video-card">
 
@@ -792,37 +561,26 @@ body.movie-large .movie-size-button {
                 id="person1Video"
                 autoplay
                 playsinline
-                muted
-            ></video>
-
+                muted>
+            </video>
 
             <div
                 class="video-placeholder"
-                id="localPlaceholder"
-            >
+                id="localPlaceholder">
                 Camera not started
             </div>
-
 
             <div class="user-label">
                 You
             </div>
 
-
             <div class="media-controls">
 
-                <button
-                    onclick="toggleCam()"
-                    id="cameraButton"
-                >
+                <button onclick="toggleCam()">
                     📷
                 </button>
 
-
-                <button
-                    onclick="toggleMic()"
-                    id="micButton"
-                >
+                <button onclick="toggleMic()">
                     🎤
                 </button>
 
@@ -831,30 +589,60 @@ body.movie-large .movie-size-button {
         </div>
 
 
-
-        <!-- =================================================
-             FRIEND
-        ================================================== -->
+        <!-- FRIEND -->
 
         <div class="video-card">
 
             <video
                 id="person2Video"
                 autoplay
-                playsinline
-            ></video>
-
+                playsinline>
+            </video>
 
             <div
                 class="video-placeholder"
-                id="remotePlaceholder"
-            >
+                id="remotePlaceholder">
                 Waiting for friend...
             </div>
 
-
             <div class="user-label">
                 Friend
+            </div>
+
+        </div>
+
+
+        <!-- CHAT -->
+
+        <div class="chat-section">
+
+            <div class="chat-header">
+                💬 Chat
+            </div>
+
+            <div
+                class="chat-messages"
+                id="chatMessages">
+
+                <div class="message">
+                    <span class="author">System:</span>
+                    Welcome to Jell & James Movie!
+                </div>
+
+            </div>
+
+            <div class="chat-input-area">
+
+                <input
+                    type="text"
+                    id="chatInput"
+                    placeholder="Type a message..."
+                    onkeypress="handleKeyPress(event)">
+
+                <button onclick="sendMessage()">
+                    Send
+                </button>
+
             </div>
 
         </div>
@@ -864,50 +652,35 @@ body.movie-large .movie-size-button {
 </div>
 
 
-
-<!-- =====================================================
-     ROOM MODAL
-===================================================== -->
+<!-- ROOM MODAL -->
 
 <div
     class="room-modal"
-    id="roomModal"
->
+    id="roomModal">
 
     <div class="room-box">
 
-        <h2>
-            🎬 Jell & James Movie
-        </h2>
-
+        <h2>🎬 Jell & James Movie</h2>
 
         <p>
-            Create a private room and send the
-            invitation link to your friend,
-            or join an existing room.
+            Create a private room and send the invite
+            link to your friend, or join an existing room.
         </p>
-
 
         <input
             type="text"
             id="joinRoomInput"
-            placeholder="Enter room ID"
-        >
-
+            placeholder="Enter room ID">
 
         <div class="room-actions">
 
-            <button
-                onclick="createRoom()"
-            >
+            <button onclick="createRoom()">
                 Create Room
             </button>
 
-
             <button
                 class="btn-secondary"
-                onclick="joinRoomFromInput()"
-            >
+                onclick="joinRoomFromInput()">
                 Join Room
             </button>
 
@@ -918,147 +691,191 @@ body.movie-large .movie-size-button {
 </div>
 
 
-
-<!-- =====================================================
-     TOAST
-===================================================== -->
-
 <div
     class="toast"
-    id="toast"
-></div>
-
+    id="toast">
+</div>
 
 
 <script>
 
-/* =========================================================
-   GLOBAL VARIABLES
-========================================================= */
+/* =====================================================
+   STATE
+===================================================== */
 
 let peer = null;
-
 let connection = null;
-
 let localStream = null;
 
 let roomId = null;
-
 let isHost = false;
 
 let micEnabled = true;
-
 let cameraEnabled = true;
 
 let currentMovie = "";
 
+let deferredInstallPrompt = null;
 
 
-/* =========================================================
+/* =====================================================
    ELEMENTS
-========================================================= */
+===================================================== */
 
 const movieContainer =
-    document.getElementById(
-        "movieContainer"
-    );
-
-const movieInput =
-    document.getElementById(
-        "movieUrlInput"
-    );
+    document.getElementById("movieContainer");
 
 const roomModal =
-    document.getElementById(
-        "roomModal"
-    );
+    document.getElementById("roomModal");
 
 const roomStatus =
-    document.getElementById(
-        "roomStatus"
-    );
+    document.getElementById("roomStatus");
 
 const localVideo =
-    document.getElementById(
-        "person1Video"
-    );
+    document.getElementById("person1Video");
 
 const remoteVideo =
-    document.getElementById(
-        "person2Video"
-    );
-
-const localPlaceholder =
-    document.getElementById(
-        "localPlaceholder"
-    );
+    document.getElementById("person2Video");
 
 const remotePlaceholder =
+    document.getElementById("remotePlaceholder");
+
+const localPlaceholder =
+    document.getElementById("localPlaceholder");
+
+
+/* =====================================================
+   PWA INSTALL
+===================================================== */
+
+window.addEventListener(
+    "beforeinstallprompt",
+    event => {
+
+        event.preventDefault();
+
+        deferredInstallPrompt = event;
+
+        const installButton =
+            document.getElementById("installButton");
+
+        installButton.style.display =
+            "block";
+
+    }
+);
+
+
+async function installApp() {
+
+    if (!deferredInstallPrompt) {
+
+        showToast(
+            "Use Chrome menu → Add to Home screen."
+        );
+
+        return;
+    }
+
+    deferredInstallPrompt.prompt();
+
+    await deferredInstallPrompt.userChoice;
+
+    deferredInstallPrompt = null;
+
     document.getElementById(
-        "remotePlaceholder"
+        "installButton"
+    ).style.display = "none";
+
+}
+
+
+window.addEventListener(
+    "appinstalled",
+    () => {
+
+        showToast(
+            "Jell & James Movie installed!"
+        );
+
+    }
+);
+
+
+/* =====================================================
+   SERVICE WORKER
+===================================================== */
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            navigator.serviceWorker
+                .register("./service-worker.js")
+                .then(() => {
+
+                    console.log(
+                        "Service worker registered."
+                    );
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        "Service worker error:",
+                        error
+                    );
+
+                });
+
+        }
     );
 
-const movieSizeButton =
-    document.getElementById(
-        "movieSizeButton"
-    );
+}
 
 
-
-/* =========================================================
-   START
-========================================================= */
+/* =====================================================
+   INITIALIZATION
+===================================================== */
 
 window.addEventListener(
     "DOMContentLoaded",
-    async function () {
+    async () => {
 
         const params =
             new URLSearchParams(
                 window.location.search
             );
 
-
         const urlRoom =
             params.get("room");
-
 
         const urlMovie =
             params.get("movie");
 
-
         if (urlMovie) {
 
-            movieInput.value =
-                urlMovie;
-
             currentMovie =
-                urlMovie;
+                decodeURIComponent(urlMovie);
+
+            loadMovie(currentMovie);
 
         }
 
-
         await startCamera();
-
-
-        /*
-         * If a room exists in the URL,
-         * automatically join it.
-         */
 
         if (urlRoom) {
 
-            roomId =
-                urlRoom;
-
-            isHost =
-                false;
+            roomId = urlRoom;
 
             roomModal.style.display =
                 "none";
 
-            initializeGuest(
-                roomId
+            initializePeer(
+                roomId,
+                false
             );
 
         } else {
@@ -1075,22 +892,18 @@ window.addEventListener(
 );
 
 
-
-/* =========================================================
-   ROOM ID
-========================================================= */
+/* =====================================================
+   ROOM
+===================================================== */
 
 function generateRoomId() {
 
     return (
         "jell-" +
-
         Math.random()
             .toString(36)
             .substring(2, 8) +
-
         "-" +
-
         Date.now()
             .toString(36)
             .slice(-4)
@@ -1099,51 +912,23 @@ function generateRoomId() {
 }
 
 
-
-/* =========================================================
-   CREATE ROOM
-========================================================= */
-
 function createRoom() {
-
-    if (peer) {
-
-        showToast(
-            "A room is already connected."
-        );
-
-        return;
-
-    }
-
 
     roomId =
         generateRoomId();
 
-
-    isHost =
-        true;
-
+    isHost = true;
 
     roomModal.style.display =
         "none";
 
-
-    roomStatus.textContent =
-        "Creating room...";
-
-
-    initializeHost(
-        roomId
+    initializePeer(
+        roomId,
+        true
     );
 
 }
 
-
-
-/* =========================================================
-   JOIN ROOM
-========================================================= */
 
 function joinRoomFromInput() {
 
@@ -1155,7 +940,6 @@ function joinRoomFromInput() {
             .value
             .trim();
 
-
     if (!value) {
 
         showToast(
@@ -1166,103 +950,69 @@ function joinRoomFromInput() {
 
     }
 
+    roomId = value;
 
-    roomId =
-        value;
-
-
-    isHost =
-        false;
-
+    isHost = false;
 
     roomModal.style.display =
         "none";
 
-
-    roomStatus.textContent =
-        "Joining room...";
-
-
-    initializeGuest(
-        roomId
+    initializePeer(
+        roomId,
+        false
     );
 
 }
 
 
+/* =====================================================
+   PEERJS
+===================================================== */
 
-/* =========================================================
-   HOST PEER
-========================================================= */
+function initializePeer(id, host) {
 
-function initializeHost(id) {
+    roomStatus.textContent =
+        host
+            ? "Creating room..."
+            : "Joining room...";
 
     peer =
-        new Peer(
-            id,
-            {
-                debug: 1
-            }
-        );
+        new Peer(id, {
+            debug: 1
+        });
 
 
     peer.on(
         "open",
-        function (peerId) {
+        peerId => {
 
             roomId =
                 peerId;
 
-
             roomStatus.textContent =
-                "🟢 Room ready";
-
+                host
+                    ? "Room ready"
+                    : "Connected";
 
             updateUrl();
 
-
             showToast(
-                "Room created!"
+                host
+                    ? "Room created!"
+                    : "Joined room!"
             );
-
-
-            /*
-             * If a movie URL was already
-             * entered, load it.
-             */
-
-            if (
-                movieInput.value.trim()
-            ) {
-
-                loadMovie(
-                    false
-                );
-
-            }
 
         }
     );
 
 
-    /*
-     * Host receives guest connection.
-     */
-
     peer.on(
         "connection",
-        function (conn) {
+        conn => {
 
-            setupConnection(
-                conn
-            );
+            setupConnection(conn);
 
-
-            /*
-             * Send host camera to guest.
-             */
-
-            callPeer(
+            callRemoteUser(
                 conn.peer
             );
 
@@ -1270,16 +1020,25 @@ function initializeHost(id) {
     );
 
 
-    /*
-     * Host receives video call.
-     */
-
     peer.on(
         "call",
-        function (call) {
+        call => {
 
-            answerCall(
-                call
+            call.answer(
+                localStream
+            );
+
+            call.on(
+                "stream",
+                stream => {
+
+                    remoteVideo.srcObject =
+                        stream;
+
+                    remotePlaceholder.style.display =
+                        "none";
+
+                }
             );
 
         }
@@ -1288,11 +1047,16 @@ function initializeHost(id) {
 
     peer.on(
         "error",
-        function (error) {
+        error => {
 
-            handlePeerError(
-                error,
-                true
+            console.error(error);
+
+            roomStatus.textContent =
+                "Connection error";
+
+            showToast(
+                "Connection error: " +
+                error.type
             );
 
         }
@@ -1301,7 +1065,7 @@ function initializeHost(id) {
 
     peer.on(
         "disconnected",
-        function () {
+        () => {
 
             roomStatus.textContent =
                 "Disconnected";
@@ -1312,161 +1076,30 @@ function initializeHost(id) {
 }
 
 
+/* =====================================================
+   CONNECTION
+===================================================== */
 
-/* =========================================================
-   GUEST PEER
-========================================================= */
+function setupConnection(conn) {
 
-function initializeGuest(hostId) {
-
-    peer =
-        new Peer(
-            undefined,
-            {
-                debug: 1
-            }
-        );
-
-
-    peer.on(
-        "open",
-        function () {
-
-            roomStatus.textContent =
-                "Connecting to host...";
-
-
-            connectToHost(
-                hostId
-            );
-
-        }
-    );
-
-
-    peer.on(
-        "call",
-        function (call) {
-
-            answerCall(
-                call
-            );
-
-        }
-    );
-
-
-    peer.on(
-        "error",
-        function (error) {
-
-            handlePeerError(
-                error,
-                false
-            );
-
-        }
-    );
-
-
-    peer.on(
-        "disconnected",
-        function () {
-
-            roomStatus.textContent =
-                "Disconnected";
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
-   CONNECT GUEST TO HOST
-========================================================= */
-
-function connectToHost(
-    hostId
-) {
-
-    if (!peer)
-        return;
-
-
-    const conn =
-        peer.connect(
-            hostId,
-            {
-                reliable: true
-            }
-        );
-
-
-    setupConnection(
-        conn
-    );
-
-
-    /*
-     * Send guest camera to host.
-     */
-
-    callPeer(
-        hostId
-    );
-
-}
-
-
-
-/* =========================================================
-   SETUP DATA CONNECTION
-========================================================= */
-
-function setupConnection(
-    conn
-) {
-
-    connection =
-        conn;
-
+    connection = conn;
 
     conn.on(
         "open",
-        function () {
+        () => {
 
             roomStatus.textContent =
                 "🟢 Friend connected";
-
-
-            remotePlaceholder.textContent =
-                "Friend connected";
-
 
             showToast(
                 "Friend connected!"
             );
 
-
-            /*
-             * Send current movie
-             * to new guest.
-             */
-
-            if (
-                currentMovie
-            ) {
+            if (currentMovie) {
 
                 sendData({
-
-                    type:
-                        "movie",
-
-                    url:
-                        currentMovie
-
+                    type: "movie",
+                    url: currentMovie
                 });
 
             }
@@ -1477,11 +1110,9 @@ function setupConnection(
 
     conn.on(
         "data",
-        function (data) {
+        data => {
 
-            handleData(
-                data
-            );
+            handleData(data);
 
         }
     );
@@ -1489,23 +1120,13 @@ function setupConnection(
 
     conn.on(
         "close",
-        function () {
-
-            connection =
-                null;
-
+        () => {
 
             roomStatus.textContent =
                 "Waiting for friend...";
 
-
             remotePlaceholder.style.display =
                 "block";
-
-
-            remotePlaceholder.textContent =
-                "Waiting for friend...";
-
 
             remoteVideo.srcObject =
                 null;
@@ -1513,40 +1134,17 @@ function setupConnection(
         }
     );
 
-
-    conn.on(
-        "error",
-        function (error) {
-
-            console.error(
-                "Connection error:",
-                error
-            );
-
-        }
-    );
-
 }
 
 
-
-/* =========================================================
+/* =====================================================
    VIDEO CALL
-========================================================= */
+===================================================== */
 
-function callPeer(
-    remotePeerId
-) {
+function callRemoteUser(remotePeerId) {
 
-    if (
-        !peer ||
-        !localStream
-    ) {
-
+    if (!localStream || !peer)
         return;
-
-    }
-
 
     try {
 
@@ -1556,14 +1154,12 @@ function callPeer(
                 localStream
             );
 
-
         call.on(
             "stream",
-            function (stream) {
+            stream => {
 
                 remoteVideo.srcObject =
                     stream;
-
 
                 remotePlaceholder.style.display =
                     "none";
@@ -1571,87 +1167,18 @@ function callPeer(
             }
         );
 
-
-        call.on(
-            "error",
-            function (error) {
-
-                console.error(
-                    "Video call error:",
-                    error
-                );
-
-            }
-        );
-
     } catch (error) {
 
-        console.error(
-            error
-        );
+        console.error(error);
 
     }
 
 }
 
 
-
-/* =========================================================
-   ANSWER VIDEO CALL
-========================================================= */
-
-function answerCall(
-    call
-) {
-
-    if (!localStream) {
-
-        call.close();
-
-        return;
-
-    }
-
-
-    call.answer(
-        localStream
-    );
-
-
-    call.on(
-        "stream",
-        function (stream) {
-
-            remoteVideo.srcObject =
-                stream;
-
-
-            remotePlaceholder.style.display =
-                "none";
-
-        }
-    );
-
-
-    call.on(
-        "error",
-        function (error) {
-
-            console.error(
-                "Video call error:",
-                error
-            );
-
-        }
-    );
-
-}
-
-
-
-/* =========================================================
+/* =====================================================
    CAMERA
-========================================================= */
+===================================================== */
 
 async function startCamera() {
 
@@ -1661,62 +1188,31 @@ async function startCamera() {
             await navigator.mediaDevices
                 .getUserMedia({
 
-                    video: {
-
-                        width: {
-                            ideal: 1280
-                        },
-
-                        height: {
-                            ideal: 720
-                        }
-
-                    },
+                    video: true,
 
                     audio: {
-
                         echoCancellation: true,
-
                         noiseSuppression: true,
-
                         autoGainControl: true
-
                     }
 
                 });
 
-
         localVideo.srcObject =
             localStream;
-
-
-        /*
-         * Explicitly keep local camera
-         * upright and NOT mirrored.
-         */
-
-        localVideo.style.transform =
-            "none";
-
 
         localPlaceholder.style.display =
             "none";
 
-
     } catch (error) {
 
-        console.error(
-            "Camera error:",
-            error
-        );
-
+        console.error(error);
 
         localPlaceholder.textContent =
             "Camera unavailable";
 
-
         showToast(
-            "Allow camera and microphone access to use video call."
+            "Camera permission was not granted."
         );
 
     }
@@ -1724,41 +1220,23 @@ async function startCamera() {
 }
 
 
-
-/* =========================================================
-   CAMERA TOGGLE
-========================================================= */
-
 function toggleCam() {
 
     if (!localStream)
         return;
 
-
-    const videoTrack =
+    const track =
         localStream
             .getVideoTracks()[0];
 
-
-    if (!videoTrack)
+    if (!track)
         return;
-
 
     cameraEnabled =
         !cameraEnabled;
 
-
-    videoTrack.enabled =
+    track.enabled =
         cameraEnabled;
-
-
-    document.getElementById(
-        "cameraButton"
-    ).textContent =
-        cameraEnabled
-            ? "📷"
-            : "🚫";
-
 
     showToast(
         cameraEnabled
@@ -1769,41 +1247,23 @@ function toggleCam() {
 }
 
 
-
-/* =========================================================
-   MICROPHONE TOGGLE
-========================================================= */
-
 function toggleMic() {
 
     if (!localStream)
         return;
 
-
-    const audioTrack =
+    const track =
         localStream
             .getAudioTracks()[0];
 
-
-    if (!audioTrack)
+    if (!track)
         return;
-
 
     micEnabled =
         !micEnabled;
 
-
-    audioTrack.enabled =
+    track.enabled =
         micEnabled;
-
-
-    document.getElementById(
-        "micButton"
-    ).textContent =
-        micEnabled
-            ? "🎤"
-            : "🔇";
-
 
     showToast(
         micEnabled
@@ -1814,351 +1274,103 @@ function toggleMic() {
 }
 
 
+/* =====================================================
+   MOVIE
+===================================================== */
 
-/* =========================================================
-   SEND DATA
-========================================================= */
+function loadMovie(url) {
 
-function sendData(
-    data
-) {
-
-    if (
-        connection &&
-        connection.open
-    ) {
-
-        try {
-
-            connection.send(
-                data
-            );
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-        }
-
-    }
-
-}
-
-
-
-/* =========================================================
-   RECEIVE DATA
-========================================================= */
-
-function handleData(
-    data
-) {
-
-    if (!data)
+    if (!url)
         return;
 
+    currentMovie =
+        url.trim();
+
+    movieContainer.innerHTML = "";
 
     /*
-     * Movie sent by host.
+     * YouTube
      */
 
     if (
-        data.type ===
-        "movie"
+        currentMovie.includes(
+            "youtube.com/watch"
+        ) ||
+        currentMovie.includes(
+            "youtu.be/"
+        )
     ) {
 
-        currentMovie =
-            data.url;
+        let videoId = "";
 
+        if (
+            currentMovie.includes(
+                "youtube.com/watch"
+            )
+        ) {
 
-        movieInput.value =
-            data.url;
+            videoId =
+                new URL(
+                    currentMovie
+                ).searchParams.get(
+                    "v"
+                );
 
+        } else {
 
-        loadMovie(
-            false
-        );
+            videoId =
+                currentMovie
+                    .split("youtu.be/")[1]
+                    .split("?")[0];
 
+        }
+
+        movieContainer.innerHTML = `
+            <iframe
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1"
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        `;
+
+        return;
     }
 
-}
 
+    /*
+     * Vimeo
+     */
 
+    if (
+        currentMovie.includes(
+            "vimeo.com/"
+        )
+    ) {
 
-/* =========================================================
-   DETECT MOVIE TYPE
-========================================================= */
+        const id =
+            currentMovie
+                .split("vimeo.com/")[1]
+                .split("?")[0];
 
-function detectMovieType(
-    url
-) {
+        movieContainer.innerHTML = `
+            <iframe
+                src="https://player.vimeo.com/video/${id}"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        `;
 
-    try {
-
-        const parsed =
-            new URL(
-                url
-            );
-
-
-        const host =
-            parsed.hostname
-                .replace(
-                    "www.",
-                    ""
-                )
-                .toLowerCase();
-
-
-        if (
-            host ===
-                "youtube.com" ||
-            host ===
-                "youtu.be" ||
-            host ===
-                "m.youtube.com"
-        ) {
-
-            return "youtube";
-
-        }
-
-
-        if (
-            host ===
-                "vimeo.com" ||
-            host ===
-                "player.vimeo.com"
-        ) {
-
-            return "vimeo";
-
-        }
-
-
-        if (
-            host ===
-                "twitch.tv" ||
-            host ===
-                "m.twitch.tv"
-        ) {
-
-            return "twitch";
-
-        }
-
-    } catch (error) {
-
-        console.warn(
-            error
-        );
-
+        return;
     }
 
+
+    /*
+     * Direct video
+     */
 
     if (
         /\.(mp4|webm|ogg)(\?.*)?$/i
-            .test(url)
-    ) {
-
-        return "video";
-
-    }
-
-
-    return "iframe";
-
-}
-
-
-
-/* =========================================================
-   YOUTUBE ID
-========================================================= */
-
-function getYouTubeId(
-    url
-) {
-
-    try {
-
-        const parsed =
-            new URL(
-                url
-            );
-
-
-        if (
-            parsed.hostname
-                .includes(
-                    "youtu.be"
-                )
-        ) {
-
-            return parsed
-                .pathname
-                .replace(
-                    "/",
-                    ""
-                );
-
-        }
-
-
-        return parsed
-            .searchParams
-            .get("v");
-
-    } catch (error) {
-
-        return null;
-
-    }
-
-}
-
-
-
-/* =========================================================
-   VIMEO ID
-========================================================= */
-
-function getVimeoId(
-    url
-) {
-
-    const match =
-        url.match(
-            /vimeo\.com\/(?:video\/)?(\d+)/i
-        );
-
-
-    return match
-        ? match[1]
-        : null;
-
-}
-
-
-
-/* =========================================================
-   TWITCH CHANNEL
-========================================================= */
-
-function getTwitchChannel(
-    url
-) {
-
-    try {
-
-        const parsed =
-            new URL(
-                url
-            );
-
-
-        const parts =
-            parsed.pathname
-                .split("/")
-                .filter(Boolean);
-
-
-        return parts[0] || null;
-
-    } catch (error) {
-
-        return null;
-
-    }
-
-}
-
-
-
-/* =========================================================
-   LOAD MOVIE
-========================================================= */
-
-function loadMovie(
-    broadcast = true
-) {
-
-    const input =
-        movieInput
-            .value
-            .trim();
-
-
-    if (!input) {
-
-        showToast(
-            "Paste a movie link first."
-        );
-
-        return;
-
-    }
-
-
-    currentMovie =
-        input;
-
-
-    /*
-     * Send movie to friend.
-     */
-
-    if (broadcast) {
-
-        sendData({
-
-            type:
-                "movie",
-
-            url:
-                input
-
-        });
-
-    }
-
-
-    /*
-     * Remove old movie.
-     */
-
-    const oldFrames =
-        movieContainer
-            .querySelectorAll(
-                "iframe, video"
-            );
-
-
-    oldFrames.forEach(
-        element =>
-            element.remove()
-    );
-
-
-    placeholderText.style.display =
-        "none";
-
-
-    const type =
-        detectMovieType(
-            input
-        );
-
-
-    /*
-     * DIRECT VIDEO
-     */
-
-    if (
-        type ===
-        "video"
+            .test(currentMovie)
     ) {
 
         const video =
@@ -2166,477 +1378,185 @@ function loadMovie(
                 "video"
             );
 
-
         video.src =
-            input;
+            currentMovie;
 
+        video.controls = true;
 
-        video.controls =
-            true;
+        video.autoplay = true;
 
-
-        video.autoplay =
-            true;
-
-
-        video.playsInline =
-            true;
-
-
-        video.style.width =
-            "100%";
-
-
-        video.style.height =
-            "100%";
-
+        video.playsInline = true;
 
         movieContainer.appendChild(
             video
         );
 
-
-        showToast(
-            "Movie loaded"
-        );
-
-
         return;
-
     }
 
 
-
     /*
-     * YOUTUBE
+     * Generic embeddable website
      */
+
+    movieContainer.innerHTML = `
+        <iframe
+            src="${escapeHtml(currentMovie)}"
+            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+    `;
+
+}
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+function sendData(data) {
 
     if (
-        type ===
-        "youtube"
+        connection &&
+        connection.open
     ) {
 
-        const videoId =
-            getYouTubeId(
-                input
-            );
-
-
-        if (!videoId) {
-
-            showToast(
-                "Invalid YouTube link."
-            );
-
-            return;
-
-        }
-
-
-        const iframe =
-            document.createElement(
-                "iframe"
-            );
-
-
-        iframe.src =
-            "https://www.youtube.com/embed/" +
-            encodeURIComponent(
-                videoId
-            ) +
-            "?autoplay=1";
-
-
-        iframe.allow =
-            "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen";
-
-
-        iframe.allowFullscreen =
-            true;
-
-
-        movieContainer.appendChild(
-            iframe
-        );
-
-
-        showToast(
-            "YouTube loaded"
-        );
-
-
-        return;
+        connection.send(data);
 
     }
 
+}
 
 
-    /*
-     * VIMEO
-     */
+function handleData(data) {
+
+    if (!data)
+        return;
+
 
     if (
-        type ===
-        "vimeo"
+        data.type === "movie" &&
+        data.url
     ) {
 
-        const videoId =
-            getVimeoId(
-                input
-            );
+        currentMovie =
+            data.url;
 
-
-        if (!videoId) {
-
-            showToast(
-                "Invalid Vimeo link."
-            );
-
-            return;
-
-        }
-
-
-        const iframe =
-            document.createElement(
-                "iframe"
-            );
-
-
-        iframe.src =
-            "https://player.vimeo.com/video/" +
-            encodeURIComponent(
-                videoId
-            ) +
-            "?autoplay=1";
-
-
-        iframe.allow =
-            "autoplay; fullscreen; picture-in-picture";
-
-
-        iframe.allowFullscreen =
-            true;
-
-
-        movieContainer.appendChild(
-            iframe
+        loadMovie(
+            data.url
         );
-
-
-        showToast(
-            "Vimeo loaded"
-        );
-
-
-        return;
 
     }
 
-
-
-    /*
-     * TWITCH
-     */
 
     if (
-        type ===
-        "twitch"
+        data.type === "chat"
     ) {
 
-        const channel =
-            getTwitchChannel(
-                input
-            );
-
-
-        if (!channel) {
-
-            showToast(
-                "Invalid Twitch link."
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * Twitch requires the current
-         * hostname in the parent parameter.
-         */
-
-        const parent =
-            window.location.hostname;
-
-
-        if (!parent) {
-
-            showToast(
-                "Twitch works after publishing the site."
-            );
-
-        }
-
-
-        const iframe =
-            document.createElement(
-                "iframe"
-            );
-
-
-        iframe.src =
-            "https://player.twitch.tv/?channel=" +
-            encodeURIComponent(
-                channel
-            ) +
-            "&parent=" +
-            encodeURIComponent(
-                parent
-            ) +
-            "&autoplay=true";
-
-
-        iframe.allow =
-            "autoplay; fullscreen";
-
-
-        iframe.allowFullscreen =
-            true;
-
-
-        movieContainer.appendChild(
-            iframe
+        addMessage(
+            "Friend",
+            data.text
         );
-
-
-        showToast(
-            "Twitch loaded"
-        );
-
-
-        return;
 
     }
 
+}
 
 
-    /*
-     * OTHER EMBEDDABLE WEBSITE
-     */
+/* =====================================================
+   CHAT
+===================================================== */
 
-    const iframe =
+function sendMessage() {
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if (!text)
+        return;
+
+    addMessage(
+        "You",
+        text
+    );
+
+    sendData({
+        type: "chat",
+        text: text
+    });
+
+    input.value = "";
+
+}
+
+
+function addMessage(
+    author,
+    text
+) {
+
+    const messages =
+        document.getElementById(
+            "chatMessages"
+        );
+
+    const div =
         document.createElement(
-            "iframe"
+            "div"
         );
 
+    div.className =
+        "message";
 
-    iframe.src =
-        input;
+    div.innerHTML =
+        `<span class="author">
+            ${escapeHtml(author)}:
+        </span>
+        ${escapeHtml(text)}`;
 
-
-    iframe.allow =
-        "autoplay; fullscreen; encrypted-media; picture-in-picture";
-
-
-    iframe.allowFullscreen =
-        true;
-
-
-    movieContainer.appendChild(
-        iframe
+    messages.appendChild(
+        div
     );
 
-
-    showToast(
-        "Website loaded"
-    );
+    messages.scrollTop =
+        messages.scrollHeight;
 
 }
 
 
-
-/* =========================================================
-   LARGE / SMALL MOVIE
-========================================================= */
-
-function toggleMovieSize() {
-
-    const large =
-        document.body
-            .classList
-            .toggle(
-                "movie-large"
-            );
-
-
-    if (large) {
-
-        movieSizeButton.textContent =
-            "↙";
-
-
-        movieSizeButton.title =
-            "Return to normal size";
-
-
-        showToast(
-            "Movie enlarged"
-        );
-
-    } else {
-
-        movieSizeButton.textContent =
-            "⛶";
-
-
-        movieSizeButton.title =
-            "Make movie large";
-
-
-        showToast(
-            "Normal view"
-        );
-
-    }
-
-}
-
-
-
-/* =========================================================
-   ESCAPE KEY
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key ===
-                "Escape" &&
-            document.body
-                .classList
-                .contains(
-                    "movie-large"
-                )
-        ) {
-
-            toggleMovieSize();
-
-        }
-
-    }
-);
-
-
-
-/* =========================================================
-   COPY INVITE
-========================================================= */
-
-function copyInviteLink() {
-
-    if (!roomId) {
-
-        showToast(
-            "Create or join a room first."
-        );
-
-        return;
-
-    }
-
-
-    const url =
-        new URL(
-            window.location.href
-        );
-
-
-    url.searchParams.set(
-        "room",
-        roomId
-    );
-
-
-    if (currentMovie) {
-
-        url.searchParams.set(
-            "movie",
-            currentMovie
-        );
-
-    }
-
-
-    const invite =
-        url.toString();
-
+function handleKeyPress(event) {
 
     if (
-        navigator.clipboard &&
-        navigator.clipboard.writeText
+        event.key === "Enter"
     ) {
 
-        navigator.clipboard
-            .writeText(
-                invite
-            )
-            .then(
-                function () {
-
-                    showToast(
-                        "Invite link copied!"
-                    );
-
-                }
-            )
-            .catch(
-                function () {
-
-                    prompt(
-                        "Copy this invite link:",
-                        invite
-                    );
-
-                }
-            );
-
-    } else {
-
-        prompt(
-            "Copy this invite link:",
-            invite
-        );
+        sendMessage();
 
     }
 
 }
 
 
-
-/* =========================================================
-   UPDATE URL
-========================================================= */
+/* =====================================================
+   INVITE
+===================================================== */
 
 function updateUrl() {
 
-    if (!roomId)
-        return;
-
-
     const url =
         new URL(
             window.location.href
         );
 
-
     url.searchParams.set(
         "room",
         roomId
     );
-
 
     if (currentMovie) {
 
@@ -2646,7 +1566,6 @@ function updateUrl() {
         );
 
     }
-
 
     window.history.replaceState(
         {},
@@ -2657,128 +1576,79 @@ function updateUrl() {
 }
 
 
+function copyInviteLink() {
 
-/* =========================================================
-   PEER ERROR
-========================================================= */
+    updateUrl();
 
-function handlePeerError(
-    error,
-    host
-) {
+    const link =
+        window.location.href;
 
-    console.error(
-        "PeerJS error:",
-        error
-    );
+    navigator.clipboard
+        .writeText(link)
+        .then(() => {
 
+            showToast(
+                "Invite link copied!"
+            );
 
-    if (
-        error.type ===
-            "unavailable-id" &&
-        host
-    ) {
+        })
+        .catch(() => {
 
-        showToast(
-            "Room ID was already used. Creating another room..."
-        );
+            prompt(
+                "Copy this invite link:",
+                link
+            );
 
-
-        if (peer) {
-
-            peer.destroy();
-
-            peer =
-                null;
-
-        }
-
-
-        roomId =
-            generateRoomId();
-
-
-        initializeHost(
-            roomId
-        );
-
-
-        return;
-
-    }
-
-
-    if (
-        error.type ===
-        "peer-unavailable"
-    ) {
-
-        roomStatus.textContent =
-            "Room not found";
-
-
-        showToast(
-            "Room not found. Check the room ID."
-        );
-
-
-        return;
-
-    }
-
-
-    roomStatus.textContent =
-        "Connection error";
-
-
-    showToast(
-        "Connection error: " +
-        error.type
-    );
+        });
 
 }
 
 
+/* =====================================================
+   HELPERS
+===================================================== */
 
-/* =========================================================
-   TOAST
-========================================================= */
+function escapeHtml(text) {
 
-function showToast(
-    message
-) {
+    return String(text)
+        .replace(
+            /[&<>"']/g,
+            char => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[char])
+        );
+
+}
+
+
+function showToast(message) {
 
     const toast =
         document.getElementById(
             "toast"
         );
 
-
     toast.textContent =
         message;
-
 
     toast.classList.add(
         "show"
     );
 
+    setTimeout(
+        () => {
 
-    clearTimeout(
-        window.toastTimer
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        2500
     );
-
-
-    window.toastTimer =
-        setTimeout(
-            function () {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
 
 }
 
