@@ -38,103 +38,19 @@ body {
     background: var(--sage-bg);
     color: var(--text);
     overflow-x: hidden;
-    overflow-y: auto;
 }
 
-/* =====================================================
-   10 SECOND INTRO
-===================================================== */
-
-.intro-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 5000;
-
-    background: var(--sage-dark);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    transition:
-        opacity .7s ease,
-        visibility .7s ease;
-}
-
-.intro-screen.hide {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-.intro-content {
-    width: min(92%, 500px);
-    padding: 28px;
-
-    text-align: center;
-    color: white;
-}
-
-.intro-logo {
-    width: 72px;
-    height: 72px;
-
-    margin: 0 auto 15px;
-
-    display: grid;
-    place-items: center;
-
-    background: var(--sage-primary);
-    border-radius: 20px;
-
-    font-size: 38px;
-
-    box-shadow: 0 12px 35px rgba(0,0,0,.25);
-}
-
-.intro-content h1 {
-    font-size: 1.7rem;
-    margin-bottom: 18px;
-}
-
-.intro-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.intro-actions button {
-    border: none;
-    border-radius: 9px;
-
-    padding: 10px 14px;
-
-    background: var(--sage-primary);
-    color: white;
-
-    font-weight: 700;
-}
-
-.intro-status {
-    padding: 8px 12px;
-
-    background: rgba(255,255,255,.12);
-
-    border-radius: 20px;
-
-    font-size: .8rem;
-}
-
-/* =====================================================
-   HEADER
-===================================================== */
+/* =========================
+   HEADER / INTRO
+========================= */
 
 header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+
+    z-index: 1000;
 
     min-height: 68px;
     padding: 12px 22px;
@@ -151,13 +67,15 @@ header {
     box-shadow: 0 3px 15px rgba(0,0,0,.18);
 
     transition:
-        transform .5s ease,
-        opacity .5s ease;
+        opacity .6s ease,
+        transform .6s ease;
 }
 
+/* Header disappears after 10 seconds */
+
 header.intro-hidden {
-    transform: translateY(-100%);
     opacity: 0;
+    transform: translateY(-100%);
     pointer-events: none;
 }
 
@@ -194,14 +112,12 @@ header h1 {
 button {
     border: none;
     border-radius: 8px;
-
     padding: 10px 14px;
 
     background: var(--sage-primary);
     color: white;
 
     font-weight: 600;
-
     cursor: pointer;
 
     transition:
@@ -222,10 +138,6 @@ button:active {
     background: var(--sage-medium);
 }
 
-.danger {
-    background: var(--danger);
-}
-
 .status {
     padding: 7px 11px;
 
@@ -234,83 +146,212 @@ button:active {
     border-radius: 20px;
 
     font-size: .78rem;
-
     white-space: nowrap;
 }
 
-/* =====================================================
+/* =========================
    PAGE
-===================================================== */
+========================= */
 
 .page {
     width: 100%;
-    max-width: 1700px;
+    max-width: 1450px;
 
     margin: 0 auto;
 
-    padding: 22px;
+    padding: 95px 22px 35px;
 }
 
-/* =====================================================
-   MAIN WATCH LAYOUT
-   VIDEO CALL LEFT
-   MOVIE RIGHT
-===================================================== */
+/* =========================
+   MAIN WATCH AREA
+========================= */
 
 .watch-layout {
-    width: 100%;
-
     display: grid;
 
     grid-template-columns:
-        minmax(260px, 34%)
-        minmax(0, 66%);
+        minmax(0, 1.55fr)
+        minmax(260px, .75fr);
 
     gap: 18px;
 
     align-items: start;
 }
 
-/* =====================================================
-   VIDEO CALL LEFT
-===================================================== */
+/* =========================
+   MOVIE
+   LEFT SIDE
+========================= */
 
-.call-panel {
+.movie-card {
     width: 100%;
 
-    background: white;
+    background: var(--black);
 
-    border: 2px solid var(--sage-light);
-
+    border: 3px solid var(--sage-medium);
     border-radius: 16px;
 
-    padding: 14px;
+    overflow: hidden;
 
     box-shadow: var(--shadow);
 }
 
-.call-panel-title {
-    display: flex;
+.movie-header {
+    min-height: 45px;
 
+    padding: 9px 13px;
+
+    background: #202921;
+    color: white;
+
+    display: flex;
     align-items: center;
     justify-content: space-between;
 
     gap: 10px;
+}
 
+.movie-title {
+    font-weight: 700;
+    font-size: .95rem;
+}
+
+.movie-subtitle {
+    color: #c8d1c7;
+    font-size: .72rem;
+}
+
+/*
+   IMPORTANT:
+   Smaller movie screen
+   and keeps complete 16:9 frame.
+*/
+
+.movie-screen {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    max-height: 62vh;
+
+    background: #000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.movie-screen iframe,
+.movie-screen video {
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+
+    display: block;
+
+    background: #000;
+
+    object-fit: contain;
+}
+
+.movie-placeholder {
+    width: 100%;
+    max-width: 600px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    color: var(--sage-light);
+}
+
+.movie-icon {
+    font-size: 42px;
     margin-bottom: 12px;
 }
 
-.call-panel-title h2 {
-    color: var(--sage-dark);
-
-    font-size: 1.05rem;
+.movie-placeholder h2 {
+    margin-bottom: 8px;
+    font-size: 1.15rem;
 }
 
-.call-panel-title span {
-    color: #6c776e;
+.movie-placeholder p {
+    color: #aeb8ae;
+    line-height: 1.5;
+    font-size: .85rem;
+}
 
+/* =========================
+   MOVIE URL
+========================= */
+
+.movie-url {
+    padding: 10px;
+
+    background: #202921;
+
+    display: flex;
+    gap: 8px;
+}
+
+.movie-url input {
+    flex: 1;
+    min-width: 0;
+
+    padding: 10px 12px;
+
+    border: 1px solid #657365;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: .85rem;
+}
+
+.movie-url input:focus {
+    border-color: var(--sage-primary);
+}
+
+.movie-url button {
+    white-space: nowrap;
+}
+
+/* =========================
+   VIDEO CALL
+   RIGHT SIDE
+========================= */
+
+.call-panel {
+    width: 100%;
+}
+
+.call-title {
+    margin-bottom: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.call-title h2 {
+    color: var(--sage-dark);
+    font-size: 1.1rem;
+}
+
+.call-title span {
+    color: #6c776e;
     font-size: .72rem;
 }
+
+/* Video cards vertically stacked */
 
 .call-grid {
     display: grid;
@@ -331,7 +372,7 @@ button:active {
 
     border: 3px solid var(--sage-primary);
 
-    border-radius: 13px;
+    border-radius: 14px;
 
     overflow: hidden;
 
@@ -348,12 +389,16 @@ button:active {
 
     background: #111;
 
-    transform: scaleX(1);
+    /*
+       NOT MIRRORED.
+       This keeps left/right natural.
+    */
+
+    transform: none !important;
 }
 
 .video-placeholder {
     position: absolute;
-
     inset: 0;
 
     display: flex;
@@ -378,16 +423,16 @@ button:active {
 }
 
 .person-icon {
-    font-size: 38px;
+    font-size: 34px;
 }
 
 .user-label {
     position: absolute;
 
-    left: 10px;
-    bottom: 10px;
+    left: 9px;
+    bottom: 9px;
 
-    padding: 5px 9px;
+    padding: 5px 8px;
 
     border-radius: 6px;
 
@@ -395,8 +440,7 @@ button:active {
 
     color: white;
 
-    font-size: .75rem;
-
+    font-size: .7rem;
     font-weight: 600;
 
     z-index: 5;
@@ -405,221 +449,42 @@ button:active {
 .camera-controls {
     position: absolute;
 
-    right: 10px;
-    bottom: 10px;
+    right: 9px;
+    bottom: 9px;
 
     display: flex;
 
-    gap: 6px;
+    gap: 5px;
 
     z-index: 5;
 }
 
 .camera-controls button {
-    width: 40px;
-    height: 38px;
+    width: 37px;
+    height: 35px;
 
     padding: 0;
 
     display: grid;
-
     place-items: center;
 
     background: rgba(0,0,0,.65);
 
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .camera-controls button:hover {
     background: var(--sage-dark);
 }
 
-/* =====================================================
-   MOVIE RIGHT
-===================================================== */
-
-.movie-card {
-    width: 100%;
-
-    background: var(--black);
-
-    border: 3px solid var(--sage-medium);
-
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    box-shadow: var(--shadow);
-}
-
-.movie-header {
-    min-height: 48px;
-
-    padding: 10px 14px;
-
-    background: #202921;
-
-    color: white;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 10px;
-}
-
-.movie-title {
-    font-weight: 700;
-}
-
-.movie-subtitle {
-    color: #c8d1c7;
-
-    font-size: .78rem;
-}
-
-/*
-   MOVIE SCREEN
-   Uses 16:9 without forced minimum height
-   so the video doesn't get cut on phones.
-*/
-
-.movie-screen {
-    position: relative;
-
-    width: 100%;
-
-    aspect-ratio: 16 / 9;
-
-    background: #000;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-}
-
-.movie-screen iframe,
-.movie-screen video {
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-
-    display: block;
-
-    background: #000;
-}
-
-.movie-screen video {
-    object-fit: contain;
-}
-
-.movie-placeholder {
-    width: 100%;
-
-    max-width: 650px;
-
-    padding: 30px;
-
-    text-align: center;
-
-    color: var(--sage-light);
-}
-
-.movie-icon {
-    font-size: 50px;
-
-    margin-bottom: 15px;
-}
-
-.movie-placeholder h2 {
-    margin-bottom: 10px;
-}
-
-.movie-placeholder p {
-    color: #aeb8ae;
-
-    line-height: 1.6;
-}
-
-/* =====================================================
-   MOVIE URL
-===================================================== */
-
-.movie-url {
-    padding: 12px;
-
-    background: #202921;
-
-    display: flex;
-
-    gap: 8px;
-}
-
-.movie-url input {
-    flex: 1;
-
-    min-width: 0;
-
-    padding: 11px 13px;
-
-    border: 1px solid #657365;
-
-    border-radius: 8px;
-
-    outline: none;
-
-    font-size: .9rem;
-}
-
-.movie-url input:focus {
-    border-color: var(--sage-primary);
-}
-
-.movie-url button {
-    white-space: nowrap;
-}
-
-/* =====================================================
+/* =========================
    ROOM
-===================================================== */
-
-.room-section {
-    margin-top: 22px;
-}
-
-.section-title {
-    margin-bottom: 12px;
-
-    padding: 0 3px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-.section-title h2 {
-    color: var(--sage-dark);
-
-    font-size: 1.2rem;
-}
-
-.section-title span {
-    color: #6c776e;
-
-    font-size: .8rem;
-}
+========================= */
 
 .room-panel {
-    padding: 22px;
+    margin-top: 20px;
+
+    padding: 20px;
 
     background: white;
 
@@ -633,7 +498,7 @@ button:active {
 .room-panel h2 {
     color: var(--sage-dark);
 
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 
     margin-bottom: 7px;
 }
@@ -641,9 +506,9 @@ button:active {
 .room-panel p {
     color: #687269;
 
-    font-size: .85rem;
+    font-size: .82rem;
 
-    margin-bottom: 18px;
+    margin-bottom: 15px;
 }
 
 .room-actions {
@@ -651,13 +516,13 @@ button:active {
 
     flex-wrap: wrap;
 
-    gap: 9px;
+    gap: 8px;
 }
 
 .room-actions input {
     flex: 1;
 
-    min-width: 220px;
+    min-width: 200px;
 
     padding: 10px 12px;
 
@@ -669,15 +534,15 @@ button:active {
 }
 
 .room-info {
-    margin-top: 16px;
+    margin-top: 14px;
 
-    padding: 12px;
+    padding: 11px;
 
     background: var(--sage-bg);
 
     border-radius: 8px;
 
-    font-size: .8rem;
+    font-size: .78rem;
 
     word-break: break-all;
 
@@ -688,30 +553,29 @@ button:active {
     color: var(--sage-dark);
 }
 
-/* =====================================================
+/* =========================
    FOOTER
-===================================================== */
+========================= */
 
 footer {
-    padding: 25px 5px 45px;
+    padding: 25px 5px 40px;
 
     text-align: center;
 
     color: #7a847b;
 
-    font-size: .78rem;
+    font-size: .75rem;
 }
 
-/* =====================================================
+/* =========================
    MODAL
-===================================================== */
+========================= */
 
 .modal {
     position: fixed;
-
     inset: 0;
 
-    z-index: 1000;
+    z-index: 2000;
 
     padding: 20px;
 
@@ -771,9 +635,9 @@ footer {
     gap: 8px;
 }
 
-/* =====================================================
+/* =========================
    TOAST
-===================================================== */
+========================= */
 
 .toast {
     position: fixed;
@@ -797,7 +661,7 @@ footer {
 
     transition: .25s;
 
-    z-index: 6000;
+    z-index: 3000;
 
     box-shadow: 0 8px 25px rgba(0,0,0,.2);
 }
@@ -808,103 +672,98 @@ footer {
     transform: translate(-50%, 0);
 }
 
-/* =====================================================
+/* =========================
    TABLET
-===================================================== */
+========================= */
 
-@media (max-width: 950px) {
+@media (max-width: 900px) {
 
     .watch-layout {
         grid-template-columns: 1fr;
     }
 
-    .call-panel {
-        order: 1;
-    }
+    /*
+       On tablet:
+       movie remains first,
+       video call below.
+    */
 
-    .movie-card {
-        order: 2;
+    .movie-screen {
+        max-height: none;
     }
 
     .call-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
 }
 
-/* =====================================================
+/* =========================
    PHONE
-===================================================== */
+========================= */
 
 @media (max-width: 600px) {
 
     header {
-        position: relative;
+        padding: 10px 12px;
 
-        padding: 12px;
-
-        flex-wrap: wrap;
+        min-height: 62px;
     }
 
     header h1 {
-        font-size: 1.15rem;
+        font-size: 1rem;
     }
 
     .logo-icon {
         width: 34px;
         height: 34px;
+        font-size: 17px;
     }
 
     .header-actions {
-        width: 100%;
-
-        flex-direction: column;
-
-        align-items: stretch;
+        gap: 5px;
     }
 
-    .header-actions button,
-    .status {
-        width: 100%;
+    .header-actions .secondary {
+        padding: 8px 9px;
+        font-size: .7rem;
+    }
 
-        text-align: center;
+    .status {
+        display: none;
     }
 
     .page {
-        padding: 10px;
-    }
-
-    .watch-layout {
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 14px;
+        padding:
+            76px
+            9px
+            25px;
     }
 
     /*
-       On phone:
-       movie first for easier watching
-       and it stays a complete 16:9 screen.
+       Movie is kept complete.
+       No forced tall height.
     */
 
     .movie-card {
-        order: 1;
-
-        width: 100%;
-    }
-
-    .call-panel {
-        order: 2;
-
-        width: 100%;
+        border-width: 2px;
+        border-radius: 12px;
     }
 
     .movie-header {
-        flex-direction: column;
+        min-height: 40px;
+        padding: 8px 10px;
 
+        flex-direction: column;
         align-items: flex-start;
+    }
+
+    .movie-title {
+        font-size: .85rem;
+    }
+
+    .movie-subtitle {
+        font-size: .65rem;
     }
 
     .movie-screen {
@@ -915,6 +774,8 @@ footer {
         min-height: 0;
 
         max-height: none;
+
+        overflow: hidden;
     }
 
     .movie-screen iframe,
@@ -925,7 +786,26 @@ footer {
         object-fit: contain;
     }
 
+    .movie-placeholder {
+        padding: 18px 12px;
+    }
+
+    .movie-icon {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .movie-placeholder h2 {
+        font-size: .95rem;
+    }
+
+    .movie-placeholder p {
+        font-size: .7rem;
+    }
+
     .movie-url {
+        padding: 8px;
+
         flex-direction: column;
     }
 
@@ -934,14 +814,43 @@ footer {
         width: 100%;
     }
 
+    /* VIDEO CALL */
+
+    .call-panel {
+        margin-top: 20px;
+    }
+
+    .call-title {
+        margin-bottom: 8px;
+    }
+
+    .call-title h2 {
+        font-size: .95rem;
+    }
+
+    .call-title span {
+        font-size: .65rem;
+    }
+
     .call-grid {
         grid-template-columns: 1fr;
-
-        gap: 12px;
+        gap: 10px;
     }
 
     .video-card {
+        width: 100%;
+
         aspect-ratio: 16 / 10;
+
+        border-width: 2px;
+        border-radius: 11px;
+    }
+
+    /* ROOM */
+
+    .room-panel {
+        margin-top: 20px;
+        padding: 16px;
     }
 
     .room-actions {
@@ -957,50 +866,29 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .section-title {
-        flex-direction: column;
-
-        align-items: flex-start;
-    }
-
-    .intro-content h1 {
-        font-size: 1.4rem;
-    }
-
-    .intro-actions {
-        flex-direction: column;
-    }
-
-    .intro-actions button,
-    .intro-status {
-        width: 100%;
-    }
 }
 
-/* =====================================================
-   SMALL PHONE
-===================================================== */
+/* =========================
+   VERY SMALL PHONE
+========================= */
 
 @media (max-width: 380px) {
 
     .page {
-        padding: 7px;
+        padding-left: 7px;
+        padding-right: 7px;
     }
 
     .movie-screen {
         aspect-ratio: 16 / 9;
     }
 
-    .movie-placeholder {
-        padding: 15px;
-    }
-
-    .movie-icon {
-        font-size: 35px;
-    }
-
     .video-card {
         aspect-ratio: 16 / 10;
+    }
+
+    header h1 {
+        font-size: .9rem;
     }
 }
 </style>
@@ -1008,46 +896,13 @@ footer {
 
 <body>
 
-<!-- =====================================================
-     10 SECOND INTRO
-===================================================== -->
-
-<div class="intro-screen" id="introScreen">
-
-    <div class="intro-content">
-
-        <div class="intro-logo">
-            🎬
-        </div>
-
-        <h1>
-            Jell & James Movie
-        </h1>
-
-        <div class="intro-actions">
-
-            <button onclick="copyInviteLink()">
-                🔗 Copy Invite
-            </button>
-
-            <div
-                class="intro-status"
-                id="introStatus">
-                🟢 Room ready
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
+<!-- =========================
      HEADER
-===================================================== -->
+     Automatically disappears
+     after 10 seconds
+========================= -->
 
-<header id="mainHeader">
+<header id="introHeader">
 
     <div class="logo-area">
 
@@ -1086,21 +941,83 @@ footer {
 
 <main class="page">
 
-    <!-- =================================================
-         MAIN WATCH AREA
-         VIDEO CALL = LEFT
-         MOVIE = RIGHT
-    ================================================== -->
+    <!-- =========================
+         MOVIE LEFT
+         VIDEO CALL RIGHT
+    ========================= -->
 
-    <section class="watch-layout">
+    <div class="watch-layout">
 
-        <!-- =============================================
-             VIDEO CALL LEFT
-        ============================================== -->
+        <!-- =====================
+             MOVIE LEFT
+        ====================== -->
 
-        <div class="call-panel">
+        <section class="movie-card">
 
-            <div class="call-panel-title">
+            <div class="movie-header">
+
+                <div class="movie-title">
+                    🎥 Watch Together
+                </div>
+
+                <div class="movie-subtitle">
+                    Share the same room with your friend
+                </div>
+
+            </div>
+
+
+            <div
+                class="movie-screen"
+                id="movieContainer">
+
+                <div class="movie-placeholder">
+
+                    <div class="movie-icon">
+                        🎬
+                    </div>
+
+                    <h2>
+                        No movie loaded
+                    </h2>
+
+                    <p>
+                        Paste a YouTube, Vimeo, Twitch,
+                        direct MP4, or embeddable video
+                        link below.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="movie-url">
+
+                <input
+                    type="text"
+                    id="movieUrlInput"
+                    placeholder="Paste movie or video link here...">
+
+                <button
+                    onclick="loadMovieFromInput()">
+
+                    ▶ Play Movie
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================
+             VIDEO CALL RIGHT
+        ====================== -->
+
+        <section class="call-panel">
+
+            <div class="call-title">
 
                 <h2>
                     👥 Video Call
@@ -1113,7 +1030,7 @@ footer {
             </div>
 
 
-            <section class="call-grid">
+            <div class="call-grid">
 
                 <!-- YOU -->
 
@@ -1197,148 +1114,68 @@ footer {
 
                 </div>
 
-            </section>
-
-        </div>
-
-
-        <!-- =============================================
-             MOVIE RIGHT
-        ============================================== -->
-
-        <section class="movie-card">
-
-            <div class="movie-header">
-
-                <div class="movie-title">
-                    🎥 Watch Together
-                </div>
-
-                <div class="movie-subtitle">
-                    Share the same room with your friend
-                </div>
-
-            </div>
-
-
-            <div
-                class="movie-screen"
-                id="movieContainer">
-
-                <div class="movie-placeholder">
-
-                    <div class="movie-icon">
-                        🎬
-                    </div>
-
-                    <h2>
-                        No movie loaded
-                    </h2>
-
-                    <p>
-                        Paste a YouTube, Vimeo, Twitch,
-                        direct MP4, or embeddable video
-                        link below.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="movie-url">
-
-                <input
-                    type="text"
-                    id="movieUrlInput"
-                    placeholder="Paste movie or video link here...">
-
-                <button
-                    onclick="loadMovieFromInput()">
-
-                    ▶ Play Movie
-
-                </button>
-
             </div>
 
         </section>
 
-    </section>
+    </div>
 
 
-    <!-- =================================================
+    <!-- =========================
          ROOM
-    ================================================== -->
+    ========================= -->
 
-    <section class="room-section">
+    <section class="room-panel">
 
-        <div class="section-title">
+        <h2>
+            🔗 Watch Room
+        </h2>
 
-            <h2>
-                🔗 Watch Room
-            </h2>
+        <p>
+            Create a room and send the invite
+            link to your friend.
+        </p>
 
-            <span>
-                Create or join a room
+
+        <div class="room-actions">
+
+            <button onclick="createRoom()">
+
+                ✨ Create Room
+
+            </button>
+
+
+            <input
+                type="text"
+                id="joinRoomInput"
+                placeholder="Enter room ID">
+
+
+            <button
+                class="secondary"
+                onclick="joinRoomFromInput()">
+
+                Join Room
+
+            </button>
+
+        </div>
+
+
+        <div
+            class="room-info"
+            id="roomInfo">
+
+            <strong>
+                Room:
+            </strong>
+
+            <span id="roomIdDisplay">
+                No room created yet
             </span>
 
         </div>
-
-
-        <section class="room-panel">
-
-            <h2>
-                Room controls
-            </h2>
-
-            <p>
-                Create a room and send the invite
-                link to your friend.
-            </p>
-
-
-            <div class="room-actions">
-
-                <button onclick="createRoom()">
-
-                    ✨ Create Room
-
-                </button>
-
-
-                <input
-                    type="text"
-                    id="joinRoomInput"
-                    placeholder="Enter room ID">
-
-
-                <button
-                    class="secondary"
-                    onclick="joinRoomFromInput()">
-
-                    Join Room
-
-                </button>
-
-            </div>
-
-
-            <div
-                class="room-info"
-                id="roomInfo">
-
-                <strong>
-                    Room:
-                </strong>
-
-                <span id="roomIdDisplay">
-                    No room created yet
-                </span>
-
-            </div>
-
-        </section>
 
     </section>
 
@@ -1352,9 +1189,9 @@ footer {
 </main>
 
 
-<!-- =====================================================
+<!-- =========================
      ROOM MODAL
-===================================================== -->
+========================= -->
 
 <div
     class="modal"
@@ -1401,10 +1238,6 @@ footer {
 
 </div>
 
-
-<!-- =====================================================
-     TOAST
-===================================================== -->
 
 <div
     class="toast"
@@ -1481,19 +1314,9 @@ const roomIdDisplay =
         "roomIdDisplay"
     );
 
-const introScreen =
+const introHeader =
     document.getElementById(
-        "introScreen"
-    );
-
-const mainHeader =
-    document.getElementById(
-        "mainHeader"
-    );
-
-const introStatus =
-    document.getElementById(
-        "introStatus"
+        "introHeader"
     );
 
 
@@ -1501,24 +1324,13 @@ const introStatus =
    10 SECOND INTRO
 ===================================================== */
 
-function startIntro() {
+setTimeout(() => {
 
-    setTimeout(
-        () => {
-
-            introScreen.classList.add(
-                "hide"
-            );
-
-            mainHeader.classList.add(
-                "intro-hidden"
-            );
-
-        },
-        10000
+    introHeader.classList.add(
+        "intro-hidden"
     );
 
-}
+}, 10000);
 
 
 /* =====================================================
@@ -1529,18 +1341,13 @@ window.addEventListener(
     "DOMContentLoaded",
     async () => {
 
-        startIntro();
-
-
         const params =
             new URLSearchParams(
                 window.location.search
             );
 
-
         const urlRoom =
             params.get("room");
-
 
         const urlMovie =
             params.get("movie");
@@ -1585,9 +1392,6 @@ window.addEventListener(
 
             roomStatus.textContent =
                 "Choose a room";
-
-            introStatus.textContent =
-                "🟢 Room ready";
 
         }
 
@@ -1739,12 +1543,6 @@ function initializePeer(
             : "Joining room...";
 
 
-    introStatus.textContent =
-        host
-            ? "🟡 Creating room..."
-            : "🟡 Joining room...";
-
-
     roomIdDisplay.textContent =
         id;
 
@@ -1771,12 +1569,6 @@ function initializePeer(
 
 
             roomStatus.textContent =
-                host
-                    ? "🟢 Room ready"
-                    : "🟢 Connected";
-
-
-            introStatus.textContent =
                 host
                     ? "🟢 Room ready"
                     : "🟢 Connected";
@@ -1879,9 +1671,6 @@ function initializePeer(
 
             roomStatus.textContent =
                 "Connection error";
-
-            introStatus.textContent =
-                "🔴 Connection error";
 
         }
     );
@@ -2106,8 +1895,14 @@ async function startCamera() {
             localStream;
 
 
+        /*
+           IMPORTANT:
+           No scaleX(-1).
+           Camera stays natural / not inverted.
+        */
+
         localVideo.style.transform =
-            "scaleX(1)";
+            "none";
 
 
         localPlaceholder.style.display =
@@ -2262,9 +2057,9 @@ function loadMovie(
         "";
 
 
-    /* =================================================
+    /* =========================
        YOUTUBE
-    ================================================= */
+    ========================= */
 
     if (
         currentMovie.includes(
@@ -2327,9 +2122,9 @@ function loadMovie(
     }
 
 
-    /* =================================================
+    /* =========================
        VIMEO
-    ================================================= */
+    ========================= */
 
     else if (
         currentMovie.includes(
@@ -2357,9 +2152,9 @@ function loadMovie(
     }
 
 
-    /* =================================================
+    /* =========================
        TWITCH
-    ================================================= */
+    ========================= */
 
     else if (
         currentMovie.includes(
@@ -2389,9 +2184,9 @@ function loadMovie(
     }
 
 
-    /* =================================================
+    /* =========================
        DIRECT VIDEO
-    ================================================= */
+    ========================= */
 
     else if (
         /\.(mp4|webm|ogg)(\?.*)?$/i
@@ -2420,10 +2215,6 @@ function loadMovie(
             true;
 
 
-        video.style.objectFit =
-            "contain";
-
-
         movieContainer.appendChild(
             video
         );
@@ -2431,9 +2222,9 @@ function loadMovie(
     }
 
 
-    /* =================================================
+    /* =========================
        OTHER EMBEDDABLE WEBSITE
-    ================================================= */
+    ========================= */
 
     else {
 
@@ -2448,9 +2239,7 @@ function loadMovie(
     }
 
 
-    /* =================================================
-       SEND MOVIE TO FRIEND
-    ================================================= */
+    /* Send movie to friend */
 
     if (
         broadcast &&
@@ -2467,9 +2256,6 @@ function loadMovie(
         });
 
     }
-
-
-    updateUrl();
 
 }
 
