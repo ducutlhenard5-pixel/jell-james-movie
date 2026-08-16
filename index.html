@@ -41,9 +41,95 @@ body {
     overflow-y: auto;
 }
 
-/* =========================
+/* =====================================================
+   10 SECOND INTRO
+===================================================== */
+
+.intro-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+
+    background: var(--sage-dark);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        opacity .7s ease,
+        visibility .7s ease;
+}
+
+.intro-screen.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.intro-content {
+    width: min(92%, 500px);
+    padding: 28px;
+
+    text-align: center;
+    color: white;
+}
+
+.intro-logo {
+    width: 72px;
+    height: 72px;
+
+    margin: 0 auto 15px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--sage-primary);
+    border-radius: 20px;
+
+    font-size: 38px;
+
+    box-shadow: 0 12px 35px rgba(0,0,0,.25);
+}
+
+.intro-content h1 {
+    font-size: 1.7rem;
+    margin-bottom: 18px;
+}
+
+.intro-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.intro-actions button {
+    border: none;
+    border-radius: 9px;
+
+    padding: 10px 14px;
+
+    background: var(--sage-primary);
+    color: white;
+
+    font-weight: 700;
+}
+
+.intro-status {
+    padding: 8px 12px;
+
+    background: rgba(255,255,255,.12);
+
+    border-radius: 20px;
+
+    font-size: .8rem;
+}
+
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 header {
     position: sticky;
@@ -59,9 +145,20 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 20px;
 
     box-shadow: 0 3px 15px rgba(0,0,0,.18);
+
+    transition:
+        transform .5s ease,
+        opacity .5s ease;
+}
+
+header.intro-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .logo-area {
@@ -97,12 +194,14 @@ header h1 {
 button {
     border: none;
     border-radius: 8px;
+
     padding: 10px 14px;
 
     background: var(--sage-primary);
     color: white;
 
     font-weight: 600;
+
     cursor: pointer;
 
     transition:
@@ -129,28 +228,34 @@ button:active {
 
 .status {
     padding: 7px 11px;
+
     background: rgba(255,255,255,.12);
+
     border-radius: 20px;
+
     font-size: .78rem;
+
     white-space: nowrap;
 }
 
-/* =========================
+/* =====================================================
    PAGE
-========================= */
+===================================================== */
 
 .page {
     width: 100%;
-    max-width: 1600px;
+    max-width: 1700px;
+
     margin: 0 auto;
-    padding: 25px;
+
+    padding: 22px;
 }
 
-/* =========================
-   WATCH LAYOUT
+/* =====================================================
+   MAIN WATCH LAYOUT
    VIDEO CALL LEFT
    MOVIE RIGHT
-========================= */
+===================================================== */
 
 .watch-layout {
     width: 100%;
@@ -158,57 +263,62 @@ button:active {
     display: grid;
 
     grid-template-columns:
-        260px
-        minmax(0, 1fr);
+        minmax(260px, 34%)
+        minmax(0, 66%);
 
     gap: 18px;
 
     align-items: start;
 }
 
-/* =========================
+/* =====================================================
    VIDEO CALL LEFT
-========================= */
+===================================================== */
 
-.call-sidebar {
-    display: flex;
+.call-panel {
+    width: 100%;
 
-    flex-direction: column;
+    background: white;
 
-    gap: 18px;
+    border: 2px solid var(--sage-light);
 
-    position: sticky;
+    border-radius: 16px;
 
-    top: 88px;
+    padding: 14px;
+
+    box-shadow: var(--shadow);
 }
 
-.call-title {
-    padding: 0 3px;
-
+.call-panel-title {
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 10px;
+
+    margin-bottom: 12px;
 }
 
-.call-title h2 {
+.call-panel-title h2 {
     color: var(--sage-dark);
 
     font-size: 1.05rem;
 }
 
-.call-title span {
+.call-panel-title span {
     color: #6c776e;
 
     font-size: .72rem;
 }
 
-/* =========================
-   VIDEO CARDS
-========================= */
+.call-grid {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+}
 
 .video-card {
     position: relative;
@@ -221,7 +331,7 @@ button:active {
 
     border: 3px solid var(--sage-primary);
 
-    border-radius: 14px;
+    border-radius: 13px;
 
     overflow: hidden;
 
@@ -249,7 +359,6 @@ button:active {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     flex-direction: column;
@@ -325,9 +434,9 @@ button:active {
     background: var(--sage-dark);
 }
 
-/* =========================
-   MOVIE
-========================= */
+/* =====================================================
+   MOVIE RIGHT
+===================================================== */
 
 .movie-card {
     width: 100%;
@@ -371,6 +480,12 @@ button:active {
     font-size: .78rem;
 }
 
+/*
+   MOVIE SCREEN
+   Uses 16:9 without forced minimum height
+   so the video doesn't get cut on phones.
+*/
+
 .movie-screen {
     position: relative;
 
@@ -378,15 +493,14 @@ button:active {
 
     aspect-ratio: 16 / 9;
 
-    min-height: 400px;
-
     background: #000;
 
     display: flex;
 
     align-items: center;
-
     justify-content: center;
+
+    overflow: hidden;
 }
 
 .movie-screen iframe,
@@ -401,7 +515,13 @@ button:active {
     background: #000;
 }
 
+.movie-screen video {
+    object-fit: contain;
+}
+
 .movie-placeholder {
+    width: 100%;
+
     max-width: 650px;
 
     padding: 30px;
@@ -427,9 +547,9 @@ button:active {
     line-height: 1.6;
 }
 
-/* =========================
+/* =====================================================
    MOVIE URL
-========================= */
+===================================================== */
 
 .movie-url {
     padding: 12px;
@@ -465,21 +585,22 @@ button:active {
     white-space: nowrap;
 }
 
-/* =========================
+/* =====================================================
    ROOM
-========================= */
+===================================================== */
+
+.room-section {
+    margin-top: 22px;
+}
 
 .section-title {
-    margin-top: 45px;
-
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 
     padding: 0 3px;
 
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 15px;
@@ -498,9 +619,7 @@ button:active {
 }
 
 .room-panel {
-    margin-top: 0;
-
-    padding: 25px;
+    padding: 22px;
 
     background: white;
 
@@ -569,17 +688,9 @@ button:active {
     color: var(--sage-dark);
 }
 
-/* =========================
-   EXTRA SPACE
-========================= */
-
-.extra-space {
-    height: 180px;
-}
-
-/* =========================
+/* =====================================================
    FOOTER
-========================= */
+===================================================== */
 
 footer {
     padding: 25px 5px 45px;
@@ -591,9 +702,9 @@ footer {
     font-size: .78rem;
 }
 
-/* =========================
+/* =====================================================
    MODAL
-========================= */
+===================================================== */
 
 .modal {
     position: fixed;
@@ -607,7 +718,6 @@ footer {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     background: rgba(20,30,22,.72);
@@ -661,15 +771,14 @@ footer {
     gap: 8px;
 }
 
-/* =========================
+/* =====================================================
    TOAST
-========================= */
+===================================================== */
 
 .toast {
     position: fixed;
 
     left: 50%;
-
     bottom: 25px;
 
     transform: translate(-50%, 20px);
@@ -688,7 +797,7 @@ footer {
 
     transition: .25s;
 
-    z-index: 2000;
+    z-index: 6000;
 
     box-shadow: 0 8px 25px rgba(0,0,0,.2);
 }
@@ -699,81 +808,43 @@ footer {
     transform: translate(-50%, 0);
 }
 
-/* =========================
-   LARGE DESKTOP
-========================= */
-
-@media (min-width: 1100px) {
-
-    .page {
-        padding: 30px;
-    }
-
-    .watch-layout {
-        grid-template-columns:
-            280px
-            minmax(0, 1fr);
-
-        gap: 22px;
-    }
-
-    .movie-screen {
-        min-height: 550px;
-    }
-
-    .video-card {
-        aspect-ratio: 16 / 10;
-    }
-}
-
-/* =========================
+/* =====================================================
    TABLET
-========================= */
+===================================================== */
 
-@media (max-width: 850px) {
-
-    header {
-        position: relative;
-
-        flex-wrap: wrap;
-    }
-
-    .header-actions {
-        width: 100%;
-
-        justify-content: center;
-    }
-
-    .page {
-        padding: 15px;
-    }
+@media (max-width: 950px) {
 
     .watch-layout {
-        grid-template-columns: 210px minmax(0, 1fr);
-
-        gap: 12px;
+        grid-template-columns: 1fr;
     }
 
-    .movie-screen {
-        min-height: 280px;
+    .call-panel {
+        order: 1;
     }
 
-    .call-title {
-        flex-direction: column;
+    .movie-card {
+        order: 2;
+    }
 
-        align-items: flex-start;
+    .call-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
 }
 
-/* =========================
+/* =====================================================
    PHONE
-========================= */
+===================================================== */
 
 @media (max-width: 600px) {
 
     header {
+        position: relative;
+
         padding: 12px;
+
+        flex-wrap: wrap;
     }
 
     header h1 {
@@ -786,6 +857,8 @@ footer {
     }
 
     .header-actions {
+        width: 100%;
+
         flex-direction: column;
 
         align-items: stretch;
@@ -802,45 +875,54 @@ footer {
         padding: 10px;
     }
 
+    .watch-layout {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 14px;
+    }
+
     /*
-       On phones the two columns become
-       stacked so the movie is still usable.
+       On phone:
+       movie first for easier watching
+       and it stays a complete 16:9 screen.
     */
 
-    .watch-layout {
-        grid-template-columns: 1fr;
-
-        gap: 15px;
-    }
-
-    .call-sidebar {
-        position: static;
-
-        display: grid;
-
-        grid-template-columns: 1fr 1fr;
-
-        gap: 10px;
-
-        order: 1;
-    }
-
-    .call-title {
-        grid-column: 1 / -1;
-
-        flex-direction: row;
-
-        align-items: center;
-    }
-
     .movie-card {
+        order: 1;
+
+        width: 100%;
+    }
+
+    .call-panel {
         order: 2;
+
+        width: 100%;
     }
 
     .movie-header {
         flex-direction: column;
 
         align-items: flex-start;
+    }
+
+    .movie-screen {
+        width: 100%;
+
+        aspect-ratio: 16 / 9;
+
+        min-height: 0;
+
+        max-height: none;
+    }
+
+    .movie-screen iframe,
+    .movie-screen video {
+        width: 100%;
+        height: 100%;
+
+        object-fit: contain;
     }
 
     .movie-url {
@@ -852,10 +934,10 @@ footer {
         width: 100%;
     }
 
-    .movie-screen {
-        aspect-ratio: 16 / 10;
+    .call-grid {
+        grid-template-columns: 1fr;
 
-        min-height: 220px;
+        gap: 12px;
     }
 
     .video-card {
@@ -876,38 +958,37 @@ footer {
     }
 
     .section-title {
-        margin-top: 35px;
-
         flex-direction: column;
 
         align-items: flex-start;
     }
 
-    .room-panel {
-        margin-top: 0;
+    .intro-content h1 {
+        font-size: 1.4rem;
     }
 
-    .extra-space {
-        height: 120px;
+    .intro-actions {
+        flex-direction: column;
+    }
+
+    .intro-actions button,
+    .intro-status {
+        width: 100%;
     }
 }
 
-/* =========================
+/* =====================================================
    SMALL PHONE
-========================= */
+===================================================== */
 
 @media (max-width: 380px) {
 
-    .call-sidebar {
-        grid-template-columns: 1fr;
-    }
-
-    .call-title {
-        grid-column: auto;
+    .page {
+        padding: 7px;
     }
 
     .movie-screen {
-        min-height: 190px;
+        aspect-ratio: 16 / 9;
     }
 
     .movie-placeholder {
@@ -917,17 +998,56 @@ footer {
     .movie-icon {
         font-size: 35px;
     }
+
+    .video-card {
+        aspect-ratio: 16 / 10;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
-     HEADER
-========================= -->
+<!-- =====================================================
+     10 SECOND INTRO
+===================================================== -->
 
-<header>
+<div class="intro-screen" id="introScreen">
+
+    <div class="intro-content">
+
+        <div class="intro-logo">
+            🎬
+        </div>
+
+        <h1>
+            Jell & James Movie
+        </h1>
+
+        <div class="intro-actions">
+
+            <button onclick="copyInviteLink()">
+                🔗 Copy Invite
+            </button>
+
+            <div
+                class="intro-status"
+                id="introStatus">
+                🟢 Room ready
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header id="mainHeader">
 
     <div class="logo-area">
 
@@ -968,119 +1088,123 @@ footer {
 
     <!-- =================================================
          MAIN WATCH AREA
-         LEFT  = VIDEO CALL
-         RIGHT = MOVIE
+         VIDEO CALL = LEFT
+         MOVIE = RIGHT
     ================================================== -->
 
-    <div class="watch-layout">
+    <section class="watch-layout">
 
-        <!-- =========================
-             LEFT: VIDEO CALL
-        ========================= -->
+        <!-- =============================================
+             VIDEO CALL LEFT
+        ============================================== -->
 
-        <aside class="call-sidebar">
+        <div class="call-panel">
 
-            <div class="call-title">
+            <div class="call-panel-title">
 
                 <h2>
                     👥 Video Call
                 </h2>
 
                 <span>
-                    Camera & mic
+                    Camera & microphone
                 </span>
 
             </div>
 
 
-            <!-- YOU -->
+            <section class="call-grid">
 
-            <div class="video-card">
+                <!-- YOU -->
 
-                <video
-                    id="person1Video"
-                    autoplay
-                    playsinline
-                    muted>
-                </video>
+                <div class="video-card">
 
-                <div
-                    class="video-placeholder"
-                    id="localPlaceholder">
+                    <video
+                        id="person1Video"
+                        autoplay
+                        playsinline
+                        muted>
+                    </video>
 
-                    <div class="person-icon">
-                        👤
+                    <div
+                        class="video-placeholder"
+                        id="localPlaceholder">
+
+                        <div class="person-icon">
+                            👤
+                        </div>
+
+                        <span>
+                            Camera not started
+                        </span>
+
                     </div>
 
-                    <span>
-                        Camera not started
-                    </span>
-
-                </div>
-
-                <div class="user-label">
-                    You
-                </div>
-
-                <div class="camera-controls">
-
-                    <button
-                        onclick="toggleCam()"
-                        title="Camera">
-
-                        📷
-
-                    </button>
-
-                    <button
-                        onclick="toggleMic()"
-                        title="Microphone">
-
-                        🎤
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- FRIEND -->
-
-            <div class="video-card">
-
-                <video
-                    id="person2Video"
-                    autoplay
-                    playsinline>
-                </video>
-
-                <div
-                    class="video-placeholder"
-                    id="remotePlaceholder">
-
-                    <div class="person-icon">
-                        👤
+                    <div class="user-label">
+                        You
                     </div>
 
-                    <span>
-                        Waiting for friend...
-                    </span>
+                    <div class="camera-controls">
+
+                        <button
+                            onclick="toggleCam()"
+                            title="Camera">
+
+                            📷
+
+                        </button>
+
+                        <button
+                            onclick="toggleMic()"
+                            title="Microphone">
+
+                            🎤
+
+                        </button>
+
+                    </div>
 
                 </div>
 
-                <div class="user-label">
-                    Friend
+
+                <!-- FRIEND -->
+
+                <div class="video-card">
+
+                    <video
+                        id="person2Video"
+                        autoplay
+                        playsinline>
+                    </video>
+
+                    <div
+                        class="video-placeholder"
+                        id="remotePlaceholder">
+
+                        <div class="person-icon">
+                            👤
+                        </div>
+
+                        <span>
+                            Waiting for friend...
+                        </span>
+
+                    </div>
+
+                    <div class="user-label">
+                        Friend
+                    </div>
+
                 </div>
 
-            </div>
+            </section>
 
-        </aside>
+        </div>
 
 
-        <!-- =========================
-             RIGHT: MOVIE
-        ========================= -->
+        <!-- =============================================
+             MOVIE RIGHT
+        ============================================== -->
 
         <section class="movie-card">
 
@@ -1140,82 +1264,83 @@ footer {
 
         </section>
 
-    </div>
+    </section>
 
 
-    <!-- =========================
+    <!-- =================================================
          ROOM
-    ========================= -->
+    ================================================== -->
 
-    <div class="section-title">
+    <section class="room-section">
 
-        <h2>
-            🔗 Watch Room
-        </h2>
+        <div class="section-title">
 
-        <span>
-            Create or join a room
-        </span>
+            <h2>
+                🔗 Watch Room
+            </h2>
 
-    </div>
-
-
-    <section class="room-panel">
-
-        <h2>
-            Room controls
-        </h2>
-
-        <p>
-            Create a room and send the invite
-            link to your friend.
-        </p>
-
-
-        <div class="room-actions">
-
-            <button onclick="createRoom()">
-
-                ✨ Create Room
-
-            </button>
-
-
-            <input
-                type="text"
-                id="joinRoomInput"
-                placeholder="Enter room ID">
-
-
-            <button
-                class="secondary"
-                onclick="joinRoomFromInput()">
-
-                Join Room
-
-            </button>
-
-        </div>
-
-
-        <div
-            class="room-info"
-            id="roomInfo">
-
-            <strong>
-                Room:
-            </strong>
-
-            <span id="roomIdDisplay">
-                No room created yet
+            <span>
+                Create or join a room
             </span>
 
         </div>
 
+
+        <section class="room-panel">
+
+            <h2>
+                Room controls
+            </h2>
+
+            <p>
+                Create a room and send the invite
+                link to your friend.
+            </p>
+
+
+            <div class="room-actions">
+
+                <button onclick="createRoom()">
+
+                    ✨ Create Room
+
+                </button>
+
+
+                <input
+                    type="text"
+                    id="joinRoomInput"
+                    placeholder="Enter room ID">
+
+
+                <button
+                    class="secondary"
+                    onclick="joinRoomFromInput()">
+
+                    Join Room
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="room-info"
+                id="roomInfo">
+
+                <strong>
+                    Room:
+                </strong>
+
+                <span id="roomIdDisplay">
+                    No room created yet
+                </span>
+
+            </div>
+
+        </section>
+
     </section>
-
-
-    <div class="extra-space"></div>
 
 
     <footer>
@@ -1227,9 +1352,9 @@ footer {
 </main>
 
 
-<!-- =========================
+<!-- =====================================================
      ROOM MODAL
-========================= -->
+===================================================== -->
 
 <div
     class="modal"
@@ -1276,6 +1401,10 @@ footer {
 
 </div>
 
+
+<!-- =====================================================
+     TOAST
+===================================================== -->
 
 <div
     class="toast"
@@ -1352,6 +1481,45 @@ const roomIdDisplay =
         "roomIdDisplay"
     );
 
+const introScreen =
+    document.getElementById(
+        "introScreen"
+    );
+
+const mainHeader =
+    document.getElementById(
+        "mainHeader"
+    );
+
+const introStatus =
+    document.getElementById(
+        "introStatus"
+    );
+
+
+/* =====================================================
+   10 SECOND INTRO
+===================================================== */
+
+function startIntro() {
+
+    setTimeout(
+        () => {
+
+            introScreen.classList.add(
+                "hide"
+            );
+
+            mainHeader.classList.add(
+                "intro-hidden"
+            );
+
+        },
+        10000
+    );
+
+}
+
 
 /* =====================================================
    START
@@ -1361,13 +1529,18 @@ window.addEventListener(
     "DOMContentLoaded",
     async () => {
 
+        startIntro();
+
+
         const params =
             new URLSearchParams(
                 window.location.search
             );
 
+
         const urlRoom =
             params.get("room");
+
 
         const urlMovie =
             params.get("movie");
@@ -1412,6 +1585,9 @@ window.addEventListener(
 
             roomStatus.textContent =
                 "Choose a room";
+
+            introStatus.textContent =
+                "🟢 Room ready";
 
         }
 
@@ -1563,6 +1739,12 @@ function initializePeer(
             : "Joining room...";
 
 
+    introStatus.textContent =
+        host
+            ? "🟡 Creating room..."
+            : "🟡 Joining room...";
+
+
     roomIdDisplay.textContent =
         id;
 
@@ -1589,6 +1771,12 @@ function initializePeer(
 
 
             roomStatus.textContent =
+                host
+                    ? "🟢 Room ready"
+                    : "🟢 Connected";
+
+
+            introStatus.textContent =
                 host
                     ? "🟢 Room ready"
                     : "🟢 Connected";
@@ -1691,6 +1879,9 @@ function initializePeer(
 
             roomStatus.textContent =
                 "Connection error";
+
+            introStatus.textContent =
+                "🔴 Connection error";
 
         }
     );
@@ -2071,9 +2262,9 @@ function loadMovie(
         "";
 
 
-    /* =========================
+    /* =================================================
        YOUTUBE
-    ========================= */
+    ================================================= */
 
     if (
         currentMovie.includes(
@@ -2136,9 +2327,9 @@ function loadMovie(
     }
 
 
-    /* =========================
+    /* =================================================
        VIMEO
-    ========================= */
+    ================================================= */
 
     else if (
         currentMovie.includes(
@@ -2166,9 +2357,9 @@ function loadMovie(
     }
 
 
-    /* =========================
+    /* =================================================
        TWITCH
-    ========================= */
+    ================================================= */
 
     else if (
         currentMovie.includes(
@@ -2198,9 +2389,9 @@ function loadMovie(
     }
 
 
-    /* =========================
+    /* =================================================
        DIRECT VIDEO
-    ========================= */
+    ================================================= */
 
     else if (
         /\.(mp4|webm|ogg)(\?.*)?$/i
@@ -2229,6 +2420,10 @@ function loadMovie(
             true;
 
 
+        video.style.objectFit =
+            "contain";
+
+
         movieContainer.appendChild(
             video
         );
@@ -2236,9 +2431,9 @@ function loadMovie(
     }
 
 
-    /* =========================
+    /* =================================================
        OTHER EMBEDDABLE WEBSITE
-    ========================= */
+    ================================================= */
 
     else {
 
@@ -2253,7 +2448,9 @@ function loadMovie(
     }
 
 
-    /* Send movie to friend */
+    /* =================================================
+       SEND MOVIE TO FRIEND
+    ================================================= */
 
     if (
         broadcast &&
@@ -2270,6 +2467,9 @@ function loadMovie(
         });
 
     }
+
+
+    updateUrl();
 
 }
 
