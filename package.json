@@ -1,7 +1,6 @@
 {
   "name": "jell-james-signaling",
   "version": "1.0.0",
-  "description": "Signaling server for Jell & James Movie",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
