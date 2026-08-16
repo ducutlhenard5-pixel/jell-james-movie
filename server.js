@@ -1,27 +1,33 @@
+// Awtomatikong mag-i-install ng ws module kapag tumakbo sa Render
+try {
+    require('ws');
+} catch (e) {
+    console.log("Installing ws module dynamically...");
+    require('child_process').execSync('npm install ws');
+}
+
+const { WebSocketServer } = require('ws');
+
+// Gagamit ng port ng Render at magbi-bind sa 0.0.0.0 para maiwasan ang Port Timeout
 const PORT = process.env.PORT || 10000;
-// Palitan ang wss initialization gamit ang host na 0.0.0.0
 const wss = new WebSocketServer({ port: PORT, host: '0.0.0.0' });
 
-
-// Listahan ng mga active rooms
 const rooms = new Map();
 
 console.log(`Signaling server ay tumatakbo sa port ${PORT}`);
 
 wss.on('connection', (ws) => {
     let currentRoom = null;
-    let userType = null; // 'host' o 'guest'
+    let userType = null;
 
     ws.on('message', (message) => {
         try {
             const data = JSON.parse(message);
 
-            // 1. KUNG MAY PAPASOK O GAGAWA NG ROOM
             if (data.type === 'join') {
                 const roomId = data.room;
                 
                 if (!rooms.has(roomId)) {
-                    // Kung wala pang room, si User A ang gagawa at magiging Host
                     rooms.set(roomId, { host: ws, guest: null });
                     currentRoom = roomId;
                     userType = 'host';
@@ -30,28 +36,22 @@ wss.on('connection', (ws) => {
                 } else {
                     const room = rooms.get(roomId);
                     if (room.guest === null) {
-                        // Kung may room pero walang kasama, si User B ang papasok bilang Guest
                         room.guest = ws;
                         currentRoom = roomId;
                         userType = 'guest';
                         ws.send(JSON.stringify({ type: 'joined', role: 'guest', room: roomId }));
-                        
-                        // Sabihan ang Host na pumasok na ang Guest para magsimula ang WebRTC
                         room.host.send(JSON.stringify({ type: 'user-connected' }));
-                        console.log(`User B pumasok sa Room ${roomId}. Pwede na mag-video call.`);
+                        console.log(`User B pumasok sa Room ${roomId}.`);
                     } else {
-                        // Limitado sa 2 tao lamang kada room (Requirement)
-                        ws.send(JSON.stringify({ type: 'full', message: 'Puno na ang room na ito. 2 tao lang ang pwede.' }));
+                        ws.send(JSON.stringify({ type: 'full', message: 'Puno na ang room.' }));
                         ws.close();
                     }
                 }
             }
 
-            // 2. IPASA ANG WEBRTC SIGNALING MESSAGES (Offer, Answer, ICE Candidates)
             if (data.type === 'offer' || data.type === 'answer' || data.type === 'candidate') {
                 if (currentRoom && rooms.has(currentRoom)) {
                     const room = rooms.get(currentRoom);
-                    // Kung galing sa host, ipasa sa guest. Kung galing sa guest, ipasa sa host.
                     const target = (userType === 'host') ? room.guest : room.host;
                     if (target) {
                         target.send(JSON.stringify(data));
@@ -60,20 +60,19 @@ wss.on('connection', (ws) => {
             }
 
         } catch (e) {
-            console.error("Error sa pagproseso ng mensahe:", e);
+            console.error("Error sa mensahe:", e);
         }
     });
 
-    // 3. KAPAG NA-DISCONNECT ANG ISANG USER
     ws.on('close', () => {
         if (currentRoom && rooms.has(currentRoom)) {
             const room = rooms.get(currentRoom);
             if (userType === 'host') {
                 if (room.guest) room.guest.send(JSON.stringify({ type: 'user-disconnected' }));
-                rooms.delete(currentRoom); // Burahin ang room kapag umalis ang host
+                rooms.delete(currentRoom);
             } else if (userType === 'guest') {
                 if (room.host) room.host.send(JSON.stringify({ type: 'user-disconnected' }));
-                room.guest = null; // Bakantehin ang slot ng guest
+                room.guest = null;
             }
             console.log(`May umalis sa Room ${currentRoom}.`);
         }
