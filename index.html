@@ -147,179 +147,80 @@ button:active {
 }
 
 /* =========================
-   MOVIE
+   WATCH LAYOUT
+   VIDEO CALL LEFT
+   MOVIE RIGHT
 ========================= */
 
-.movie-card {
+.watch-layout {
     width: 100%;
 
-    background: var(--black);
+    display: grid;
 
-    border: 3px solid var(--sage-medium);
-    border-radius: 16px;
+    grid-template-columns:
+        260px
+        minmax(0, 1fr);
 
-    overflow: hidden;
+    gap: 18px;
 
-    box-shadow: var(--shadow);
+    align-items: start;
 }
 
-.movie-header {
-    min-height: 48px;
+/* =========================
+   VIDEO CALL LEFT
+========================= */
 
-    padding: 10px 14px;
+.call-sidebar {
+    display: flex;
 
-    background: #202921;
-    color: white;
+    flex-direction: column;
+
+    gap: 18px;
+
+    position: sticky;
+
+    top: 88px;
+}
+
+.call-title {
+    padding: 0 3px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     gap: 10px;
 }
 
-.movie-title {
-    font-weight: 700;
-}
-
-.movie-subtitle {
-    color: #c8d1c7;
-    font-size: .78rem;
-}
-
-.movie-screen {
-    position: relative;
-
-    width: 100%;
-
-    aspect-ratio: 16 / 9;
-
-    min-height: 400px;
-
-    background: #000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.movie-screen iframe,
-.movie-screen video {
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-    display: block;
-    background: #000;
-}
-
-.movie-placeholder {
-    max-width: 650px;
-    padding: 30px;
-
-    text-align: center;
-    color: var(--sage-light);
-}
-
-.movie-icon {
-    font-size: 50px;
-    margin-bottom: 15px;
-}
-
-.movie-placeholder h2 {
-    margin-bottom: 10px;
-}
-
-.movie-placeholder p {
-    color: #aeb8ae;
-    line-height: 1.6;
-}
-
-/* =========================
-   MOVIE URL
-========================= */
-
-.movie-url {
-    padding: 12px;
-
-    background: #202921;
-
-    display: flex;
-    gap: 8px;
-}
-
-.movie-url input {
-    flex: 1;
-    min-width: 0;
-
-    padding: 11px 13px;
-
-    border: 1px solid #657365;
-    border-radius: 8px;
-
-    outline: none;
-
-    font-size: .9rem;
-}
-
-.movie-url input:focus {
-    border-color: var(--sage-primary);
-}
-
-.movie-url button {
-    white-space: nowrap;
-}
-
-/* =========================
-   SECTION TITLE
-========================= */
-
-.section-title {
-    margin-top: 45px;
-    margin-bottom: 15px;
-
-    padding: 0 3px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-}
-
-.section-title h2 {
+.call-title h2 {
     color: var(--sage-dark);
-    font-size: 1.2rem;
+
+    font-size: 1.05rem;
 }
 
-.section-title span {
+.call-title span {
     color: #6c776e;
-    font-size: .8rem;
+
+    font-size: .72rem;
 }
 
 /* =========================
-   VIDEO CALL
+   VIDEO CARDS
 ========================= */
-
-.call-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-}
 
 .video-card {
     position: relative;
 
-    min-width: 0;
+    width: 100%;
 
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 10;
 
     background: #171c18;
 
     border: 3px solid var(--sage-primary);
+
     border-radius: 14px;
 
     overflow: hidden;
@@ -337,17 +238,18 @@ button:active {
 
     background: #111;
 
-    /* NOT MIRRORED */
     transform: scaleX(1);
 }
 
 .video-placeholder {
     position: absolute;
+
     inset: 0;
 
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     flex-direction: column;
@@ -385,6 +287,7 @@ button:active {
     color: white;
 
     font-size: .75rem;
+
     font-weight: 600;
 
     z-index: 5;
@@ -397,6 +300,7 @@ button:active {
     bottom: 10px;
 
     display: flex;
+
     gap: 6px;
 
     z-index: 5;
@@ -409,6 +313,7 @@ button:active {
     padding: 0;
 
     display: grid;
+
     place-items: center;
 
     background: rgba(0,0,0,.65);
@@ -421,17 +326,186 @@ button:active {
 }
 
 /* =========================
+   MOVIE
+========================= */
+
+.movie-card {
+    width: 100%;
+
+    background: var(--black);
+
+    border: 3px solid var(--sage-medium);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow);
+}
+
+.movie-header {
+    min-height: 48px;
+
+    padding: 10px 14px;
+
+    background: #202921;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.movie-title {
+    font-weight: 700;
+}
+
+.movie-subtitle {
+    color: #c8d1c7;
+
+    font-size: .78rem;
+}
+
+.movie-screen {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    min-height: 400px;
+
+    background: #000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.movie-screen iframe,
+.movie-screen video {
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+
+    display: block;
+
+    background: #000;
+}
+
+.movie-placeholder {
+    max-width: 650px;
+
+    padding: 30px;
+
+    text-align: center;
+
+    color: var(--sage-light);
+}
+
+.movie-icon {
+    font-size: 50px;
+
+    margin-bottom: 15px;
+}
+
+.movie-placeholder h2 {
+    margin-bottom: 10px;
+}
+
+.movie-placeholder p {
+    color: #aeb8ae;
+
+    line-height: 1.6;
+}
+
+/* =========================
+   MOVIE URL
+========================= */
+
+.movie-url {
+    padding: 12px;
+
+    background: #202921;
+
+    display: flex;
+
+    gap: 8px;
+}
+
+.movie-url input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 11px 13px;
+
+    border: 1px solid #657365;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: .9rem;
+}
+
+.movie-url input:focus {
+    border-color: var(--sage-primary);
+}
+
+.movie-url button {
+    white-space: nowrap;
+}
+
+/* =========================
    ROOM
 ========================= */
 
-.room-panel {
+.section-title {
     margin-top: 45px;
+
+    margin-bottom: 15px;
+
+    padding: 0 3px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.section-title h2 {
+    color: var(--sage-dark);
+
+    font-size: 1.2rem;
+}
+
+.section-title span {
+    color: #6c776e;
+
+    font-size: .8rem;
+}
+
+.room-panel {
+    margin-top: 0;
 
     padding: 25px;
 
     background: white;
 
     border: 2px solid var(--sage-light);
+
     border-radius: 14px;
 
     box-shadow: var(--shadow);
@@ -469,6 +543,7 @@ button:active {
     padding: 10px 12px;
 
     border: 1px solid var(--sage-medium);
+
     border-radius: 8px;
 
     outline: none;
@@ -496,8 +571,6 @@ button:active {
 
 /* =========================
    EXTRA SPACE
-   Makes page comfortably
-   scrollable
 ========================= */
 
 .extra-space {
@@ -524,6 +597,7 @@ footer {
 
 .modal {
     position: fixed;
+
     inset: 0;
 
     z-index: 1000;
@@ -533,6 +607,7 @@ footer {
     display: flex;
 
     align-items: center;
+
     justify-content: center;
 
     background: rgba(20,30,22,.72);
@@ -594,6 +669,7 @@ footer {
     position: fixed;
 
     left: 50%;
+
     bottom: 25px;
 
     transform: translate(-50%, 20px);
@@ -601,6 +677,7 @@ footer {
     padding: 11px 16px;
 
     background: var(--sage-dark);
+
     color: white;
 
     border-radius: 9px;
@@ -623,7 +700,7 @@ footer {
 }
 
 /* =========================
-   DESKTOP
+   LARGE DESKTOP
 ========================= */
 
 @media (min-width: 1100px) {
@@ -632,13 +709,20 @@ footer {
         padding: 30px;
     }
 
+    .watch-layout {
+        grid-template-columns:
+            280px
+            minmax(0, 1fr);
+
+        gap: 22px;
+    }
+
     .movie-screen {
         min-height: 550px;
     }
 
-    .call-grid {
-        grid-template-columns:
-            repeat(2, minmax(350px, 1fr));
+    .video-card {
+        aspect-ratio: 16 / 10;
     }
 }
 
@@ -664,9 +748,22 @@ footer {
         padding: 15px;
     }
 
+    .watch-layout {
+        grid-template-columns: 210px minmax(0, 1fr);
+
+        gap: 12px;
+    }
+
     .movie-screen {
         min-height: 280px;
     }
+
+    .call-title {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
 }
 
 /* =========================
@@ -690,12 +787,14 @@ footer {
 
     .header-actions {
         flex-direction: column;
+
         align-items: stretch;
     }
 
     .header-actions button,
     .status {
         width: 100%;
+
         text-align: center;
     }
 
@@ -703,8 +802,44 @@ footer {
         padding: 10px;
     }
 
+    /*
+       On phones the two columns become
+       stacked so the movie is still usable.
+    */
+
+    .watch-layout {
+        grid-template-columns: 1fr;
+
+        gap: 15px;
+    }
+
+    .call-sidebar {
+        position: static;
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+
+        order: 1;
+    }
+
+    .call-title {
+        grid-column: 1 / -1;
+
+        flex-direction: row;
+
+        align-items: center;
+    }
+
+    .movie-card {
+        order: 2;
+    }
+
     .movie-header {
         flex-direction: column;
+
         align-items: flex-start;
     }
 
@@ -719,11 +854,8 @@ footer {
 
     .movie-screen {
         aspect-ratio: 16 / 10;
-        min-height: 220px;
-    }
 
-    .call-grid {
-        grid-template-columns: 1fr;
+        min-height: 220px;
     }
 
     .video-card {
@@ -747,11 +879,12 @@ footer {
         margin-top: 35px;
 
         flex-direction: column;
+
         align-items: flex-start;
     }
 
     .room-panel {
-        margin-top: 35px;
+        margin-top: 0;
     }
 
     .extra-space {
@@ -764,6 +897,14 @@ footer {
 ========================= */
 
 @media (max-width: 380px) {
+
+    .call-sidebar {
+        grid-template-columns: 1fr;
+    }
+
+    .call-title {
+        grid-column: auto;
+    }
 
     .movie-screen {
         min-height: 190px;
@@ -825,171 +966,181 @@ footer {
 
 <main class="page">
 
-    <!-- =========================
-         MOVIE
-    ========================= -->
+    <!-- =================================================
+         MAIN WATCH AREA
+         LEFT  = VIDEO CALL
+         RIGHT = MOVIE
+    ================================================== -->
 
-    <section class="movie-card">
+    <div class="watch-layout">
 
-        <div class="movie-header">
+        <!-- =========================
+             LEFT: VIDEO CALL
+        ========================= -->
 
-            <div class="movie-title">
-                🎥 Watch Together
-            </div>
+        <aside class="call-sidebar">
 
-            <div class="movie-subtitle">
-                Share the same room with your friend
-            </div>
-
-        </div>
-
-
-        <div
-            class="movie-screen"
-            id="movieContainer">
-
-            <div class="movie-placeholder">
-
-                <div class="movie-icon">
-                    🎬
-                </div>
+            <div class="call-title">
 
                 <h2>
-                    No movie loaded
+                    👥 Video Call
                 </h2>
 
-                <p>
-                    Paste a YouTube, Vimeo, Twitch,
-                    direct MP4, or embeddable video
-                    link below.
-                </p>
+                <span>
+                    Camera & mic
+                </span>
 
             </div>
 
-        </div>
+
+            <!-- YOU -->
+
+            <div class="video-card">
+
+                <video
+                    id="person1Video"
+                    autoplay
+                    playsinline
+                    muted>
+                </video>
+
+                <div
+                    class="video-placeholder"
+                    id="localPlaceholder">
+
+                    <div class="person-icon">
+                        👤
+                    </div>
+
+                    <span>
+                        Camera not started
+                    </span>
+
+                </div>
+
+                <div class="user-label">
+                    You
+                </div>
+
+                <div class="camera-controls">
+
+                    <button
+                        onclick="toggleCam()"
+                        title="Camera">
+
+                        📷
+
+                    </button>
+
+                    <button
+                        onclick="toggleMic()"
+                        title="Microphone">
+
+                        🎤
+
+                    </button>
+
+                </div>
+
+            </div>
 
 
-        <div class="movie-url">
+            <!-- FRIEND -->
 
-            <input
-                type="text"
-                id="movieUrlInput"
-                placeholder="Paste movie or video link here...">
+            <div class="video-card">
 
-            <button
-                onclick="loadMovieFromInput()">
+                <video
+                    id="person2Video"
+                    autoplay
+                    playsinline>
+                </video>
 
-                ▶ Play Movie
+                <div
+                    class="video-placeholder"
+                    id="remotePlaceholder">
 
-            </button>
+                    <div class="person-icon">
+                        👤
+                    </div>
 
-        </div>
+                    <span>
+                        Waiting for friend...
+                    </span>
 
-    </section>
+                </div>
+
+                <div class="user-label">
+                    Friend
+                </div>
+
+            </div>
+
+        </aside>
 
 
-    <!-- =========================
-         VIDEO CALL
-    ========================= -->
+        <!-- =========================
+             RIGHT: MOVIE
+        ========================= -->
 
-    <div class="section-title">
+        <section class="movie-card">
 
-        <h2>
-            👥 Video Call
-        </h2>
+            <div class="movie-header">
 
-        <span>
-            Camera and microphone
-        </span>
+                <div class="movie-title">
+                    🎥 Watch Together
+                </div>
+
+                <div class="movie-subtitle">
+                    Share the same room with your friend
+                </div>
+
+            </div>
+
+
+            <div
+                class="movie-screen"
+                id="movieContainer">
+
+                <div class="movie-placeholder">
+
+                    <div class="movie-icon">
+                        🎬
+                    </div>
+
+                    <h2>
+                        No movie loaded
+                    </h2>
+
+                    <p>
+                        Paste a YouTube, Vimeo, Twitch,
+                        direct MP4, or embeddable video
+                        link below.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="movie-url">
+
+                <input
+                    type="text"
+                    id="movieUrlInput"
+                    placeholder="Paste movie or video link here...">
+
+                <button
+                    onclick="loadMovieFromInput()">
+
+                    ▶ Play Movie
+
+                </button>
+
+            </div>
+
+        </section>
 
     </div>
-
-
-    <section class="call-grid">
-
-        <!-- YOU -->
-
-        <div class="video-card">
-
-            <video
-                id="person1Video"
-                autoplay
-                playsinline
-                muted>
-            </video>
-
-            <div
-                class="video-placeholder"
-                id="localPlaceholder">
-
-                <div class="person-icon">
-                    👤
-                </div>
-
-                <span>
-                    Camera not started
-                </span>
-
-            </div>
-
-            <div class="user-label">
-                You
-            </div>
-
-            <div class="camera-controls">
-
-                <button
-                    onclick="toggleCam()"
-                    title="Camera">
-
-                    📷
-
-                </button>
-
-                <button
-                    onclick="toggleMic()"
-                    title="Microphone">
-
-                    🎤
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- FRIEND -->
-
-        <div class="video-card">
-
-            <video
-                id="person2Video"
-                autoplay
-                playsinline>
-            </video>
-
-            <div
-                class="video-placeholder"
-                id="remotePlaceholder">
-
-                <div class="person-icon">
-                    👤
-                </div>
-
-                <span>
-                    Waiting for friend...
-                </span>
-
-            </div>
-
-            <div class="user-label">
-                Friend
-            </div>
-
-        </div>
-
-    </section>
 
 
     <!-- =========================
@@ -1063,8 +1214,6 @@ footer {
 
     </section>
 
-
-    <!-- EXTRA SCROLL SPACE -->
 
     <div class="extra-space"></div>
 
@@ -1765,8 +1914,6 @@ async function startCamera() {
         localVideo.srcObject =
             localStream;
 
-
-        /* Prevent mirror */
 
         localVideo.style.transform =
             "scaleX(1)";
