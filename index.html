@@ -3,2667 +3,917 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Jell & James Movie</title>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
-:root {
-    --sage-dark: #4A5D4E;
-    --sage-primary: #87986A;
-    --sage-medium: #A3B18A;
-    --sage-light: #DAD7CD;
-    --sage-bg: #F4F6F0;
-    --white: #ffffff;
-    --text: #263128;
-    --black: #080a08;
-    --danger: #b85c5c;
-    --shadow: 0 8px 25px rgba(45,55,46,.12);
-}
-
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-html,
-body {
-    min-height: 100%;
+  box-sizing: border-box;
 }
 
 body {
-    min-height: 100vh;
-    background: var(--sage-bg);
-    color: var(--text);
-    overflow-x: hidden;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef5ee;
+  color: #24352a;
+  overflow-x: hidden;
 }
 
-/* =========================
-   HEADER
-========================= */
-
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-
-    height: 68px;
-
-    z-index: 100;
-
-    padding: 12px 22px;
-
-    background: var(--sage-dark);
-    color: white;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    box-shadow: 0 3px 15px rgba(0,0,0,.18);
-
-    transition:
-        opacity .5s ease,
-        transform .5s ease;
+button,
+input {
+  font: inherit;
 }
 
-/* Header disappears after 10 seconds */
-header.hidden {
-    opacity: 0;
-    transform: translateY(-100%);
-    pointer-events: none;
+.header {
+  height: 64px;
+  background: #dcebdc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-bottom: 1px solid #c9dcc9;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
-.logo-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.logo {
+  font-size: 20px;
+  font-weight: 700;
 }
 
-.logo-icon {
-    width: 40px;
-    height: 40px;
-
-    display: grid;
-    place-items: center;
-
-    background: var(--sage-primary);
-    border-radius: 11px;
-
-    font-size: 20px;
+.room-status {
+  font-size: 13px;
+  color: #55705b;
 }
 
-header h1 {
-    font-size: 1.35rem;
-    white-space: nowrap;
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 14px;
+  padding: 14px;
+  max-width: 1500px;
+  margin: auto;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.movie-section {
+  min-width: 0;
 }
-
-button {
-    border: none;
-    border-radius: 8px;
-
-    padding: 10px 14px;
-
-    background: var(--sage-primary);
-    color: white;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        transform .15s ease,
-        background .2s ease;
-}
-
-button:hover {
-    background: #718258;
-    transform: translateY(-1px);
-}
-
-button:active {
-    transform: translateY(0);
-}
-
-.secondary {
-    background: var(--sage-medium);
-}
-
-.status {
-    padding: 7px 11px;
-
-    background: rgba(255,255,255,.12);
-
-    border-radius: 20px;
-
-    font-size: .78rem;
-
-    white-space: nowrap;
-}
-
-/* =========================
-   PAGE
-========================= */
-
-.page {
-    width: 100%;
-    max-width: 1600px;
-
-    margin: 0 auto;
-
-    padding: 90px 25px 25px;
-}
-
-/* =========================
-   MAIN WATCH LAYOUT
-   MOVIE LEFT
-   VIDEO CALL RIGHT
-========================= */
-
-.watch-layout {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(280px, 360px);
-
-    gap: 18px;
-
-    align-items: start;
-}
-
-/* =========================
-   MOVIE
-========================= */
 
 .movie-card {
-    width: 100%;
-
-    background: var(--black);
-
-    border: 3px solid var(--sage-medium);
-
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    box-shadow: var(--shadow);
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  position: relative;
 }
 
-.movie-header {
-    min-height: 48px;
-
-    padding: 10px 14px;
-
-    background: #202921;
-
-    color: white;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
-}
-
-.movie-title {
-    font-weight: 700;
-}
-
-.movie-subtitle {
-    color: #c8d1c7;
-
-    font-size: .78rem;
-}
-
-.movie-screen {
-    position: relative;
-
-    width: 100%;
-
-    /*
-       Keeps movie proportional.
-       Prevents the screen from being
-       cut on phones.
-    */
-    aspect-ratio: 16 / 9;
-
-    max-height: 68vh;
-
-    background: #000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-}
-
-.movie-screen iframe,
-.movie-screen video {
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-
-    display: block;
-
-    background: #000;
+.movie-card iframe,
+.movie-card video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
 }
 
 .movie-placeholder {
-    max-width: 650px;
-
-    padding: 30px;
-
-    text-align: center;
-
-    color: var(--sage-light);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  text-align: center;
+  padding: 30px;
 }
 
-.movie-icon {
-    font-size: 50px;
-
-    margin-bottom: 15px;
+.movie-info {
+  background: white;
+  border-radius: 14px;
+  margin-top: 12px;
+  padding: 16px;
 }
 
-.movie-placeholder h2 {
-    margin-bottom: 10px;
+.movie-title {
+  font-size: 21px;
+  font-weight: 700;
 }
 
-.movie-placeholder p {
-    color: #aeb8ae;
-
-    line-height: 1.6;
+.movie-input {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-/* =========================
-   MOVIE URL
-========================= */
-
-.movie-url {
-    padding: 12px;
-
-    background: #202921;
-
-    display: flex;
-
-    gap: 8px;
+.movie-input input {
+  flex: 1;
+  border: 1px solid #ccd8cc;
+  border-radius: 10px;
+  padding: 11px;
+  outline: none;
 }
 
-.movie-url input {
-    flex: 1;
-
-    min-width: 0;
-
-    padding: 11px 13px;
-
-    border: 1px solid #657365;
-
-    border-radius: 8px;
-
-    outline: none;
-
-    font-size: .9rem;
+.primary {
+  border: 0;
+  background: #739b78;
+  color: white;
+  border-radius: 10px;
+  padding: 11px 15px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.movie-url input:focus {
-    border-color: var(--sage-primary);
+.primary:hover {
+  background: #638a69;
 }
 
-.movie-url button {
-    white-space: nowrap;
+.side {
+  background: white;
+  border-radius: 16px;
+  padding: 12px;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* =========================
-   VIDEO CALL
-========================= */
-
-.call-panel {
-    width: 100%;
+.side-title {
+  font-weight: 700;
+  padding: 4px 4px 12px;
 }
 
-.call-title {
-    margin-bottom: 12px;
-
-    padding: 0 3px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  flex: 1;
+  align-content: start;
 }
 
-.call-title h2 {
-    color: var(--sage-dark);
-
-    font-size: 1.1rem;
+.video-tile {
+  background: #18221b;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  position: relative;
 }
 
-.call-title span {
-    color: #6c776e;
-
-    font-size: .75rem;
+.video-tile video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.call-grid {
-    display: grid;
+.video-name {
+  position: absolute;
+  left: 8px;
+  bottom: 7px;
+  background: rgba(0,0,0,.6);
+  color: white;
+  padding: 4px 7px;
+  border-radius: 6px;
+  font-size: 12px;
+}
 
+.video-off {
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  background: #39483c;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  padding-top: 12px;
+  flex-wrap: wrap;
+}
+
+.control {
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: #edf2ed;
+  color: #26352a;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control:hover {
+  background: #dce8dc;
+}
+
+.control.off {
+  background: #c96f6f;
+  color: white;
+}
+
+.control.end {
+  background: #bd5555;
+  color: white;
+  width: 58px;
+  border-radius: 23px;
+}
+
+.icon {
+  width: 21px;
+  height: 21px;
+}
+
+.invite-box {
+  background: #f4f8f4;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.invite-label {
+  font-size: 12px;
+  color: #647366;
+  margin-bottom: 7px;
+}
+
+.invite-row {
+  display: flex;
+  gap: 7px;
+}
+
+.invite-row input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid #ccd8cc;
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 12px;
+}
+
+.small-button {
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: #739b78;
+  color: white;
+  cursor: pointer;
+}
+
+.people {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #617064;
+}
+
+.join-box {
+  padding: 30px 14px;
+  text-align: center;
+}
+
+.join-box input {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #ccd8cc;
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.status {
+  font-size: 12px;
+  color: #68756b;
+  margin-top: 8px;
+}
+
+@media (max-width: 850px) {
+  .main {
     grid-template-columns: 1fr;
+  }
 
-    gap: 12px;
+  .side {
+    min-height: 420px;
+  }
 }
 
-.video-card {
-    position: relative;
-
-    width: 100%;
-
-    aspect-ratio: 16 / 10;
-
-    background: #171c18;
-
-    border: 3px solid var(--sage-primary);
-
-    border-radius: 14px;
-
-    overflow: hidden;
-
-    box-shadow: var(--shadow);
-}
-
-.video-card video {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    display: block;
-
-    background: #111;
-
-    /*
-       MIRRORED
-       Your movement stays natural:
-       when you move left, the screen
-       shows you moving left.
-    */
-    transform: scaleX(-1);
-}
-
-.video-placeholder {
-    position: absolute;
-
-    inset: 0;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    color: var(--sage-light);
-
-    background:
-        radial-gradient(
-            circle at center,
-            #2a332b 0,
-            #151a16 65%
-        );
-
-    text-align: center;
-}
-
-.person-icon {
-    font-size: 38px;
-}
-
-.user-label {
-    position: absolute;
-
-    left: 10px;
-    bottom: 10px;
-
-    padding: 5px 9px;
-
-    border-radius: 6px;
-
-    background: rgba(0,0,0,.65);
-
-    color: white;
-
-    font-size: .75rem;
-
-    font-weight: 600;
-
-    z-index: 5;
-}
-
-.camera-controls {
-    position: absolute;
-
-    right: 10px;
-    bottom: 10px;
-
-    display: flex;
-
-    gap: 6px;
-
-    z-index: 5;
-}
-
-.camera-controls button {
-    width: 40px;
-    height: 38px;
-
-    padding: 0;
-
-    display: grid;
-    place-items: center;
-
-    background: rgba(0,0,0,.65);
-
-    font-size: 15px;
-}
-
-.camera-controls button:hover {
-    background: var(--sage-dark);
-}
-
-/* =========================
-   ROOM
-========================= */
-
-.room-panel {
-    margin-top: 18px;
-
-    padding: 18px;
-
-    background: white;
-
-    border: 2px solid var(--sage-light);
-
-    border-radius: 14px;
-
-    box-shadow: var(--shadow);
-}
-
-.room-panel h2 {
-    color: var(--sage-dark);
-
-    font-size: 1rem;
-
-    margin-bottom: 7px;
-}
-
-.room-panel p {
-    color: #687269;
-
-    font-size: .82rem;
-
-    margin-bottom: 15px;
-}
-
-.room-actions {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 8px;
-}
-
-.room-actions input {
-    flex: 1;
-
-    min-width: 180px;
-
-    padding: 10px 12px;
-
-    border: 1px solid var(--sage-medium);
-
-    border-radius: 8px;
-
-    outline: none;
-}
-
-.room-info {
-    margin-top: 14px;
-
-    padding: 11px;
-
-    background: var(--sage-bg);
-
-    border-radius: 8px;
-
-    font-size: .78rem;
-
-    word-break: break-all;
-
-    color: #5d675e;
-}
-
-.room-info strong {
-    color: var(--sage-dark);
-}
-
-/* =========================
-   MODAL
-========================= */
-
-.modal {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 1000;
-
-    padding: 20px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background: rgba(20,30,22,.72);
-}
-
-.modal-box {
-    width: min(480px, 100%);
-
-    padding: 25px;
-
-    background: white;
-
-    border-radius: 16px;
-
-    box-shadow: 0 25px 70px rgba(0,0,0,.3);
-}
-
-.modal-box h2 {
-    color: var(--sage-dark);
-
-    margin-bottom: 8px;
-}
-
-.modal-box p {
-    color: #687269;
-
-    line-height: 1.5;
-
-    margin-bottom: 18px;
-}
-
-.modal-box input {
-    width: 100%;
-
-    padding: 11px 12px;
-
-    border: 1px solid var(--sage-medium);
-
-    border-radius: 8px;
-
-    outline: none;
-
-    margin-bottom: 10px;
-}
-
-.modal-actions {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 8px;
-}
-
-/* =========================
-   TOAST
-========================= */
-
-.toast {
-    position: fixed;
-
-    left: 50%;
-    bottom: 25px;
-
-    transform: translate(-50%, 20px);
-
-    padding: 11px 16px;
-
-    background: var(--sage-dark);
-
-    color: white;
-
-    border-radius: 9px;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition: .25s;
-
-    z-index: 2000;
-
-    box-shadow: 0 8px 25px rgba(0,0,0,.2);
-}
-
-.toast.show {
-    opacity: 1;
-
-    transform: translate(-50%, 0);
-}
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
-    padding: 20px 5px 35px;
-
-    text-align: center;
-
-    color: #7a847b;
-
-    font-size: .78rem;
-}
-
-/* =========================
-   TABLET
-========================= */
-
-@media (max-width: 900px) {
-
-    .watch-layout {
-        grid-template-columns:
-            minmax(0, 1fr)
-            minmax(240px, 300px);
-
-        gap: 12px;
-    }
-
-    .movie-screen {
-        max-height: 60vh;
-    }
-
-    .video-card {
-        aspect-ratio: 16 / 11;
-    }
-}
-
-/* =========================
-   PHONE
-========================= */
-
-@media (max-width: 700px) {
-
-    header {
-        height: auto;
-
-        min-height: 62px;
-
-        padding: 10px 12px;
-    }
-
-    header h1 {
-        font-size: 1.05rem;
-    }
-
-    .logo-icon {
-        width: 34px;
-        height: 34px;
-    }
-
-    .header-actions {
-        gap: 5px;
-    }
-
-    .header-actions button {
-        padding: 8px 9px;
-
-        font-size: .72rem;
-    }
-
-    .status {
-        padding: 6px 8px;
-
-        font-size: .68rem;
-    }
-
-    .page {
-        padding:
-            78px
-            10px
-            20px;
-    }
-
-    /*
-       IMPORTANT:
-       Still keeps Movie LEFT
-       and Video Call RIGHT.
-       
-       On small phones the video-call
-       column becomes narrower instead
-       of moving underneath.
-    */
-
-    .watch-layout {
-        grid-template-columns:
-            minmax(0, 1fr)
-            125px;
-
-        gap: 8px;
-
-        align-items: start;
-    }
-
-    .movie-card {
-        border-width: 2px;
-
-        border-radius: 11px;
-    }
-
-    .movie-header {
-        min-height: 38px;
-
-        padding: 7px 9px;
-    }
-
-    .movie-title {
-        font-size: .78rem;
-    }
-
-    .movie-subtitle {
-        display: none;
-    }
-
-    .movie-screen {
-        aspect-ratio: 16 / 10;
-
-        max-height: none;
-
-        min-height: 0;
-    }
-
-    .movie-url {
-        padding: 7px;
-
-        flex-direction: column;
-    }
-
-    .movie-url input,
-    .movie-url button {
-        width: 100%;
-
-        padding: 9px;
-    }
-
-    .call-title {
-        margin-bottom: 8px;
-    }
-
-    .call-title h2 {
-        font-size: .82rem;
-    }
-
-    .call-title span {
-        display: none;
-    }
-
-    .call-grid {
-        grid-template-columns: 1fr;
-
-        gap: 8px;
-    }
-
-    .video-card {
-        aspect-ratio: 9 / 11;
-
-        border-width: 2px;
-
-        border-radius: 10px;
-    }
-
-    .person-icon {
-        font-size: 27px;
-    }
-
-    .video-placeholder span {
-        font-size: .65rem;
-
-        padding: 0 5px;
-    }
-
-    .user-label {
-        left: 6px;
-        bottom: 6px;
-
-        padding: 4px 6px;
-
-        font-size: .62rem;
-    }
-
-    .camera-controls {
-        right: 5px;
-        bottom: 5px;
-
-        gap: 4px;
-    }
-
-    .camera-controls button {
-        width: 30px;
-        height: 30px;
-
-        font-size: 12px;
-    }
-
-    .room-panel {
-        margin-top: 12px;
-
-        padding: 14px;
-    }
-
-    .room-actions {
-        flex-direction: column;
-    }
-
-    .room-actions input,
-    .room-actions button {
-        width: 100%;
-    }
-
-    .modal-actions {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
-@media (max-width: 380px) {
-
-    .watch-layout {
-        grid-template-columns:
-            minmax(0, 1fr)
-            108px;
-
-        gap: 6px;
-    }
-
-    .movie-screen {
-        aspect-ratio: 16 / 10;
-    }
-
-    .movie-placeholder {
-        padding: 12px;
-    }
-
-    .movie-icon {
-        font-size: 30px;
-    }
-
-    .movie-placeholder h2 {
-        font-size: .9rem;
-    }
-
-    .movie-placeholder p {
-        font-size: .68rem;
-    }
-
-    .video-card {
-        aspect-ratio: 9 / 12;
-    }
+@media (max-width: 500px) {
+  .header {
+    padding: 0 10px;
+  }
+
+  .main {
+    padding: 8px;
+  }
+
+  .movie-card {
+    border-radius: 10px;
+  }
+
+  .side {
+    border-radius: 12px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<header id="topHeader">
-
-    <div class="logo-area">
-
-        <div class="logo-icon">
-            🎬
-        </div>
-
-        <h1>
-            Jell & James Movie
-        </h1>
-
-    </div>
-
-    <div class="header-actions">
-
-        <button
-            class="secondary"
-            onclick="copyInviteLink()">
-
-            🔗 Copy Invite
-
-        </button>
-
-        <div
-            class="status"
-            id="roomStatus">
-
-            Choose a room
-
-        </div>
-
-    </div>
-
+<header class="header">
+  <div class="logo">Jell & James Movie</div>
+  <div class="room-status" id="roomStatus">Connecting...</div>
 </header>
 
+<main class="main">
 
-<main class="page">
+  <section class="movie-section">
 
-    <!--
-        MOVIE = LEFT
-        VIDEO CALL = RIGHT
-    -->
+    <div class="movie-card" id="movieContainer">
+      <div class="movie-placeholder">
+        Paste a movie/video URL below to start watching.
+      </div>
+    </div>
 
-    <div class="watch-layout">
+    <div class="movie-info">
+      <div class="movie-title">Watch Together</div>
 
-        <!-- =====================
-             MOVIE LEFT
-        ====================== -->
+      <div class="movie-input">
+        <input
+          id="movieUrl"
+          placeholder="Paste YouTube, Vimeo or video URL..."
+        >
+        <button class="primary" onclick="loadMovie()">Play</button>
+      </div>
+    </div>
 
-        <section class="movie-card">
+  </section>
 
-            <div class="movie-header">
+  <aside class="side">
 
-                <div class="movie-title">
-                    🎥 Watch Together
-                </div>
+    <div class="side-title">Video Call</div>
 
-                <div class="movie-subtitle">
-                    Share the same room with your friend
-                </div>
+    <div class="video-grid" id="videoGrid">
 
-            </div>
-
-            <div
-                class="movie-screen"
-                id="movieContainer">
-
-                <div class="movie-placeholder">
-
-                    <div class="movie-icon">
-                        🎬
-                    </div>
-
-                    <h2>
-                        No movie loaded
-                    </h2>
-
-                    <p>
-                        Paste a YouTube, Vimeo, Twitch,
-                        direct MP4, or embeddable video
-                        link below.
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="movie-url">
-
-                <input
-                    type="text"
-                    id="movieUrlInput"
-                    placeholder="Paste movie or video link here...">
-
-                <button
-                    onclick="loadMovieFromInput()">
-
-                    ▶ Play Movie
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================
-             VIDEO CALL RIGHT
-        ====================== -->
-
-        <section class="call-panel">
-
-            <div class="call-title">
-
-                <h2>
-                    👥 Video Call
-                </h2>
-
-                <span>
-                    Camera & microphone
-                </span>
-
-            </div>
-
-            <div class="call-grid">
-
-                <!-- YOU -->
-
-                <div class="video-card">
-
-                    <video
-                        id="person1Video"
-                        autoplay
-                        playsinline
-                        muted>
-                    </video>
-
-                    <div
-                        class="video-placeholder"
-                        id="localPlaceholder">
-
-                        <div class="person-icon">
-                            👤
-                        </div>
-
-                        <span>
-                            Camera not started
-                        </span>
-
-                    </div>
-
-                    <div class="user-label">
-                        You
-                    </div>
-
-                    <div class="camera-controls">
-
-                        <button
-                            onclick="toggleCam()"
-                            title="Camera">
-
-                            📷
-
-                        </button>
-
-                        <button
-                            onclick="toggleMic()"
-                            title="Microphone">
-
-                            🎤
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- FRIEND -->
-
-                <div class="video-card">
-
-                    <video
-                        id="person2Video"
-                        autoplay
-                        playsinline>
-                    </video>
-
-                    <div
-                        class="video-placeholder"
-                        id="remotePlaceholder">
-
-                        <div class="person-icon">
-                            👤
-                        </div>
-
-                        <span>
-                            Waiting for friend...
-                        </span>
-
-                    </div>
-
-                    <div class="user-label">
-                        Friend
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
+      <div class="video-tile" id="localTile">
+        <video id="localVideo" autoplay muted playsinline></video>
+        <div class="video-off" id="localOff">Camera Off</div>
+        <div class="video-name">You</div>
+      </div>
 
     </div>
 
+    <div class="controls">
 
-    <!-- =========================
-         ROOM
-    ========================= -->
+      <button
+        class="control"
+        id="micButton"
+        title="Mute"
+        onclick="toggleMic()"
+      >
+        <svg class="icon" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <rect x="9" y="2" width="6" height="12" rx="3"/>
+          <path d="M5 10a7 7 0 0 0 14 0"/>
+          <path d="M12 17v5"/>
+          <path d="M8 22h8"/>
+        </svg>
+      </button>
 
-    <section class="room-panel">
+      <button
+        class="control"
+        id="cameraButton"
+        title="Turn camera off"
+        onclick="toggleCamera()"
+      >
+        <svg class="icon" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M15 10l4-3v10l-4-3"/>
+          <rect x="3" y="6" width="12" height="12" rx="2"/>
+        </svg>
+      </button>
 
-        <h2>
-            🔗 Watch Room
-        </h2>
+      <button
+        class="control end"
+        title="Leave room"
+        onclick="leaveRoom()"
+      >
+        <svg class="icon" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M5 9c4-2 10-2 14 0"/>
+          <path d="M7 13l-2 3"/>
+          <path d="M17 13l2 3"/>
+        </svg>
+      </button>
 
-        <p>
-            Create a room and send the invitation
-            link to your friend.
-        </p>
+    </div>
 
-        <div class="room-actions">
+    <div class="invite-box">
+      <div class="invite-label">Room invitation</div>
 
-            <button onclick="createRoom()">
+      <div class="invite-row">
+        <input id="inviteLink" readonly>
+        <button class="small-button" onclick="copyInvite()">
+          Copy
+        </button>
+      </div>
 
-                ✨ Create Room
+      <div class="status" id="connectionStatus">
+        Starting room...
+      </div>
+    </div>
 
-            </button>
+    <div class="people" id="peopleCount">
+      1 person in room
+    </div>
 
-            <input
-                type="text"
-                id="joinRoomInput"
-                placeholder="Enter room ID">
-
-            <button
-                class="secondary"
-                onclick="joinRoomFromInput()">
-
-                Join Room
-
-            </button>
-
-        </div>
-
-        <div
-            class="room-info"
-            id="roomInfo">
-
-            <strong>
-                Room:
-            </strong>
-
-            <span id="roomIdDisplay">
-                No room created yet
-            </span>
-
-        </div>
-
-    </section>
-
-
-    <footer>
-        Jell & James Movie • Watch together
-    </footer>
+  </aside>
 
 </main>
 
-
-<!-- =========================
-     ROOM MODAL
-========================= -->
-
-<div
-    class="modal"
-    id="roomModal">
-
-    <div class="modal-box">
-
-        <h2>
-            🎬 Welcome to Jell & James Movie
-        </h2>
-
-        <p>
-            Create a private watch room or enter
-            a room ID to join your friend.
-        </p>
-
-        <input
-            type="text"
-            id="modalJoinRoomInput"
-            placeholder="Enter room ID">
-
-        <div class="modal-actions">
-
-            <button onclick="createRoom()">
-
-                Create Room
-
-            </button>
-
-            <button
-                class="secondary"
-                onclick="joinFromModal()">
-
-                Join Room
-
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<div
-    class="toast"
-    id="toast">
-</div>
-
-
 <script>
-
-/* =====================================================
-   STATE
-===================================================== */
-
 let peer = null;
-let connection = null;
 let localStream = null;
-
 let roomId = null;
+let connections = new Map();
 
-let isHost = false;
-
-let cameraEnabled = true;
-let micEnabled = true;
-
-let currentMovie = "";
-
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const movieContainer =
-    document.getElementById(
-        "movieContainer"
-    );
-
-const movieInput =
-    document.getElementById(
-        "movieUrlInput"
-    );
-
-const roomModal =
-    document.getElementById(
-        "roomModal"
-    );
-
-const roomStatus =
-    document.getElementById(
-        "roomStatus"
-    );
-
-const localVideo =
-    document.getElementById(
-        "person1Video"
-    );
-
-const remoteVideo =
-    document.getElementById(
-        "person2Video"
-    );
-
-const localPlaceholder =
-    document.getElementById(
-        "localPlaceholder"
-    );
-
-const remotePlaceholder =
-    document.getElementById(
-        "remotePlaceholder"
-    );
-
-const roomIdDisplay =
-    document.getElementById(
-        "roomIdDisplay"
-    );
-
-const topHeader =
-    document.getElementById(
-        "topHeader"
-    );
-
-
-/* =====================================================
-   HIDE HEADER AFTER 10 SECONDS
-===================================================== */
-
-setTimeout(
-    () => {
-
-        topHeader.classList.add(
-            "hidden"
-        );
-
-    },
-    10000
-);
-
-
-/* =====================================================
-   START
-===================================================== */
-
-window.addEventListener(
-    "DOMContentLoaded",
-    async () => {
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-        const urlRoom =
-            params.get("room");
-
-        const urlMovie =
-            params.get("movie");
-
-
-        if (urlMovie) {
-
-            currentMovie =
-                urlMovie;
-
-            movieInput.value =
-                currentMovie;
-
-            loadMovie(
-                currentMovie,
-                false
-            );
-
-        }
-
-
-        await startCamera();
-
-
-        /*
-           If the URL already contains
-           ?room=xxxx, automatically join.
-        */
-
-        if (urlRoom) {
-
-            roomId =
-                urlRoom;
-
-            roomModal.style.display =
-                "none";
-
-            initializePeer(
-                roomId,
-                false
-            );
-
-        } else {
-
-            roomModal.style.display =
-                "flex";
-
-            roomStatus.textContent =
-                "Choose a room";
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   GENERATE ROOM
-===================================================== */
+const params = new URLSearchParams(window.location.search);
+roomId = params.get("room");
 
 function generateRoomId() {
-
-    return (
-        "jell-" +
-        Math.random()
-            .toString(36)
-            .substring(2, 8)
-    );
-
+  return "jell-" + Math.random().toString(36).substring(2, 10);
 }
 
+function updateInvite() {
+  const link = window.location.origin +
+    window.location.pathname +
+    "?room=" +
+    encodeURIComponent(roomId);
 
-/* =====================================================
-   CREATE ROOM
-===================================================== */
-
-function createRoom() {
-
-    if (peer) {
-
-        try {
-            peer.destroy();
-        } catch (_) {}
-
-    }
-
-
-    roomId =
-        generateRoomId();
-
-    isHost =
-        true;
-
-
-    roomModal.style.display =
-        "none";
-
-
-    initializePeer(
-        roomId,
-        true
-    );
-
+  document.getElementById("inviteLink").value = link;
 }
 
-
-/* =====================================================
-   JOIN ROOM INPUT
-===================================================== */
-
-function joinRoomFromInput() {
-
-    const input =
-        document.getElementById(
-            "joinRoomInput"
-        );
-
-    const value =
-        input.value.trim();
-
-
-    if (!value) {
-
-        showToast(
-            "Enter a room ID."
-        );
-
-        return;
-
-    }
-
-
-    joinRoom(
-        value
-    );
-
+function setStatus(text) {
+  document.getElementById("connectionStatus").textContent = text;
+  document.getElementById("roomStatus").textContent = text;
 }
-
-
-/* =====================================================
-   JOIN FROM MODAL
-===================================================== */
-
-function joinFromModal() {
-
-    const input =
-        document.getElementById(
-            "modalJoinRoomInput"
-        );
-
-    const value =
-        input.value.trim();
-
-
-    if (!value) {
-
-        showToast(
-            "Enter a room ID."
-        );
-
-        return;
-
-    }
-
-
-    joinRoom(
-        value
-    );
-
-}
-
-
-/* =====================================================
-   JOIN ROOM
-===================================================== */
-
-function joinRoom(
-    id
-) {
-
-    if (peer) {
-
-        try {
-            peer.destroy();
-        } catch (_) {}
-
-    }
-
-
-    roomId =
-        id.trim();
-
-    isHost =
-        false;
-
-
-    roomModal.style.display =
-        "none";
-
-
-    initializePeer(
-        roomId,
-        false
-    );
-
-}
-
-
-/* =====================================================
-   PEERJS
-===================================================== */
-
-function initializePeer(
-    id,
-    host
-) {
-
-    roomStatus.textContent =
-        host
-            ? "Creating room..."
-            : "Joining room...";
-
-
-    roomIdDisplay.textContent =
-        id;
-
-
-    /*
-       PeerJS uses the room ID as
-       the peer ID.
-
-       Host owns the ID.
-       Guest connects to host.
-    */
-
-    peer =
-        new Peer(
-            id,
-            {
-                debug: 1
-            }
-        );
-
-
-    peer.on(
-        "open",
-        peerId => {
-
-            roomId =
-                peerId;
-
-
-            roomIdDisplay.textContent =
-                roomId;
-
-
-            roomStatus.textContent =
-                host
-                    ? "🟢 Room ready"
-                    : "🟢 Connected";
-
-
-            updateUrl();
-
-
-            showToast(
-                host
-                    ? "Room created!"
-                    : "Joined room!"
-            );
-
-
-            /*
-               Guest connects to host.
-            */
-
-            if (!host) {
-
-                connectToHost(
-                    roomId
-                );
-
-            }
-
-        }
-    );
-
-
-    /*
-       Host receives guest connection.
-    */
-
-    peer.on(
-        "connection",
-        conn => {
-
-            setupConnection(
-                conn
-            );
-
-
-            callRemoteUser(
-                conn.peer
-            );
-
-        }
-    );
-
-
-    /*
-       Incoming video call.
-    */
-
-    peer.on(
-        "call",
-        call => {
-
-            if (!localStream) {
-
-                call.answer();
-
-                return;
-
-            }
-
-
-            call.answer(
-                localStream
-            );
-
-
-            call.on(
-                "stream",
-                stream => {
-
-                    remoteVideo.srcObject =
-                        stream;
-
-
-                    remotePlaceholder.style.display =
-                        "none";
-
-                }
-            );
-
-        }
-    );
-
-
-    peer.on(
-        "error",
-        error => {
-
-            console.error(
-                "PeerJS:",
-                error
-            );
-
-
-            if (
-                error.type ===
-                "unavailable-id"
-            ) {
-
-                showToast(
-                    "That room already exists."
-                );
-
-            } else if (
-                error.type ===
-                "peer-unavailable"
-            ) {
-
-                showToast(
-                    "Room not found or host is offline."
-                );
-
-            } else {
-
-                showToast(
-                    "Connection error: " +
-                    error.type
-                );
-
-            }
-
-
-            roomStatus.textContent =
-                "Connection error";
-
-        }
-    );
-
-
-    peer.on(
-        "disconnected",
-        () => {
-
-            roomStatus.textContent =
-                "Disconnected";
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   CONNECT GUEST TO HOST
-===================================================== */
-
-function connectToHost(
-    hostId
-) {
-
-    if (
-        !peer ||
-        !hostId
-    ) {
-
-        return;
-
-    }
-
-
-    /*
-       Important:
-       If you are the guest, the room ID
-       is the HOST peer ID.
-    */
-
-    const conn =
-        peer.connect(
-            hostId,
-            {
-                reliable: true
-            }
-        );
-
-
-    setupConnection(
-        conn
-    );
-
-
-    conn.on(
-        "open",
-        () => {
-
-            /*
-               Call the host after the
-               data connection opens.
-            */
-
-            callRemoteUser(
-                hostId
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   CONNECTION
-===================================================== */
-
-function setupConnection(
-    conn
-) {
-
-    connection =
-        conn;
-
-
-    conn.on(
-        "open",
-        () => {
-
-            roomStatus.textContent =
-                "🟢 Friend connected";
-
-
-            showToast(
-                "Friend connected!"
-            );
-
-
-            /*
-               Send current movie
-               to the friend.
-            */
-
-            if (currentMovie) {
-
-                sendData({
-
-                    type: "movie",
-
-                    url: currentMovie
-
-                });
-
-            }
-
-        }
-    );
-
-
-    conn.on(
-        "data",
-        data => {
-
-            if (
-                data &&
-                data.type ===
-                "movie"
-            ) {
-
-                currentMovie =
-                    data.url;
-
-
-                movieInput.value =
-                    currentMovie;
-
-
-                loadMovie(
-                    currentMovie,
-                    false
-                );
-
-            }
-
-        }
-    );
-
-
-    conn.on(
-        "close",
-        () => {
-
-            roomStatus.textContent =
-                "Waiting for friend...";
-
-
-            remotePlaceholder.style.display =
-                "flex";
-
-
-            remoteVideo.srcObject =
-                null;
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   VIDEO CALL
-===================================================== */
-
-function callRemoteUser(
-    remotePeerId
-) {
-
-    if (
-        !peer ||
-        !localStream
-    ) {
-
-        return;
-
-    }
-
-
-    try {
-
-        const call =
-            peer.call(
-                remotePeerId,
-                localStream
-            );
-
-
-        call.on(
-            "stream",
-            stream => {
-
-                remoteVideo.srcObject =
-                    stream;
-
-
-                remotePlaceholder.style.display =
-                    "none";
-
-            }
-        );
-
-
-        call.on(
-            "error",
-            error => {
-
-                console.error(
-                    "Call error:",
-                    error
-                );
-
-            }
-        );
-
-    } catch (error) {
-
-        console.error(
-            error
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   CAMERA
-===================================================== */
 
 async function startCamera() {
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    });
 
-    if (
-        !navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia
-    ) {
+    document.getElementById("localVideo").srcObject = localStream;
 
-        localPlaceholder.innerHTML = `
-            <div class="person-icon">📷</div>
-            <span>Camera unavailable</span>
-        `;
+    setStatus("Camera and microphone ready");
+  } catch (error) {
+    console.error(error);
 
-        return;
-
-    }
-
-
-    try {
-
-        localStream =
-            await navigator.mediaDevices
-                .getUserMedia({
-
-                    video: {
-                        width: {
-                            ideal: 1280
-                        },
-
-                        height: {
-                            ideal: 720
-                        },
-
-                        facingMode: "user"
-                    },
-
-                    audio: {
-                        echoCancellation: true,
-
-                        noiseSuppression: true,
-
-                        autoGainControl: true
-                    }
-
-                });
-
-
-        localVideo.srcObject =
-            localStream;
-
-
-        /*
-           MIRROR LOCAL VIDEO.
-
-           This only changes the way
-           YOU see your own camera preview.
-        */
-
-        localVideo.style.transform =
-            "scaleX(-1)";
-
-
-        localPlaceholder.style.display =
-            "none";
-
-    } catch (error) {
-
-        console.error(
-            "Camera error:",
-            error
-        );
-
-
-        localPlaceholder.innerHTML = `
-            <div class="person-icon">📷</div>
-            <span>Camera permission denied</span>
-        `;
-
-
-        showToast(
-            "Allow camera and microphone access."
-        );
-
-    }
-
+    setStatus(
+      "Camera/microphone permission is required"
+    );
+  }
 }
 
+function createPeer() {
 
-/* =====================================================
-   CAMERA TOGGLE
-===================================================== */
+  /*
+    If there is already a room ID in the URL,
+    connect to that room.
 
-function toggleCam() {
+    If there isn't one, this user creates
+    a new room.
+  */
 
-    if (!localStream)
-        return;
+  if (!roomId) {
+    roomId = generateRoomId();
 
+    history.replaceState(
+      {},
+      "",
+      window.location.pathname +
+      "?room=" +
+      encodeURIComponent(roomId)
+    );
+  }
 
-    const track =
-        localStream
-            .getVideoTracks()[0];
+  updateInvite();
 
+  peer = new Peer(roomId);
 
-    if (!track)
-        return;
+  peer.on("open", () => {
+    setStatus("Room ready");
+  });
 
+  peer.on("error", error => {
 
-    cameraEnabled =
-        !cameraEnabled;
+    console.error(error);
 
+    /*
+      If another user already owns the room,
+      create a temporary peer and join it.
+    */
 
-    track.enabled =
-        cameraEnabled;
+    if (error.type === "unavailable-id") {
+      joinExistingRoom();
+    } else {
+      setStatus("Connection error");
+    }
+  });
 
+  peer.on("call", call => {
 
-    showToast(
-        cameraEnabled
-            ? "Camera turned on"
-            : "Camera turned off"
+    if (!localStream) {
+      return;
+    }
+
+    call.answer(localStream);
+
+    setupCall(call);
+  });
+}
+
+function joinExistingRoom() {
+
+  const newPeer = new Peer();
+
+  peer = newPeer;
+
+  newPeer.on("open", id => {
+
+    setStatus("Joining room...");
+
+    const call = newPeer.call(
+      roomId,
+      localStream
     );
 
+    setupCall(call);
+  });
+
+  newPeer.on("call", call => {
+
+    call.answer(localStream);
+
+    setupCall(call);
+  });
 }
 
+function setupCall(call) {
 
-/* =====================================================
-   MIC TOGGLE
-===================================================== */
+  call.on("stream", remoteStream => {
+
+    addRemoteVideo(
+      call.peer,
+      remoteStream
+    );
+
+    connections.set(
+      call.peer,
+      call
+    );
+
+    updatePeopleCount();
+  });
+
+  call.on("close", () => {
+
+    removeRemoteVideo(call.peer);
+
+    connections.delete(call.peer);
+
+    updatePeopleCount();
+  });
+
+  call.on("error", error => {
+    console.error(error);
+  });
+}
+
+function addRemoteVideo(id, stream) {
+
+  if (document.getElementById("tile-" + id)) {
+    return;
+  }
+
+  const tile = document.createElement("div");
+
+  tile.className = "video-tile";
+  tile.id = "tile-" + id;
+
+  const video = document.createElement("video");
+
+  video.autoplay = true;
+  video.playsInline = true;
+  video.srcObject = stream;
+
+  const name = document.createElement("div");
+
+  name.className = "video-name";
+  name.textContent = "Guest";
+
+  tile.appendChild(video);
+  tile.appendChild(name);
+
+  document.getElementById("videoGrid").appendChild(tile);
+}
+
+function removeRemoteVideo(id) {
+
+  const tile = document.getElementById(
+    "tile-" + id
+  );
+
+  if (tile) {
+    tile.remove();
+  }
+}
+
+function connectToRoom() {
+
+  if (!peer || !localStream) {
+    return;
+  }
+
+  if (peer.id === roomId) {
+    return;
+  }
+
+  const call = peer.call(
+    roomId,
+    localStream
+  );
+
+  if (call) {
+    setupCall(call);
+  }
+}
 
 function toggleMic() {
 
-    if (!localStream)
-        return;
+  if (!localStream) {
+    return;
+  }
 
+  const tracks = localStream.getAudioTracks();
 
-    const track =
-        localStream
-            .getAudioTracks()[0];
+  if (!tracks.length) {
+    return;
+  }
 
+  const enabled = tracks[0].enabled;
 
-    if (!track)
-        return;
+  tracks.forEach(track => {
+    track.enabled = !enabled;
+  });
 
+  const button = document.getElementById("micButton");
 
-    micEnabled =
-        !micEnabled;
+  if (enabled) {
+    button.classList.add("off");
+    button.title = "Unmute";
+  } else {
+    button.classList.remove("off");
+    button.title = "Mute";
+  }
+}
 
+function toggleCamera() {
 
-    track.enabled =
-        micEnabled;
+  if (!localStream) {
+    return;
+  }
 
+  const tracks = localStream.getVideoTracks();
 
-    showToast(
-        micEnabled
-            ? "Microphone turned on"
-            : "Microphone turned off"
+  if (!tracks.length) {
+    return;
+  }
+
+  const enabled = tracks[0].enabled;
+
+  tracks.forEach(track => {
+    track.enabled = !enabled;
+  });
+
+  const button = document.getElementById(
+    "cameraButton"
+  );
+
+  const off = document.getElementById(
+    "localOff"
+  );
+
+  if (enabled) {
+
+    button.classList.add("off");
+    button.title = "Turn camera on";
+
+    off.style.display = "flex";
+
+  } else {
+
+    button.classList.remove("off");
+    button.title = "Turn camera off";
+
+    off.style.display = "none";
+  }
+}
+
+async function copyInvite() {
+
+  const input = document.getElementById(
+    "inviteLink"
+  );
+
+  try {
+
+    await navigator.clipboard.writeText(
+      input.value
     );
 
+    setStatus("Invitation link copied");
+
+  } catch {
+
+    input.select();
+
+    document.execCommand("copy");
+
+    setStatus("Invitation link copied");
+  }
 }
 
+function updatePeopleCount() {
 
-/* =====================================================
-   MOVIE INPUT
-===================================================== */
+  const count =
+    document.querySelectorAll(".video-tile").length;
 
-function loadMovieFromInput() {
+  document.getElementById(
+    "peopleCount"
+  ).textContent =
+    count +
+    (count === 1
+      ? " person in room"
+      : " people in room");
+}
 
-    const url =
-        movieInput.value.trim();
+function leaveRoom() {
 
+  if (localStream) {
 
-    if (!url) {
+    localStream.getTracks().forEach(
+      track => track.stop()
+    );
+  }
 
-        showToast(
-            "Paste a movie link first."
-        );
+  connections.forEach(call => {
+    try {
+      call.close();
+    } catch {}
+  });
 
-        return;
+  if (peer) {
+    try {
+      peer.destroy();
+    } catch {}
+  }
 
-    }
+  window.location.href =
+    window.location.pathname;
+}
 
+function loadMovie() {
 
-    loadMovie(
-        url,
-        true
+  const url =
+    document.getElementById(
+      "movieUrl"
+    ).value.trim();
+
+  if (!url) {
+    return;
+  }
+
+  const container =
+    document.getElementById(
+      "movieContainer"
     );
 
-}
-
-
-/* =====================================================
-   LOAD MOVIE
-===================================================== */
-
-function loadMovie(
-    url,
-    broadcast = true
-) {
-
-    if (!url)
-        return;
-
-
-    currentMovie =
-        url.trim();
-
-
-    movieInput.value =
-        currentMovie;
-
-
-    movieContainer.innerHTML =
-        "";
-
-
-    /* =========================
-       YOUTUBE
-    ========================= */
-
-    if (
-        currentMovie.includes(
-            "youtube.com/watch"
-        ) ||
-        currentMovie.includes(
-            "youtu.be/"
-        )
-    ) {
-
-        let videoId =
-            "";
-
-
-        try {
-
-            if (
-                currentMovie.includes(
-                    "youtube.com/watch"
-                )
-            ) {
-
-                const parsed =
-                    new URL(
-                        currentMovie
-                    );
-
-
-                videoId =
-                    parsed.searchParams.get(
-                        "v"
-                    );
-
-            } else {
-
-                videoId =
-                    currentMovie
-                        .split(
-                            "youtu.be/"
-                        )[1]
-                        .split("?")[0];
-
-            }
-
-        } catch (_) {}
-
-
-        if (videoId) {
-
-            movieContainer.innerHTML = `
-                <iframe
-                    src="https://www.youtube.com/embed/${escapeAttribute(videoId)}?autoplay=1"
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
-            `;
-
-        }
-
-    }
-
-
-    /* =========================
-       VIMEO
-    ========================= */
-
-    else if (
-        currentMovie.includes(
-            "vimeo.com/"
-        )
-    ) {
-
-        let id =
-            currentMovie
-                .split(
-                    "vimeo.com/"
-                )[1]
-                .split("?")[0]
-                .split("/")[0];
-
-
-        movieContainer.innerHTML = `
-            <iframe
-                src="https://player.vimeo.com/video/${escapeAttribute(id)}"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowfullscreen>
-            </iframe>
-        `;
-
-    }
-
-
-    /* =========================
-       TWITCH
-    ========================= */
-
-    else if (
-        currentMovie.includes(
-            "twitch.tv/"
-        )
-    ) {
-
-        let channel =
-            currentMovie
-                .split(
-                    "twitch.tv/"
-                )[1]
-                .split(/[?#/]/)[0];
-
-
-        const host =
-            window.location.hostname;
-
-
-        movieContainer.innerHTML = `
-            <iframe
-                src="https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${encodeURIComponent(host)}"
-                allowfullscreen>
-            </iframe>
-        `;
-
-    }
-
-
-    /* =========================
-       DIRECT VIDEO
-    ========================= */
-
-    else if (
-        /\.(mp4|webm|ogg)(\?.*)?$/i
-            .test(currentMovie)
-    ) {
-
-        const video =
-            document.createElement(
-                "video"
-            );
-
-
-        video.src =
-            currentMovie;
-
-
-        video.controls =
-            true;
-
-
-        video.autoplay =
-            true;
-
-
-        video.playsInline =
-            true;
-
-
-        movieContainer.appendChild(
-            video
-        );
-
-    }
-
-
-    /* =========================
-       OTHER EMBEDDABLE WEBSITE
-    ========================= */
-
-    else {
-
-        movieContainer.innerHTML = `
-            <iframe
-                src="${escapeAttribute(currentMovie)}"
-                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                allowfullscreen>
-            </iframe>
-        `;
-
-    }
-
-
-    /*
-       Send movie to friend.
-    */
-
-    if (
-        broadcast &&
-        connection &&
-        connection.open
-    ) {
-
-        sendData({
-
-            type: "movie",
-
-            url: currentMovie
-
-        });
-
-    }
-
-
-    /*
-       Put movie URL into invitation URL.
-    */
-
-    updateUrl();
-
-}
-
-
-/* =====================================================
-   SEND DATA
-===================================================== */
-
-function sendData(
-    data
-) {
-
-    if (
-        connection &&
-        connection.open
-    ) {
-
-        try {
-
-            connection.send(
-                data
-            );
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-        }
-
-    }
-
-}
-
-
-/* =====================================================
-   UPDATE URL
-===================================================== */
-
-function updateUrl() {
-
-    if (!roomId)
-        return;
-
-
-    const url =
-        new URL(
-            window.location.href
-        );
-
-
-    /*
-       Room ID becomes part of
-       invitation link.
-    */
-
-    url.searchParams.set(
-        "room",
-        roomId
+  /*
+    YouTube
+  */
+
+  const youtube =
+    url.match(
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/
     );
 
+  if (youtube) {
 
-    /*
-       Keep movie in the invitation
-       so the friend can see the same
-       movie after opening the link.
-    */
+    const iframe =
+      document.createElement("iframe");
 
-    if (currentMovie) {
+    iframe.src =
+      "https://www.youtube.com/embed/" +
+      youtube[1];
 
-        url.searchParams.set(
-            "movie",
-            currentMovie
-        );
+    iframe.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
 
-    } else {
+    iframe.allowFullscreen = true;
 
-        url.searchParams.delete(
-            "movie"
-        );
+    container.innerHTML = "";
 
-    }
+    container.appendChild(iframe);
 
+    return;
+  }
 
-    window.history.replaceState(
-        {},
-        "",
-        url.toString()
+  /*
+    Vimeo
+  */
+
+  const vimeo =
+    url.match(
+      /vimeo\.com\/(\d+)/
     );
 
+  if (vimeo) {
+
+    const iframe =
+      document.createElement("iframe");
+
+    iframe.src =
+      "https://player.vimeo.com/video/" +
+      vimeo[1];
+
+    iframe.allow =
+      "autoplay; fullscreen; picture-in-picture";
+
+    iframe.allowFullscreen = true;
+
+    container.innerHTML = "";
+
+    container.appendChild(iframe);
+
+    return;
+  }
+
+  /*
+    Direct video URL
+  */
+
+  const video =
+    document.createElement("video");
+
+  video.src = url;
+
+  video.controls = true;
+
+  video.autoplay = false;
+
+  video.playsInline = true;
+
+  container.innerHTML = "";
+
+  container.appendChild(video);
 }
 
+async function initialize() {
 
-/* =====================================================
-   COPY INVITATION LINK
-===================================================== */
+  /*
+    HTTPS is required for camera/mic.
+  */
 
-function copyInviteLink() {
+  if (
+    !window.isSecureContext ||
+    !navigator.mediaDevices
+  ) {
 
-    if (!roomId) {
-
-        showToast(
-            "Create or join a room first."
-        );
-
-        return;
-
-    }
-
-
-    updateUrl();
-
-
-    const inviteLink =
-        window.location.href;
-
-
-    if (
-        navigator.clipboard &&
-        navigator.clipboard.writeText
-    ) {
-
-        navigator.clipboard
-            .writeText(
-                inviteLink
-            )
-            .then(() => {
-
-                showToast(
-                    "🔗 Invitation link copied!"
-                );
-
-            })
-            .catch(() => {
-
-                fallbackCopy(
-                    inviteLink
-                );
-
-            });
-
-    } else {
-
-        fallbackCopy(
-            inviteLink
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   FALLBACK COPY
-===================================================== */
-
-function fallbackCopy(
-    text
-) {
-
-    window.prompt(
-        "Copy this invitation link:",
-        text
+    setStatus(
+      "Camera requires HTTPS"
     );
 
+    return;
+  }
+
+  await startCamera();
+
+  createPeer();
+
+  setTimeout(() => {
+
+    connectToRoom();
+
+  }, 1500);
+
+  updatePeopleCount();
 }
 
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeAttribute(
-    text
-) {
-
-    return String(text)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        );
-
-}
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-function showToast(
-    message
-) {
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        window.toastTimer
-    );
-
-
-    window.toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2500
-        );
-
-}
-
+initialize();
 </script>
 
 </body>
