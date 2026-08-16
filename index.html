@@ -25,7 +25,11 @@ input {
   font: inherit;
 }
 
-.header {
+/* =========================
+   10 SECOND INTRO
+========================= */
+
+.intro {
   height: 64px;
   background: #dcebdc;
   display: flex;
@@ -33,9 +37,20 @@ input {
   justify-content: space-between;
   padding: 0 18px;
   border-bottom: 1px solid #c9dcc9;
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  overflow: hidden;
+  transition:
+    opacity 0.5s ease,
+    height 0.5s ease,
+    padding 0.5s ease,
+    border 0.5s ease;
+}
+
+.intro.hidden {
+  height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: 0;
 }
 
 .logo {
@@ -47,6 +62,10 @@ input {
   font-size: 13px;
   color: #55705b;
 }
+
+/* =========================
+   MAIN
+========================= */
 
 .main {
   display: grid;
@@ -127,6 +146,10 @@ input {
   background: #638a69;
 }
 
+/* =========================
+   VIDEO CALL
+========================= */
+
 .side {
   background: white;
   border-radius: 16px;
@@ -141,12 +164,16 @@ input {
   padding: 4px 4px 12px;
 }
 
+/* TWO PEOPLE ONLY */
+
 .video-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  flex: 1;
+  flex: 0 0 auto;
   align-content: start;
+  max-height: 190px;
+  overflow: hidden;
 }
 
 .video-tile {
@@ -154,6 +181,7 @@ input {
   border-radius: 12px;
   overflow: hidden;
   aspect-ratio: 16 / 10;
+  max-height: 180px;
   position: relative;
 }
 
@@ -162,6 +190,12 @@ input {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* MIRROR OWN CAMERA */
+
+#localVideo {
+  transform: scaleX(-1);
 }
 
 .video-name {
@@ -185,6 +219,10 @@ input {
   font-weight: 700;
   background: #39483c;
 }
+
+/* =========================
+   CONTROLS
+========================= */
 
 .controls {
   display: flex;
@@ -228,6 +266,10 @@ input {
   height: 21px;
 }
 
+/* =========================
+   INVITATION
+========================= */
+
 .invite-box {
   background: #f4f8f4;
   border-radius: 12px;
@@ -270,37 +312,31 @@ input {
   color: #617064;
 }
 
-.join-box {
-  padding: 30px 14px;
-  text-align: center;
-}
-
-.join-box input {
-  width: 100%;
-  padding: 11px;
-  border: 1px solid #ccd8cc;
-  border-radius: 10px;
-  margin: 8px 0;
-}
-
 .status {
   font-size: 12px;
   color: #68756b;
   margin-top: 8px;
 }
 
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 850px) {
+
   .main {
     grid-template-columns: 1fr;
   }
 
   .side {
-    min-height: 420px;
+    min-height: auto;
   }
+
 }
 
 @media (max-width: 500px) {
-  .header {
+
+  .intro {
     padding: 0 10px;
   }
 
@@ -315,181 +351,426 @@ input {
   .side {
     border-radius: 12px;
   }
+
+  .video-grid {
+    max-height: 170px;
+  }
+
+  .video-tile {
+    max-height: 160px;
+  }
+
 }
 </style>
 </head>
 
 <body>
 
-<header class="header">
-  <div class="logo">Jell & James Movie</div>
-  <div class="room-status" id="roomStatus">Connecting...</div>
-</header>
+<!-- =========================
+     TEMPORARY 10 SECOND INTRO
+========================= -->
+
+<div class="intro" id="intro">
+
+  <div class="logo">
+    Jell & James Movie
+  </div>
+
+  <div class="room-status" id="roomStatus">
+    Connecting...
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
 
 <main class="main">
 
-  <section class="movie-section">
+<section class="movie-section">
 
-    <div class="movie-card" id="movieContainer">
-      <div class="movie-placeholder">
-        Paste a movie/video URL below to start watching.
-      </div>
+  <div class="movie-card" id="movieContainer">
+
+    <div class="movie-placeholder">
+      Paste a movie/video URL below to start watching.
     </div>
 
-    <div class="movie-info">
-      <div class="movie-title">Watch Together</div>
+  </div>
 
-      <div class="movie-input">
-        <input
-          id="movieUrl"
-          placeholder="Paste YouTube, Vimeo or video URL..."
-        >
-        <button class="primary" onclick="loadMovie()">Play</button>
-      </div>
+
+  <div class="movie-info">
+
+    <div class="movie-title">
+      Watch Together
     </div>
 
-  </section>
+    <div class="movie-input">
 
-  <aside class="side">
-
-    <div class="side-title">Video Call</div>
-
-    <div class="video-grid" id="videoGrid">
-
-      <div class="video-tile" id="localTile">
-        <video id="localVideo" autoplay muted playsinline></video>
-        <div class="video-off" id="localOff">Camera Off</div>
-        <div class="video-name">You</div>
-      </div>
-
-    </div>
-
-    <div class="controls">
+      <input
+        id="movieUrl"
+        placeholder="Paste YouTube, Vimeo or video URL..."
+      >
 
       <button
-        class="control"
-        id="micButton"
-        title="Mute"
-        onclick="toggleMic()"
+        class="primary"
+        onclick="loadMovie()"
       >
-        <svg class="icon" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <rect x="9" y="2" width="6" height="12" rx="3"/>
-          <path d="M5 10a7 7 0 0 0 14 0"/>
-          <path d="M12 17v5"/>
-          <path d="M8 22h8"/>
-        </svg>
-      </button>
-
-      <button
-        class="control"
-        id="cameraButton"
-        title="Turn camera off"
-        onclick="toggleCamera()"
-      >
-        <svg class="icon" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M15 10l4-3v10l-4-3"/>
-          <rect x="3" y="6" width="12" height="12" rx="2"/>
-        </svg>
-      </button>
-
-      <button
-        class="control end"
-        title="Leave room"
-        onclick="leaveRoom()"
-      >
-        <svg class="icon" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2">
-          <path d="M5 9c4-2 10-2 14 0"/>
-          <path d="M7 13l-2 3"/>
-          <path d="M17 13l2 3"/>
-        </svg>
+        Play
       </button>
 
     </div>
 
-    <div class="invite-box">
-      <div class="invite-label">Room invitation</div>
+  </div>
 
-      <div class="invite-row">
-        <input id="inviteLink" readonly>
-        <button class="small-button" onclick="copyInvite()">
-          Copy
-        </button>
+</section>
+
+
+<!-- =========================
+     VIDEO CALL SIDE
+========================= -->
+
+<aside class="side">
+
+  <div class="side-title">
+    Video Call
+  </div>
+
+
+  <div
+    class="video-grid"
+    id="videoGrid"
+  >
+
+    <!-- YOUR VIDEO -->
+
+    <div
+      class="video-tile"
+      id="localTile"
+    >
+
+      <video
+        id="localVideo"
+        autoplay
+        muted
+        playsinline
+      ></video>
+
+      <div
+        class="video-off"
+        id="localOff"
+      >
+        Camera Off
       </div>
 
-      <div class="status" id="connectionStatus">
-        Starting room...
+      <div class="video-name">
+        You
       </div>
+
     </div>
 
-    <div class="people" id="peopleCount">
-      1 person in room
+  </div>
+
+
+  <!-- =========================
+       CONTROLS
+  ========================= -->
+
+  <div class="controls">
+
+    <!-- MIC -->
+
+    <button
+      class="control"
+      id="micButton"
+      title="Mute"
+      onclick="toggleMic()"
+    >
+
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+
+        <rect
+          x="9"
+          y="2"
+          width="6"
+          height="12"
+          rx="3"
+        />
+
+        <path
+          d="M5 10a7 7 0 0 0 14 0"
+        />
+
+        <path
+          d="M12 17v5"
+        />
+
+        <path
+          d="M8 22h8"
+        />
+
+      </svg>
+
+    </button>
+
+
+    <!-- CAMERA -->
+
+    <button
+      class="control"
+      id="cameraButton"
+      title="Turn camera off"
+      onclick="toggleCamera()"
+    >
+
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+
+        <path
+          d="M15 10l4-3v10l-4-3"
+        />
+
+        <rect
+          x="3"
+          y="6"
+          width="12"
+          height="12"
+          rx="2"
+        />
+
+      </svg>
+
+    </button>
+
+
+    <!-- LEAVE -->
+
+    <button
+      class="control end"
+      title="Leave room"
+      onclick="leaveRoom()"
+    >
+
+      <svg
+        class="icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+
+        <path
+          d="M5 9c4-2 10-2 14 0"
+        />
+
+        <path
+          d="M7 13l-2 3"
+        />
+
+        <path
+          d="M17 13l2 3"
+        />
+
+      </svg>
+
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       INVITATION LINK
+  ========================= -->
+
+  <div class="invite-box">
+
+    <div class="invite-label">
+      Room invitation
     </div>
 
-  </aside>
+    <div class="invite-row">
+
+      <input
+        id="inviteLink"
+        readonly
+      >
+
+      <button
+        class="small-button"
+        onclick="copyInvite()"
+      >
+        Copy
+      </button>
+
+    </div>
+
+    <div
+      class="status"
+      id="connectionStatus"
+    >
+      Starting room...
+    </div>
+
+  </div>
+
+
+  <div
+    class="people"
+    id="peopleCount"
+  >
+    1 person in room
+  </div>
+
+</aside>
 
 </main>
 
+
 <script>
+
+/* =========================
+   ROOM VARIABLES
+========================= */
+
 let peer = null;
 let localStream = null;
 let roomId = null;
+
 let connections = new Map();
 
-const params = new URLSearchParams(window.location.search);
-roomId = params.get("room");
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+roomId =
+  params.get("room");
+
+
+/* =========================
+   ROOM ID
+========================= */
 
 function generateRoomId() {
-  return "jell-" + Math.random().toString(36).substring(2, 10);
+
+  return (
+    "jell-" +
+    Math.random()
+      .toString(36)
+      .substring(2, 10)
+  );
+
 }
 
+
+/* =========================
+   INVITE LINK
+========================= */
+
 function updateInvite() {
-  const link = window.location.origin +
+
+  const link =
+    window.location.origin +
     window.location.pathname +
     "?room=" +
     encodeURIComponent(roomId);
 
-  document.getElementById("inviteLink").value = link;
+
+  document.getElementById(
+    "inviteLink"
+  ).value = link;
+
 }
+
+
+/* =========================
+   STATUS
+========================= */
 
 function setStatus(text) {
-  document.getElementById("connectionStatus").textContent = text;
-  document.getElementById("roomStatus").textContent = text;
+
+  document.getElementById(
+    "connectionStatus"
+  ).textContent = text;
+
+
+  document.getElementById(
+    "roomStatus"
+  ).textContent = text;
+
 }
 
+
+/* =========================
+   CAMERA
+========================= */
+
 async function startCamera() {
+
   try {
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true
-    });
 
-    document.getElementById("localVideo").srcObject = localStream;
+    localStream =
+      await navigator.mediaDevices
+        .getUserMedia({
 
-    setStatus("Camera and microphone ready");
-  } catch (error) {
+          video: true,
+
+          audio: true
+
+        });
+
+
+    document.getElementById(
+      "localVideo"
+    ).srcObject =
+      localStream;
+
+
+    setStatus(
+      "Room ready"
+    );
+
+  }
+
+  catch (error) {
+
     console.error(error);
+
 
     setStatus(
       "Camera/microphone permission is required"
     );
+
   }
+
 }
+
+
+/* =========================
+   PEER
+========================= */
 
 function createPeer() {
 
-  /*
-    If there is already a room ID in the URL,
-    connect to that room.
-
-    If there isn't one, this user creates
-    a new room.
-  */
-
   if (!roomId) {
-    roomId = generateRoomId();
+
+    roomId =
+      generateRoomId();
+
 
     history.replaceState(
       {},
@@ -498,159 +779,376 @@ function createPeer() {
       "?room=" +
       encodeURIComponent(roomId)
     );
+
   }
+
 
   updateInvite();
 
-  peer = new Peer(roomId);
 
-  peer.on("open", () => {
-    setStatus("Room ready");
-  });
+  peer =
+    new Peer(roomId);
 
-  peer.on("error", error => {
 
-    console.error(error);
+  peer.on(
+    "open",
+    () => {
 
-    /*
-      If another user already owns the room,
-      create a temporary peer and join it.
-    */
+      setStatus(
+        "Room ready"
+      );
 
-    if (error.type === "unavailable-id") {
-      joinExistingRoom();
-    } else {
-      setStatus("Connection error");
     }
-  });
+  );
 
-  peer.on("call", call => {
 
-    if (!localStream) {
-      return;
+  peer.on(
+    "error",
+    error => {
+
+      console.error(
+        error
+      );
+
+
+      if (
+        error.type ===
+        "unavailable-id"
+      ) {
+
+        joinExistingRoom();
+
+      }
+
+      else {
+
+        setStatus(
+          "Connection error"
+        );
+
+      }
+
     }
+  );
 
-    call.answer(localStream);
 
-    setupCall(call);
-  });
+  peer.on(
+    "call",
+    call => {
+
+      if (!localStream) {
+        return;
+      }
+
+
+      call.answer(
+        localStream
+      );
+
+
+      setupCall(
+        call
+      );
+
+    }
+  );
+
 }
+
+
+/* =========================
+   JOIN EXISTING ROOM
+========================= */
 
 function joinExistingRoom() {
 
-  const newPeer = new Peer();
+  const newPeer =
+    new Peer();
 
-  peer = newPeer;
 
-  newPeer.on("open", id => {
+  peer =
+    newPeer;
 
-    setStatus("Joining room...");
 
-    const call = newPeer.call(
+  newPeer.on(
+    "open",
+    () => {
+
+      setStatus(
+        "Joining room..."
+      );
+
+
+      const call =
+        newPeer.call(
+          roomId,
+          localStream
+        );
+
+
+      if (call) {
+
+        setupCall(
+          call
+        );
+
+      }
+
+    }
+  );
+
+
+  newPeer.on(
+    "call",
+    call => {
+
+      call.answer(
+        localStream
+      );
+
+
+      setupCall(
+        call
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   CALL
+========================= */
+
+function setupCall(call) {
+
+  call.on(
+    "stream",
+    remoteStream => {
+
+      addRemoteVideo(
+        call.peer,
+        remoteStream
+      );
+
+
+      connections.set(
+        call.peer,
+        call
+      );
+
+
+      updatePeopleCount();
+
+    }
+  );
+
+
+  call.on(
+    "close",
+    () => {
+
+      removeRemoteVideo(
+        call.peer
+      );
+
+
+      connections.delete(
+        call.peer
+      );
+
+
+      updatePeopleCount();
+
+    }
+  );
+
+
+  call.on(
+    "error",
+    error => {
+
+      console.error(
+        error
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   REMOTE VIDEO
+   MAX 2 PEOPLE
+========================= */
+
+function addRemoteVideo(
+  id,
+  stream
+) {
+
+  const videoGrid =
+    document.getElementById(
+      "videoGrid"
+    );
+
+
+  /* ONE LOCAL + ONE GUEST */
+
+  if (
+    videoGrid.querySelectorAll(
+      ".video-tile"
+    ).length >= 2
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    document.getElementById(
+      "tile-" + id
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  const tile =
+    document.createElement(
+      "div"
+    );
+
+
+  tile.className =
+    "video-tile";
+
+
+  tile.id =
+    "tile-" + id;
+
+
+  const video =
+    document.createElement(
+      "video"
+    );
+
+
+  video.autoplay =
+    true;
+
+
+  video.playsInline =
+    true;
+
+
+  video.srcObject =
+    stream;
+
+
+  const name =
+    document.createElement(
+      "div"
+    );
+
+
+  name.className =
+    "video-name";
+
+
+  name.textContent =
+    "Guest";
+
+
+  tile.appendChild(
+    video
+  );
+
+
+  tile.appendChild(
+    name
+  );
+
+
+  videoGrid.appendChild(
+    tile
+  );
+
+}
+
+
+/* =========================
+   REMOVE VIDEO
+========================= */
+
+function removeRemoteVideo(id) {
+
+  const tile =
+    document.getElementById(
+      "tile-" + id
+    );
+
+
+  if (tile) {
+
+    tile.remove();
+
+  }
+
+}
+
+
+/* =========================
+   CONNECT
+========================= */
+
+function connectToRoom() {
+
+  if (
+    !peer ||
+    !localStream
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    peer.id === roomId
+  ) {
+
+    return;
+
+  }
+
+
+  const call =
+    peer.call(
       roomId,
       localStream
     );
 
-    setupCall(call);
-  });
 
-  newPeer.on("call", call => {
+  if (call) {
 
-    call.answer(localStream);
-
-    setupCall(call);
-  });
-}
-
-function setupCall(call) {
-
-  call.on("stream", remoteStream => {
-
-    addRemoteVideo(
-      call.peer,
-      remoteStream
-    );
-
-    connections.set(
-      call.peer,
+    setupCall(
       call
     );
 
-    updatePeopleCount();
-  });
+  }
 
-  call.on("close", () => {
-
-    removeRemoteVideo(call.peer);
-
-    connections.delete(call.peer);
-
-    updatePeopleCount();
-  });
-
-  call.on("error", error => {
-    console.error(error);
-  });
 }
 
-function addRemoteVideo(id, stream) {
 
-  if (document.getElementById("tile-" + id)) {
-    return;
-  }
-
-  const tile = document.createElement("div");
-
-  tile.className = "video-tile";
-  tile.id = "tile-" + id;
-
-  const video = document.createElement("video");
-
-  video.autoplay = true;
-  video.playsInline = true;
-  video.srcObject = stream;
-
-  const name = document.createElement("div");
-
-  name.className = "video-name";
-  name.textContent = "Guest";
-
-  tile.appendChild(video);
-  tile.appendChild(name);
-
-  document.getElementById("videoGrid").appendChild(tile);
-}
-
-function removeRemoteVideo(id) {
-
-  const tile = document.getElementById(
-    "tile-" + id
-  );
-
-  if (tile) {
-    tile.remove();
-  }
-}
-
-function connectToRoom() {
-
-  if (!peer || !localStream) {
-    return;
-  }
-
-  if (peer.id === roomId) {
-    return;
-  }
-
-  const call = peer.call(
-    roomId,
-    localStream
-  );
-
-  if (call) {
-    setupCall(call);
-  }
-}
+/* =========================
+   MICROPHONE
+========================= */
 
 function toggleMic() {
 
@@ -658,28 +1156,66 @@ function toggleMic() {
     return;
   }
 
-  const tracks = localStream.getAudioTracks();
+
+  const tracks =
+    localStream.getAudioTracks();
+
 
   if (!tracks.length) {
     return;
   }
 
-  const enabled = tracks[0].enabled;
 
-  tracks.forEach(track => {
-    track.enabled = !enabled;
-  });
+  const enabled =
+    tracks[0].enabled;
 
-  const button = document.getElementById("micButton");
+
+  tracks.forEach(
+    track => {
+
+      track.enabled =
+        !enabled;
+
+    }
+  );
+
+
+  const button =
+    document.getElementById(
+      "micButton"
+    );
+
 
   if (enabled) {
-    button.classList.add("off");
-    button.title = "Unmute";
-  } else {
-    button.classList.remove("off");
-    button.title = "Mute";
+
+    button.classList.add(
+      "off"
+    );
+
+
+    button.title =
+      "Unmute";
+
   }
+
+  else {
+
+    button.classList.remove(
+      "off"
+    );
+
+
+    button.title =
+      "Mute";
+
+  }
+
 }
+
+
+/* =========================
+   CAMERA
+========================= */
 
 function toggleCamera() {
 
@@ -687,47 +1223,88 @@ function toggleCamera() {
     return;
   }
 
-  const tracks = localStream.getVideoTracks();
+
+  const tracks =
+    localStream.getVideoTracks();
+
 
   if (!tracks.length) {
     return;
   }
 
-  const enabled = tracks[0].enabled;
 
-  tracks.forEach(track => {
-    track.enabled = !enabled;
-  });
+  const enabled =
+    tracks[0].enabled;
 
-  const button = document.getElementById(
-    "cameraButton"
+
+  tracks.forEach(
+    track => {
+
+      track.enabled =
+        !enabled;
+
+    }
   );
 
-  const off = document.getElementById(
-    "localOff"
-  );
+
+  const button =
+    document.getElementById(
+      "cameraButton"
+    );
+
+
+  const off =
+    document.getElementById(
+      "localOff"
+    );
+
 
   if (enabled) {
 
-    button.classList.add("off");
-    button.title = "Turn camera on";
+    button.classList.add(
+      "off"
+    );
 
-    off.style.display = "flex";
 
-  } else {
+    button.title =
+      "Turn camera on";
 
-    button.classList.remove("off");
-    button.title = "Turn camera off";
 
-    off.style.display = "none";
+    off.style.display =
+      "flex";
+
   }
+
+  else {
+
+    button.classList.remove(
+      "off"
+    );
+
+
+    button.title =
+      "Turn camera off";
+
+
+    off.style.display =
+      "none";
+
+  }
+
 }
+
+
+/* =========================
+   COPY INVITE
+========================= */
 
 async function copyInvite() {
 
-  const input = document.getElementById(
-    "inviteLink"
-  );
+  const input =
+    document.getElementById(
+      "inviteLink"
+    );
+
 
   try {
 
@@ -735,56 +1312,112 @@ async function copyInvite() {
       input.value
     );
 
-    setStatus("Invitation link copied");
 
-  } catch {
+    setStatus(
+      "Invitation link copied"
+    );
+
+  }
+
+  catch {
 
     input.select();
 
-    document.execCommand("copy");
 
-    setStatus("Invitation link copied");
+    document.execCommand(
+      "copy"
+    );
+
+
+    setStatus(
+      "Invitation link copied"
+    );
+
   }
+
 }
+
+
+/* =========================
+   PEOPLE COUNT
+========================= */
 
 function updatePeopleCount() {
 
   const count =
-    document.querySelectorAll(".video-tile").length;
+    document.querySelectorAll(
+      ".video-tile"
+    ).length;
+
 
   document.getElementById(
     "peopleCount"
   ).textContent =
     count +
-    (count === 1
-      ? " person in room"
-      : " people in room");
+    (
+      count === 1
+        ? " person in room"
+        : " people in room"
+    );
+
 }
+
+
+/* =========================
+   LEAVE
+========================= */
 
 function leaveRoom() {
 
   if (localStream) {
 
-    localStream.getTracks().forEach(
-      track => track.stop()
-    );
+    localStream
+      .getTracks()
+      .forEach(
+        track =>
+          track.stop()
+      );
+
   }
 
-  connections.forEach(call => {
-    try {
-      call.close();
-    } catch {}
-  });
+
+  connections.forEach(
+    call => {
+
+      try {
+
+        call.close();
+
+      }
+
+      catch {}
+
+    }
+  );
+
 
   if (peer) {
+
     try {
+
       peer.destroy();
-    } catch {}
+
+    }
+
+    catch {}
+
   }
+
 
   window.location.href =
     window.location.pathname;
+
 }
+
+
+/* =========================
+   MOVIE PLAYER
+========================= */
 
 function loadMovie() {
 
@@ -793,100 +1426,144 @@ function loadMovie() {
       "movieUrl"
     ).value.trim();
 
+
   if (!url) {
     return;
   }
+
 
   const container =
     document.getElementById(
       "movieContainer"
     );
 
-  /*
-    YouTube
-  */
+
+  /* YOUTUBE */
 
   const youtube =
     url.match(
       /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/
     );
 
+
   if (youtube) {
 
     const iframe =
-      document.createElement("iframe");
+      document.createElement(
+        "iframe"
+      );
+
 
     iframe.src =
       "https://www.youtube.com/embed/" +
       youtube[1];
 
+
     iframe.allow =
       "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
 
-    iframe.allowFullscreen = true;
 
-    container.innerHTML = "";
+    iframe.allowFullscreen =
+      true;
 
-    container.appendChild(iframe);
+
+    container.innerHTML =
+      "";
+
+
+    container.appendChild(
+      iframe
+    );
+
 
     return;
+
   }
 
-  /*
-    Vimeo
-  */
+
+  /* VIMEO */
 
   const vimeo =
     url.match(
       /vimeo\.com\/(\d+)/
     );
 
+
   if (vimeo) {
 
     const iframe =
-      document.createElement("iframe");
+      document.createElement(
+        "iframe"
+      );
+
 
     iframe.src =
       "https://player.vimeo.com/video/" +
       vimeo[1];
 
+
     iframe.allow =
       "autoplay; fullscreen; picture-in-picture";
 
-    iframe.allowFullscreen = true;
 
-    container.innerHTML = "";
+    iframe.allowFullscreen =
+      true;
 
-    container.appendChild(iframe);
+
+    container.innerHTML =
+      "";
+
+
+    container.appendChild(
+      iframe
+    );
+
 
     return;
+
   }
 
-  /*
-    Direct video URL
-  */
+
+  /* DIRECT VIDEO */
 
   const video =
-    document.createElement("video");
+    document.createElement(
+      "video"
+    );
 
-  video.src = url;
 
-  video.controls = true;
+  video.src =
+    url;
 
-  video.autoplay = false;
 
-  video.playsInline = true;
+  video.controls =
+    true;
 
-  container.innerHTML = "";
 
-  container.appendChild(video);
+  video.autoplay =
+    false;
+
+
+  video.playsInline =
+    true;
+
+
+  container.innerHTML =
+    "";
+
+
+  container.appendChild(
+    video
+  );
+
 }
 
-async function initialize() {
 
-  /*
-    HTTPS is required for camera/mic.
-  */
+/* =========================
+   INITIALIZE
+========================= */
+
+async function initialize() {
 
   if (
     !window.isSecureContext ||
@@ -897,23 +1574,58 @@ async function initialize() {
       "Camera requires HTTPS"
     );
 
+
     return;
+
   }
+
 
   await startCamera();
 
+
   createPeer();
 
-  setTimeout(() => {
 
-    connectToRoom();
+  setTimeout(
+    () => {
 
-  }, 1500);
+      connectToRoom();
+
+    },
+    1500
+  );
+
 
   updatePeopleCount();
+
+
+  /*
+    HIDE JELL & JAMES + ROOM STATUS
+    AFTER 10 SECONDS
+  */
+
+  setTimeout(
+    () => {
+
+      const intro =
+        document.getElementById(
+          "intro"
+        );
+
+
+      intro.classList.add(
+        "hidden"
+      );
+
+    },
+    10000
+  );
+
 }
 
+
 initialize();
+
 </script>
 
 </body>
