@@ -2,16 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-
-<meta name="theme-color" content="#4A5D4E">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Jell & James">
-
-<link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Jell & James Movie</title>
 
@@ -24,41 +15,72 @@
     --sage-medium: #A3B18A;
     --sage-light: #DAD7CD;
     --sage-bg: #F4F6F0;
-    --card-bg: #FFFFFF;
-    --text-color: #2D372E;
+    --white: #ffffff;
+    --text: #263128;
+    --black: #080a08;
     --danger: #b85c5c;
+    --shadow: 0 8px 25px rgba(45, 55, 46, .12);
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: "Segoe UI", sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-html,
-body {
-    width: 100%;
-    height: 100%;
+html {
+    scroll-behavior: smooth;
 }
 
 body {
+    min-height: 100vh;
     background: var(--sage-bg);
-    color: var(--text-color);
-    overflow: hidden;
+    color: var(--text);
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 header {
-    height: 65px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    min-height: 68px;
+    padding: 12px 22px;
+
     background: var(--sage-dark);
     color: white;
-    padding: 10px 18px;
+
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 15px;
+    justify-content: space-between;
+    gap: 20px;
+
+    box-shadow: 0 3px 15px rgba(0,0,0,.18);
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--sage-primary);
+    border-radius: 11px;
+
+    font-size: 20px;
 }
 
 header h1 {
@@ -74,421 +96,668 @@ header h1 {
 
 button {
     border: none;
-    border-radius: 7px;
-    padding: 9px 13px;
+    border-radius: 8px;
+
+    padding: 10px 14px;
+
     background: var(--sage-primary);
     color: white;
+
     font-weight: 600;
     cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        background .2s ease;
 }
 
 button:hover {
-    background: var(--sage-dark);
+    background: #718258;
+    transform: translateY(-1px);
 }
 
-.btn-secondary {
+button:active {
+    transform: translateY(0);
+}
+
+.secondary {
     background: var(--sage-medium);
 }
 
+.danger {
+    background: var(--danger);
+}
+
 .status {
-    font-size: .8rem;
-    padding: 6px 9px;
-    border-radius: 20px;
+    padding: 7px 11px;
+
     background: rgba(255,255,255,.12);
+
+    border-radius: 20px;
+
+    font-size: .78rem;
+    white-space: nowrap;
 }
 
-/* MAIN */
+/* =========================
+   PAGE
+========================= */
 
-.main-container {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 270px;
-    gap: 14px;
-    padding: 14px;
+.page {
+    width: 100%;
+    max-width: 1600px;
 
-    height: calc(100vh - 65px);
-    height: calc(100dvh - 65px);
+    margin: 0 auto;
 
-    min-height: 0;
+    padding: 20px;
 }
 
-/* MOVIE */
+/* =========================
+   MOVIE AREA
+========================= */
 
-.movie-section {
-    background: #000;
+.movie-card {
+    width: 100%;
+
+    background: var(--black);
+
     border: 3px solid var(--sage-medium);
-    border-radius: 12px;
+    border-radius: 16px;
+
     overflow: hidden;
+
+    box-shadow: var(--shadow);
+}
+
+.movie-header {
+    min-height: 48px;
+
+    padding: 10px 14px;
+
+    background: #202921;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.movie-title {
+    font-weight: 700;
+}
+
+.movie-subtitle {
+    color: #c8d1c7;
+    font-size: .78rem;
+}
+
+.movie-screen {
     position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 16 / 9;
+
+    min-height: 320px;
+
+    background: #000;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
-    min-width: 0;
-    min-height: 0;
 }
 
-.movie-section iframe,
-.movie-section video {
+.movie-screen iframe,
+.movie-screen video {
     width: 100%;
     height: 100%;
-    border: none;
+
+    border: 0;
+
+    display: block;
+
     background: #000;
 }
 
 .movie-placeholder {
-    color: var(--sage-light);
-    text-align: center;
+    max-width: 650px;
+
     padding: 30px;
+
+    text-align: center;
+
+    color: var(--sage-light);
+}
+
+.movie-placeholder .movie-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
 }
 
 .movie-placeholder h2 {
     margin-bottom: 10px;
 }
 
-/* SIDEBAR */
-
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
+.movie-placeholder p {
+    color: #aeb8ae;
+    line-height: 1.6;
 }
 
-.video-card {
-    background: #1E251F;
-    border: 3px solid var(--sage-primary);
-    border-radius: 10px;
+/* =========================
+   MOVIE URL CONTROLS
+========================= */
 
-    height: 150px;
+.movie-url {
+    padding: 12px;
 
-    position: relative;
-    overflow: hidden;
+    background: #202921;
+
+    display: flex;
+    gap: 8px;
+}
+
+.movie-url input {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 11px 13px;
+
+    border: 1px solid #657365;
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: .9rem;
+}
+
+.movie-url input:focus {
+    border-color: var(--sage-primary);
+}
+
+.movie-url button {
+    white-space: nowrap;
+}
+
+/* =========================
+   VIDEO CALL SECTION
+========================= */
+
+.section-title {
+    margin-top: 28px;
+    margin-bottom: 12px;
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+}
 
-    color: var(--sage-light);
+.section-title h2 {
+    color: var(--sage-dark);
+    font-size: 1.1rem;
+}
+
+.section-title span {
+    color: #6c776e;
+    font-size: .8rem;
+}
+
+.call-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+/* =========================
+   VIDEO CARDS
+========================= */
+
+.video-card {
+    position: relative;
+
+    min-width: 0;
+
+    aspect-ratio: 16 / 9;
+
+    background: #171c18;
+
+    border: 3px solid var(--sage-primary);
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow: var(--shadow);
 }
 
 .video-card video {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
+
+    display: block;
+
     background: #111;
 
     /*
-     * Prevents the local camera from appearing mirrored.
+     * IMPORTANT:
+     * Camera is NOT mirrored.
      */
     transform: scaleX(1);
 }
 
 .video-placeholder {
-    text-align: center;
-    color: var(--sage-light);
-    font-size: .85rem;
-}
-
-.user-label {
     position: absolute;
-    bottom: 7px;
-    left: 7px;
-
-    background: rgba(0,0,0,.65);
-    color: white;
-
-    padding: 3px 8px;
-    border-radius: 5px;
-
-    font-size: .72rem;
-}
-
-.media-controls {
-    position: absolute;
-    top: 7px;
-    right: 7px;
-
-    display: flex;
-    gap: 5px;
-}
-
-.media-controls button {
-    padding: 5px 7px;
-    font-size: .7rem;
-}
-
-/* CHAT */
-
-.chat-section {
-    background: var(--card-bg);
-    border: 3px solid var(--sage-dark);
-    border-radius: 10px;
-
-    flex: 1;
-    min-height: 180px;
-
-    display: flex;
-    flex-direction: column;
-
-    overflow: hidden;
-}
-
-.chat-header {
-    background: var(--sage-medium);
-    color: white;
-
-    padding: 8px 11px;
-
-    font-weight: bold;
-    font-size: .88rem;
-}
-
-.chat-messages {
-    flex: 1;
-
-    padding: 9px;
-
-    overflow-y: auto;
-
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-
-    font-size: .82rem;
-}
-
-.message {
-    background: var(--sage-bg);
-
-    padding: 7px 9px;
-
-    border-radius: 7px;
-
-    word-break: break-word;
-}
-
-.message .author {
-    font-weight: bold;
-    color: var(--sage-dark);
-    margin-right: 4px;
-}
-
-.chat-input-area {
-    display: flex;
-
-    padding: 7px;
-    gap: 5px;
-
-    background: #f0f0f0;
-
-    border-top: 1px solid var(--sage-light);
-}
-
-.chat-input-area input {
-    flex: 1;
-    min-width: 0;
-
-    border: 1px solid var(--sage-medium);
-
-    padding: 8px;
-
-    border-radius: 6px;
-}
-
-/* ROOM MODAL */
-
-.room-modal {
-    position: fixed;
     inset: 0;
-
-    background: rgba(20,30,22,.72);
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    z-index: 1000;
+    flex-direction: column;
 
-    padding: 20px;
+    gap: 8px;
+
+    color: var(--sage-light);
+
+    background:
+        radial-gradient(
+            circle at center,
+            #2a332b 0,
+            #151a16 65%
+        );
+
+    text-align: center;
 }
 
-.room-box {
-    width: min(480px, 100%);
+.video-placeholder .person-icon {
+    font-size: 38px;
+}
+
+.user-label {
+    position: absolute;
+
+    left: 10px;
+    bottom: 10px;
+
+    padding: 5px 9px;
+
+    border-radius: 6px;
+
+    background: rgba(0,0,0,.65);
+
+    color: white;
+
+    font-size: .75rem;
+    font-weight: 600;
+
+    z-index: 5;
+}
+
+.camera-controls {
+    position: absolute;
+
+    right: 10px;
+    bottom: 10px;
+
+    display: flex;
+    gap: 6px;
+
+    z-index: 5;
+}
+
+.camera-controls button {
+    width: 38px;
+    height: 36px;
+
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    background: rgba(0,0,0,.65);
+
+    font-size: 15px;
+}
+
+.camera-controls button:hover {
+    background: var(--sage-dark);
+}
+
+/* =========================
+   ROOM PANEL
+========================= */
+
+.room-panel {
+    margin-top: 28px;
+
+    padding: 20px;
 
     background: white;
 
-    border-radius: 15px;
+    border: 2px solid var(--sage-light);
+    border-radius: 14px;
 
-    padding: 25px;
-
-    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    box-shadow: var(--shadow);
 }
 
-.room-box h2 {
+.room-panel h2 {
     color: var(--sage-dark);
-    margin-bottom: 8px;
+
+    font-size: 1.1rem;
+
+    margin-bottom: 5px;
 }
 
-.room-box p {
-    color: #5d665f;
+.room-panel p {
+    color: #687269;
 
-    margin-bottom: 18px;
+    font-size: .85rem;
 
-    line-height: 1.5;
-}
-
-.room-box input {
-    width: 100%;
-
-    margin-bottom: 10px;
-
-    border: 1px solid var(--sage-medium);
-
-    padding: 10px;
-
-    border-radius: 7px;
+    margin-bottom: 15px;
 }
 
 .room-actions {
     display: flex;
+
+    flex-wrap: wrap;
+
     gap: 8px;
 }
 
-.room-actions button {
+.room-actions input {
     flex: 1;
+
+    min-width: 200px;
+
+    padding: 10px 12px;
+
+    border: 1px solid var(--sage-medium);
+    border-radius: 8px;
+
+    outline: none;
 }
 
-/* TOAST */
+.room-info {
+    margin-top: 14px;
+
+    padding: 11px;
+
+    background: var(--sage-bg);
+
+    border-radius: 8px;
+
+    font-size: .8rem;
+
+    word-break: break-all;
+
+    color: #5d675e;
+}
+
+.room-info strong {
+    color: var(--sage-dark);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    padding: 25px 5px 35px;
+
+    text-align: center;
+
+    color: #7a847b;
+
+    font-size: .78rem;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(20,30,22,.72);
+}
+
+.modal-box {
+    width: min(480px, 100%);
+
+    padding: 25px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    box-shadow: 0 25px 70px rgba(0,0,0,.3);
+}
+
+.modal-box h2 {
+    color: var(--sage-dark);
+
+    margin-bottom: 8px;
+}
+
+.modal-box p {
+    color: #687269;
+
+    line-height: 1.5;
+
+    margin-bottom: 18px;
+}
+
+.modal-box input {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    border: 1px solid var(--sage-medium);
+
+    border-radius: 8px;
+
+    outline: none;
+
+    margin-bottom: 10px;
+}
+
+.modal-actions {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+}
+
+/* =========================
+   TOAST
+========================= */
 
 .toast {
     position: fixed;
 
-    bottom: 20px;
     left: 50%;
+    bottom: 25px;
 
-    transform: translateX(-50%);
+    transform: translate(-50%, 20px);
+
+    padding: 11px 16px;
 
     background: var(--sage-dark);
     color: white;
 
-    padding: 10px 16px;
-
-    border-radius: 8px;
+    border-radius: 9px;
 
     opacity: 0;
+
     pointer-events: none;
 
     transition: .25s;
 
     z-index: 2000;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,.2);
 }
 
 .toast.show {
     opacity: 1;
+
+    transform: translate(-50%, 0);
 }
 
-/* INSTALL BUTTON */
+/* =========================
+   DESKTOP
+========================= */
 
-.install-button {
-    display: none;
+@media (min-width: 1100px) {
+
+    .page {
+        padding: 25px;
+    }
+
+    .movie-screen {
+        min-height: 500px;
+    }
+
+    .call-grid {
+        grid-template-columns: repeat(2, minmax(300px, 1fr));
+    }
 }
 
-/* MOBILE */
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 850px) {
 
-    body {
-        overflow: auto;
-    }
-
     header {
-        height: auto;
-        min-height: 60px;
+        position: relative;
 
-        flex-direction: column;
-
-        align-items: stretch;
-
-        padding: 10px;
-    }
-
-    header h1 {
-        text-align: center;
-    }
-
-    .header-actions {
-        justify-content: center;
         flex-wrap: wrap;
     }
 
-    .main-container {
-        height: auto;
+    .header-actions {
+        width: 100%;
 
-        min-height: calc(100dvh - 120px);
-
-        grid-template-columns: 1fr;
+        justify-content: center;
     }
 
-    .movie-section {
-        height: 55dvh;
-        min-height: 300px;
+    .page {
+        padding: 14px;
     }
 
-    .sidebar {
-        height: auto;
-
-        display: grid;
-
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .chat-section {
-        grid-column: 1 / -1;
-
-        height: 300px;
+    .movie-screen {
+        min-height: 260px;
     }
 }
 
-@media (max-width: 520px) {
+/* =========================
+   PHONE
+========================= */
 
-    .sidebar {
-        grid-template-columns: 1fr;
+@media (max-width: 600px) {
+
+    header {
+        padding: 12px;
     }
 
-    .chat-section {
-        grid-column: auto;
+    header h1 {
+        font-size: 1.15rem;
+    }
+
+    .logo-icon {
+        width: 34px;
+        height: 34px;
     }
 
     .header-actions {
         flex-direction: column;
+
+        align-items: stretch;
     }
 
-    .header-actions button {
+    .header-actions button,
+    .status {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .page {
+        padding: 10px;
+    }
+
+    .movie-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .movie-url {
+        flex-direction: column;
+    }
+
+    .movie-url input,
+    .movie-url button {
         width: 100%;
     }
 
-    .status {
-        text-align: center;
+    .movie-screen {
+        aspect-ratio: 16 / 10;
+        min-height: 220px;
+    }
+
+    .call-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .video-card {
+        aspect-ratio: 16 / 10;
+    }
+
+    .room-actions {
+        flex-direction: column;
+    }
+
+    .room-actions input,
+    .room-actions button {
+        width: 100%;
+    }
+
+    .modal-actions {
+        grid-template-columns: 1fr;
     }
 }
 
-/*
- * Standalone PWA mode
- */
+/* =========================
+   VERY SMALL PHONES
+========================= */
 
-@media (display-mode: standalone) {
+@media (max-width: 380px) {
 
-    body {
-        padding-top: env(safe-area-inset-top);
-        padding-bottom: env(safe-area-inset-bottom);
+    .movie-screen {
+        min-height: 190px;
     }
 
-    .install-button {
-        display: none !important;
+    .movie-placeholder {
+        padding: 15px;
+    }
+
+    .movie-placeholder .movie-icon {
+        font-size: 35px;
     }
 }
 </style>
@@ -498,27 +767,30 @@ button:hover {
 
 <header>
 
-    <h1>Jell & James Movie</h1>
+    <div class="logo-area">
+
+        <div class="logo-icon">
+            🎬
+        </div>
+
+        <h1>
+            Jell & James Movie
+        </h1>
+
+    </div>
 
     <div class="header-actions">
 
         <button
-            class="btn-secondary"
+            class="secondary"
             onclick="copyInviteLink()">
             🔗 Copy Invite
-        </button>
-
-        <button
-            class="install-button"
-            id="installButton"
-            onclick="installApp()">
-            📱 Install App
         </button>
 
         <div
             class="status"
             id="roomStatus">
-            Connecting...
+            Choose a room
         </div>
 
     </div>
@@ -526,32 +798,84 @@ button:hover {
 </header>
 
 
-<div class="main-container">
+<main class="page">
 
-    <!-- MOVIE -->
+    <!-- =====================
+         MOVIE
+    ====================== -->
 
-    <div
-        class="movie-section"
-        id="movieContainer">
+    <section class="movie-card">
 
-        <div
-            class="movie-placeholder"
-            id="placeholderText">
+        <div class="movie-header">
 
-            <h2>Jell & James Movie</h2>
+            <div class="movie-title">
+                🎥 Watch Together
+            </div>
 
-            <p>
-                Your movie will appear here.
-            </p>
+            <div class="movie-subtitle">
+                Share the same room with your friend
+            </div>
 
         </div>
+
+        <div
+            class="movie-screen"
+            id="movieContainer">
+
+            <div class="movie-placeholder">
+
+                <div class="movie-icon">
+                    🎬
+                </div>
+
+                <h2>
+                    No movie loaded
+                </h2>
+
+                <p>
+                    Paste a YouTube, Vimeo, Twitch,
+                    direct MP4, or embeddable video
+                    link below.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="movie-url">
+
+            <input
+                type="text"
+                id="movieUrlInput"
+                placeholder="Paste movie or video link here...">
+
+            <button onclick="loadMovieFromInput()">
+                ▶ Play Movie
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================
+         VIDEO CALL
+    ====================== -->
+
+    <div class="section-title">
+
+        <h2>
+            👥 Video Call
+        </h2>
+
+        <span>
+            Camera and microphone are shared with your friend
+        </span>
 
     </div>
 
 
-    <!-- SIDEBAR -->
-
-    <div class="sidebar">
+    <section class="call-grid">
 
         <!-- YOU -->
 
@@ -567,20 +891,32 @@ button:hover {
             <div
                 class="video-placeholder"
                 id="localPlaceholder">
-                Camera not started
+
+                <div class="person-icon">
+                    👤
+                </div>
+
+                <span>
+                    Camera not started
+                </span>
+
             </div>
 
             <div class="user-label">
                 You
             </div>
 
-            <div class="media-controls">
+            <div class="camera-controls">
 
-                <button onclick="toggleCam()">
+                <button
+                    onclick="toggleCam()"
+                    title="Camera">
                     📷
                 </button>
 
-                <button onclick="toggleMic()">
+                <button
+                    onclick="toggleMic()"
+                    title="Microphone">
                     🎤
                 </button>
 
@@ -602,7 +938,15 @@ button:hover {
             <div
                 class="video-placeholder"
                 id="remotePlaceholder">
-                Waiting for friend...
+
+                <div class="person-icon">
+                    👤
+                </div>
+
+                <span>
+                    Waiting for friend...
+                </span>
+
             </div>
 
             <div class="user-label">
@@ -611,76 +955,110 @@ button:hover {
 
         </div>
 
+    </section>
 
-        <!-- CHAT -->
 
-        <div class="chat-section">
+    <!-- =====================
+         ROOM
+    ====================== -->
 
-            <div class="chat-header">
-                💬 Chat
-            </div>
+    <div class="section-title">
 
-            <div
-                class="chat-messages"
-                id="chatMessages">
+        <h2>
+            🔗 Watch Room
+        </h2>
 
-                <div class="message">
-                    <span class="author">System:</span>
-                    Welcome to Jell & James Movie!
-                </div>
-
-            </div>
-
-            <div class="chat-input-area">
-
-                <input
-                    type="text"
-                    id="chatInput"
-                    placeholder="Type a message..."
-                    onkeypress="handleKeyPress(event)">
-
-                <button onclick="sendMessage()">
-                    Send
-                </button>
-
-            </div>
-
-        </div>
+        <span>
+            Create a room or join your friend's room
+        </span>
 
     </div>
 
-</div>
 
+    <section class="room-panel">
 
-<!-- ROOM MODAL -->
-
-<div
-    class="room-modal"
-    id="roomModal">
-
-    <div class="room-box">
-
-        <h2>🎬 Jell & James Movie</h2>
+        <h2>
+            Room controls
+        </h2>
 
         <p>
-            Create a private room and send the invite
-            link to your friend, or join an existing room.
+            Create a room and send the invite link
+            to your friend.
+        </p>
+
+        <div class="room-actions">
+
+            <button onclick="createRoom()">
+                ✨ Create Room
+            </button>
+
+            <input
+                type="text"
+                id="joinRoomInput"
+                placeholder="Enter room ID">
+
+            <button
+                class="secondary"
+                onclick="joinRoomFromInput()">
+                Join Room
+            </button>
+
+        </div>
+
+        <div
+            class="room-info"
+            id="roomInfo">
+
+            <strong>Room:</strong>
+            <span id="roomIdDisplay">
+                No room created yet
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <footer>
+        Jell & James Movie • Watch together
+    </footer>
+
+</main>
+
+
+<!-- =====================
+     ROOM MODAL
+====================== -->
+
+<div
+    class="modal"
+    id="roomModal">
+
+    <div class="modal-box">
+
+        <h2>
+            🎬 Welcome to Jell & James Movie
+        </h2>
+
+        <p>
+            Create a private watch room or enter
+            a room ID to join your friend.
         </p>
 
         <input
             type="text"
-            id="joinRoomInput"
+            id="modalJoinRoomInput"
             placeholder="Enter room ID">
 
-        <div class="room-actions">
+        <div class="modal-actions">
 
             <button onclick="createRoom()">
                 Create Room
             </button>
 
             <button
-                class="btn-secondary"
-                onclick="joinRoomFromInput()">
+                class="secondary"
+                onclick="joinFromModal()">
                 Join Room
             </button>
 
@@ -708,14 +1086,13 @@ let connection = null;
 let localStream = null;
 
 let roomId = null;
+
 let isHost = false;
 
-let micEnabled = true;
 let cameraEnabled = true;
+let micEnabled = true;
 
 let currentMovie = "";
-
-let deferredInstallPrompt = null;
 
 
 /* =====================================================
@@ -723,121 +1100,53 @@ let deferredInstallPrompt = null;
 ===================================================== */
 
 const movieContainer =
-    document.getElementById("movieContainer");
-
-const roomModal =
-    document.getElementById("roomModal");
-
-const roomStatus =
-    document.getElementById("roomStatus");
-
-const localVideo =
-    document.getElementById("person1Video");
-
-const remoteVideo =
-    document.getElementById("person2Video");
-
-const remotePlaceholder =
-    document.getElementById("remotePlaceholder");
-
-const localPlaceholder =
-    document.getElementById("localPlaceholder");
-
-
-/* =====================================================
-   PWA INSTALL
-===================================================== */
-
-window.addEventListener(
-    "beforeinstallprompt",
-    event => {
-
-        event.preventDefault();
-
-        deferredInstallPrompt = event;
-
-        const installButton =
-            document.getElementById("installButton");
-
-        installButton.style.display =
-            "block";
-
-    }
-);
-
-
-async function installApp() {
-
-    if (!deferredInstallPrompt) {
-
-        showToast(
-            "Use Chrome menu → Add to Home screen."
-        );
-
-        return;
-    }
-
-    deferredInstallPrompt.prompt();
-
-    await deferredInstallPrompt.userChoice;
-
-    deferredInstallPrompt = null;
-
     document.getElementById(
-        "installButton"
-    ).style.display = "none";
-
-}
-
-
-window.addEventListener(
-    "appinstalled",
-    () => {
-
-        showToast(
-            "Jell & James Movie installed!"
-        );
-
-    }
-);
-
-
-/* =====================================================
-   SERVICE WORKER
-===================================================== */
-
-if ("serviceWorker" in navigator) {
-
-    window.addEventListener(
-        "load",
-        () => {
-
-            navigator.serviceWorker
-                .register("./service-worker.js")
-                .then(() => {
-
-                    console.log(
-                        "Service worker registered."
-                    );
-
-                })
-                .catch(error => {
-
-                    console.error(
-                        "Service worker error:",
-                        error
-                    );
-
-                });
-
-        }
+        "movieContainer"
     );
 
-}
+const movieInput =
+    document.getElementById(
+        "movieUrlInput"
+    );
+
+const roomModal =
+    document.getElementById(
+        "roomModal"
+    );
+
+const roomStatus =
+    document.getElementById(
+        "roomStatus"
+    );
+
+const localVideo =
+    document.getElementById(
+        "person1Video"
+    );
+
+const remoteVideo =
+    document.getElementById(
+        "person2Video"
+    );
+
+const localPlaceholder =
+    document.getElementById(
+        "localPlaceholder"
+    );
+
+const remotePlaceholder =
+    document.getElementById(
+        "remotePlaceholder"
+    );
+
+const roomIdDisplay =
+    document.getElementById(
+        "roomIdDisplay"
+    );
 
 
 /* =====================================================
-   INITIALIZATION
+   START
 ===================================================== */
 
 window.addEventListener(
@@ -858,9 +1167,17 @@ window.addEventListener(
         if (urlMovie) {
 
             currentMovie =
-                decodeURIComponent(urlMovie);
+                decodeURIComponent(
+                    urlMovie
+                );
 
-            loadMovie(currentMovie);
+            movieInput.value =
+                currentMovie;
+
+            loadMovie(
+                currentMovie,
+                false
+            );
 
         }
 
@@ -868,7 +1185,8 @@ window.addEventListener(
 
         if (urlRoom) {
 
-            roomId = urlRoom;
+            roomId =
+                urlRoom;
 
             roomModal.style.display =
                 "none";
@@ -893,7 +1211,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   ROOM
+   ROOM ID
 ===================================================== */
 
 function generateRoomId() {
@@ -902,22 +1220,31 @@ function generateRoomId() {
         "jell-" +
         Math.random()
             .toString(36)
-            .substring(2, 8) +
-        "-" +
-        Date.now()
-            .toString(36)
-            .slice(-4)
+            .substring(2, 8)
     );
 
 }
 
 
+/* =====================================================
+   CREATE ROOM
+===================================================== */
+
 function createRoom() {
+
+    if (peer) {
+
+        try {
+            peer.destroy();
+        } catch (_) {}
+
+    }
 
     roomId =
         generateRoomId();
 
-    isHost = true;
+    isHost =
+        true;
 
     roomModal.style.display =
         "none";
@@ -930,29 +1257,69 @@ function createRoom() {
 }
 
 
+/* =====================================================
+   JOIN ROOM
+===================================================== */
+
 function joinRoomFromInput() {
 
+    const input =
+        document.getElementById(
+            "joinRoomInput"
+        );
+
     const value =
-        document
-            .getElementById(
-                "joinRoomInput"
-            )
-            .value
-            .trim();
+        input.value.trim();
 
     if (!value) {
 
         showToast(
-            "Enter a room ID first."
+            "Enter a room ID."
         );
 
         return;
-
     }
 
-    roomId = value;
+    joinRoom(
+        value
+    );
 
-    isHost = false;
+}
+
+
+function joinFromModal() {
+
+    const input =
+        document.getElementById(
+            "modalJoinRoomInput"
+        );
+
+    const value =
+        input.value.trim();
+
+    if (!value) {
+
+        showToast(
+            "Enter a room ID."
+        );
+
+        return;
+    }
+
+    joinRoom(
+        value
+    );
+
+}
+
+
+function joinRoom(id) {
+
+    roomId =
+        id;
+
+    isHost =
+        false;
 
     roomModal.style.display =
         "none";
@@ -969,17 +1336,26 @@ function joinRoomFromInput() {
    PEERJS
 ===================================================== */
 
-function initializePeer(id, host) {
+function initializePeer(
+    id,
+    host
+) {
 
     roomStatus.textContent =
         host
             ? "Creating room..."
             : "Joining room...";
 
+    roomIdDisplay.textContent =
+        id;
+
     peer =
-        new Peer(id, {
-            debug: 1
-        });
+        new Peer(
+            id,
+            {
+                debug: 1
+            }
+        );
 
 
     peer.on(
@@ -989,10 +1365,13 @@ function initializePeer(id, host) {
             roomId =
                 peerId;
 
+            roomIdDisplay.textContent =
+                roomId;
+
             roomStatus.textContent =
                 host
-                    ? "Room ready"
-                    : "Connected";
+                    ? "🟢 Room ready"
+                    : "🟢 Connected";
 
             updateUrl();
 
@@ -1010,7 +1389,9 @@ function initializePeer(id, host) {
         "connection",
         conn => {
 
-            setupConnection(conn);
+            setupConnection(
+                conn
+            );
 
             callRemoteUser(
                 conn.peer
@@ -1023,6 +1404,13 @@ function initializePeer(id, host) {
     peer.on(
         "call",
         call => {
+
+            if (!localStream) {
+
+                call.answer();
+
+                return;
+            }
 
             call.answer(
                 localStream
@@ -1049,15 +1437,31 @@ function initializePeer(id, host) {
         "error",
         error => {
 
-            console.error(error);
+            console.error(
+                "PeerJS:",
+                error
+            );
+
+            if (
+                error.type ===
+                "unavailable-id"
+            ) {
+
+                showToast(
+                    "That room already exists."
+                );
+
+            } else {
+
+                showToast(
+                    "Connection error: " +
+                    error.type
+                );
+
+            }
 
             roomStatus.textContent =
                 "Connection error";
-
-            showToast(
-                "Connection error: " +
-                error.type
-            );
 
         }
     );
@@ -1080,9 +1484,12 @@ function initializePeer(id, host) {
    CONNECTION
 ===================================================== */
 
-function setupConnection(conn) {
+function setupConnection(
+    conn
+) {
 
-    connection = conn;
+    connection =
+        conn;
 
     conn.on(
         "open",
@@ -1095,11 +1502,18 @@ function setupConnection(conn) {
                 "Friend connected!"
             );
 
+            /*
+             * Send current movie.
+             */
+
             if (currentMovie) {
 
                 sendData({
+
                     type: "movie",
+
                     url: currentMovie
+
                 });
 
             }
@@ -1112,7 +1526,24 @@ function setupConnection(conn) {
         "data",
         data => {
 
-            handleData(data);
+            if (
+                data &&
+                data.type ===
+                "movie"
+            ) {
+
+                currentMovie =
+                    data.url;
+
+                movieInput.value =
+                    currentMovie;
+
+                loadMovie(
+                    currentMovie,
+                    false
+                );
+
+            }
 
         }
     );
@@ -1126,7 +1557,7 @@ function setupConnection(conn) {
                 "Waiting for friend...";
 
             remotePlaceholder.style.display =
-                "block";
+                "flex";
 
             remoteVideo.srcObject =
                 null;
@@ -1141,10 +1572,17 @@ function setupConnection(conn) {
    VIDEO CALL
 ===================================================== */
 
-function callRemoteUser(remotePeerId) {
+function callRemoteUser(
+    remotePeerId
+) {
 
-    if (!localStream || !peer)
+    if (
+        !peer ||
+        !localStream
+    ) {
+
         return;
+    }
 
     try {
 
@@ -1167,9 +1605,23 @@ function callRemoteUser(remotePeerId) {
             }
         );
 
+        call.on(
+            "error",
+            error => {
+
+                console.error(
+                    "Call error:",
+                    error
+                );
+
+            }
+        );
+
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            error
+        );
 
     }
 
@@ -1182,13 +1634,37 @@ function callRemoteUser(remotePeerId) {
 
 async function startCamera() {
 
+    if (
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ) {
+
+        localPlaceholder.innerHTML =
+            `
+            <div class="person-icon">📷</div>
+            <span>Camera unavailable</span>
+            `;
+
+        return;
+
+    }
+
     try {
 
         localStream =
             await navigator.mediaDevices
                 .getUserMedia({
 
-                    video: true,
+                    video: {
+                        width: {
+                            ideal: 1280
+                        },
+                        height: {
+                            ideal: 720
+                        },
+                        facingMode:
+                            "user"
+                    },
 
                     audio: {
                         echoCancellation: true,
@@ -1201,24 +1677,40 @@ async function startCamera() {
         localVideo.srcObject =
             localStream;
 
+        /*
+         * Explicitly prevent mirroring.
+         */
+        localVideo.style.transform =
+            "scaleX(1)";
+
         localPlaceholder.style.display =
             "none";
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Camera error:",
+            error
+        );
 
-        localPlaceholder.textContent =
-            "Camera unavailable";
+        localPlaceholder.innerHTML =
+            `
+            <div class="person-icon">📷</div>
+            <span>Camera permission denied</span>
+            `;
 
         showToast(
-            "Camera permission was not granted."
+            "Allow camera and microphone access."
         );
 
     }
 
 }
 
+
+/* =====================================================
+   CAMERA TOGGLE
+===================================================== */
 
 function toggleCam() {
 
@@ -1240,12 +1732,16 @@ function toggleCam() {
 
     showToast(
         cameraEnabled
-            ? "Camera on"
-            : "Camera off"
+            ? "Camera turned on"
+            : "Camera turned off"
     );
 
 }
 
+
+/* =====================================================
+   MIC TOGGLE
+===================================================== */
 
 function toggleMic() {
 
@@ -1267,18 +1763,43 @@ function toggleMic() {
 
     showToast(
         micEnabled
-            ? "Microphone on"
-            : "Microphone off"
+            ? "Microphone turned on"
+            : "Microphone turned off"
     );
 
 }
 
 
 /* =====================================================
-   MOVIE
+   MOVIE LOADING
 ===================================================== */
 
-function loadMovie(url) {
+function loadMovieFromInput() {
+
+    const url =
+        movieInput.value.trim();
+
+    if (!url) {
+
+        showToast(
+            "Paste a movie link first."
+        );
+
+        return;
+    }
+
+    loadMovie(
+        url,
+        true
+    );
+
+}
+
+
+function loadMovie(
+    url,
+    broadcast = true
+) {
 
     if (!url)
         return;
@@ -1286,11 +1807,16 @@ function loadMovie(url) {
     currentMovie =
         url.trim();
 
-    movieContainer.innerHTML = "";
+    movieInput.value =
+        currentMovie;
 
-    /*
-     * YouTube
-     */
+    movieContainer.innerHTML =
+        "";
+
+
+    /* =========================
+       YOUTUBE
+    ========================= */
 
     if (
         currentMovie.includes(
@@ -1301,74 +1827,126 @@ function loadMovie(url) {
         )
     ) {
 
-        let videoId = "";
+        let videoId =
+            "";
 
-        if (
-            currentMovie.includes(
-                "youtube.com/watch"
-            )
-        ) {
+        try {
 
-            videoId =
-                new URL(
+            if (
+                currentMovie.includes(
+                    "youtube.com/watch"
+                )
+            ) {
+
+                const parsed =
+                    new URL(
+                        currentMovie
+                    );
+
+                videoId =
+                    parsed.searchParams.get(
+                        "v"
+                    );
+
+            } else {
+
+                videoId =
                     currentMovie
-                ).searchParams.get(
-                    "v"
-                );
+                        .split(
+                            "youtu.be/"
+                        )[1]
+                        .split("?")[0];
 
-        } else {
+            }
 
-            videoId =
-                currentMovie
-                    .split("youtu.be/")[1]
-                    .split("?")[0];
+        } catch (_) {}
+
+        if (videoId) {
+
+            movieContainer.innerHTML =
+                `
+                <iframe
+                    src="https://www.youtube.com/embed/${escapeAttribute(videoId)}?autoplay=1"
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+                `;
 
         }
 
-        movieContainer.innerHTML = `
-            <iframe
-                src="https://www.youtube.com/embed/${videoId}?autoplay=1"
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowfullscreen>
-            </iframe>
-        `;
-
-        return;
     }
 
 
-    /*
-     * Vimeo
-     */
+    /* =========================
+       VIMEO
+    ========================= */
 
-    if (
+    else if (
         currentMovie.includes(
             "vimeo.com/"
         )
     ) {
 
-        const id =
+        let id =
             currentMovie
-                .split("vimeo.com/")[1]
-                .split("?")[0];
+                .split(
+                    "vimeo.com/"
+                )[1]
+                .split("?")[0]
+                .split("/")[0];
 
-        movieContainer.innerHTML = `
+        movieContainer.innerHTML =
+            `
             <iframe
-                src="https://player.vimeo.com/video/${id}"
+                src="https://player.vimeo.com/video/${escapeAttribute(id)}"
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowfullscreen>
             </iframe>
-        `;
+            `;
 
-        return;
     }
 
 
-    /*
-     * Direct video
-     */
+    /* =========================
+       TWITCH
+    ========================= */
 
-    if (
+    else if (
+        currentMovie.includes(
+            "twitch.tv/"
+        )
+    ) {
+
+        let channel =
+            currentMovie
+                .split(
+                    "twitch.tv/"
+                )[1]
+                .split(/[?#/]/)[0];
+
+        /*
+         * Twitch requires the parent
+         * domain in the embed URL.
+         */
+        const host =
+            window.location.hostname;
+
+        movieContainer.innerHTML =
+            `
+            <iframe
+                src="https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${encodeURIComponent(host)}"
+                allowfullscreen>
+            </iframe>
+            `;
+
+    }
+
+
+    /* =========================
+       DIRECT VIDEO
+    ========================= */
+
+    else if (
         /\.(mp4|webm|ogg)(\?.*)?$/i
             .test(currentMovie)
     ) {
@@ -1381,82 +1959,90 @@ function loadMovie(url) {
         video.src =
             currentMovie;
 
-        video.controls = true;
+        video.controls =
+            true;
 
-        video.autoplay = true;
+        video.autoplay =
+            true;
 
-        video.playsInline = true;
+        video.playsInline =
+            true;
 
         movieContainer.appendChild(
             video
         );
 
-        return;
+    }
+
+
+    /* =========================
+       OTHER EMBEDDABLE WEBSITE
+    ========================= */
+
+    else {
+
+        movieContainer.innerHTML =
+            `
+            <iframe
+                src="${escapeAttribute(currentMovie)}"
+                allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+            `;
+
     }
 
 
     /*
-     * Generic embeddable website
+     * Tell the friend what movie
+     * was selected.
      */
 
-    movieContainer.innerHTML = `
-        <iframe
-            src="${escapeHtml(currentMovie)}"
-            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-            allowfullscreen>
-        </iframe>
-    `;
+    if (
+        broadcast &&
+        connection &&
+        connection.open
+    ) {
+
+        sendData({
+
+            type: "movie",
+
+            url: currentMovie
+
+        });
+
+    }
 
 }
 
 
 /* =====================================================
-   DATA
+   SEND DATA
 ===================================================== */
 
-function sendData(data) {
+function sendData(
+    data
+) {
 
     if (
         connection &&
         connection.open
     ) {
 
-        connection.send(data);
+        try {
 
-    }
+            connection.send(
+                data
+            );
 
-}
+        } catch (error) {
 
+            console.error(
+                error
+            );
 
-function handleData(data) {
-
-    if (!data)
-        return;
-
-
-    if (
-        data.type === "movie" &&
-        data.url
-    ) {
-
-        currentMovie =
-            data.url;
-
-        loadMovie(
-            data.url
-        );
-
-    }
-
-
-    if (
-        data.type === "chat"
-    ) {
-
-        addMessage(
-            "Friend",
-            data.text
-        );
+        }
 
     }
 
@@ -1464,89 +2050,13 @@ function handleData(data) {
 
 
 /* =====================================================
-   CHAT
-===================================================== */
-
-function sendMessage() {
-
-    const input =
-        document.getElementById(
-            "chatInput"
-        );
-
-    const text =
-        input.value.trim();
-
-    if (!text)
-        return;
-
-    addMessage(
-        "You",
-        text
-    );
-
-    sendData({
-        type: "chat",
-        text: text
-    });
-
-    input.value = "";
-
-}
-
-
-function addMessage(
-    author,
-    text
-) {
-
-    const messages =
-        document.getElementById(
-            "chatMessages"
-        );
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-    div.className =
-        "message";
-
-    div.innerHTML =
-        `<span class="author">
-            ${escapeHtml(author)}:
-        </span>
-        ${escapeHtml(text)}`;
-
-    messages.appendChild(
-        div
-    );
-
-    messages.scrollTop =
-        messages.scrollHeight;
-
-}
-
-
-function handleKeyPress(event) {
-
-    if (
-        event.key === "Enter"
-    ) {
-
-        sendMessage();
-
-    }
-
-}
-
-
-/* =====================================================
-   INVITE
+   INVITE LINK
 ===================================================== */
 
 function updateUrl() {
+
+    if (!roomId)
+        return;
 
     const url =
         new URL(
@@ -1578,28 +2088,63 @@ function updateUrl() {
 
 function copyInviteLink() {
 
+    if (!roomId) {
+
+        showToast(
+            "Create or join a room first."
+        );
+
+        return;
+    }
+
     updateUrl();
 
-    const link =
+    const invite =
         window.location.href;
 
-    navigator.clipboard
-        .writeText(link)
-        .then(() => {
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
 
-            showToast(
-                "Invite link copied!"
-            );
+        navigator.clipboard
+            .writeText(
+                invite
+            )
+            .then(() => {
 
-        })
-        .catch(() => {
+                showToast(
+                    "Invite link copied!"
+                );
 
-            prompt(
-                "Copy this invite link:",
-                link
-            );
+            })
+            .catch(() => {
 
-        });
+                fallbackCopy(
+                    invite
+                );
+
+            });
+
+    } else {
+
+        fallbackCopy(
+            invite
+        );
+
+    }
+
+}
+
+
+function fallbackCopy(
+    text
+) {
+
+    window.prompt(
+        "Copy this invite link:",
+        text
+    );
 
 }
 
@@ -1608,24 +2153,38 @@ function copyInviteLink() {
    HELPERS
 ===================================================== */
 
-function escapeHtml(text) {
+function escapeAttribute(
+    text
+) {
 
     return String(text)
         .replace(
-            /[&<>"']/g,
-            char => ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
-            }[char])
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
         );
 
 }
 
 
-function showToast(message) {
+function showToast(
+    message
+) {
 
     const toast =
         document.getElementById(
@@ -1639,16 +2198,21 @@ function showToast(message) {
         "show"
     );
 
-    setTimeout(
-        () => {
-
-            toast.classList.remove(
-                "show"
-            );
-
-        },
-        2500
+    clearTimeout(
+        window.toastTimer
     );
+
+    window.toastTimer =
+        setTimeout(
+            () => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2500
+        );
 
 }
 
