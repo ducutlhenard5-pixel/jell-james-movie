@@ -1,8 +1,7 @@
-const { WebSocketServer } = require('ws');
-
-// Gagamit ng port ng Render o 10000 para sa free tier
 const PORT = process.env.PORT || 10000;
-const wss = new WebSocketServer({ port: PORT });
+// Palitan ang wss initialization gamit ang host na 0.0.0.0
+const wss = new WebSocketServer({ port: PORT, host: '0.0.0.0' });
+
 
 // Listahan ng mga active rooms
 const rooms = new Map();
