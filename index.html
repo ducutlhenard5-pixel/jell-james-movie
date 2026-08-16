@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jell & James Movie</title>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-
 <style>
 * {
   box-sizing: border-box;
@@ -37,20 +35,18 @@ input {
   justify-content: space-between;
   padding: 0 18px;
   border-bottom: 1px solid #c9dcc9;
-  overflow: hidden;
   transition:
-    opacity 0.5s ease,
-    height 0.5s ease,
-    padding 0.5s ease,
-    border 0.5s ease;
+    height .5s ease,
+    opacity .5s ease,
+    padding .5s ease;
 }
 
 .intro.hidden {
   height: 0;
   opacity: 0;
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0;
   border: 0;
+  overflow: hidden;
 }
 
 .logo {
@@ -164,14 +160,10 @@ input {
   padding: 4px 4px 12px;
 }
 
-/* TWO PEOPLE ONLY */
-
 .video-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  flex: 0 0 auto;
-  align-content: start;
   max-height: 190px;
   overflow: hidden;
 }
@@ -192,7 +184,7 @@ input {
   display: block;
 }
 
-/* MIRROR OWN CAMERA */
+/* MIRROR ONLY YOUR CAMERA */
 
 #localVideo {
   transform: scaleX(-1);
@@ -267,7 +259,7 @@ input {
 }
 
 /* =========================
-   INVITATION
+   INVITE
 ========================= */
 
 .invite-box {
@@ -306,16 +298,16 @@ input {
   cursor: pointer;
 }
 
-.people {
-  margin-top: 12px;
-  font-size: 13px;
-  color: #617064;
-}
-
 .status {
   font-size: 12px;
   color: #68756b;
   margin-top: 8px;
+}
+
+.people {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #617064;
 }
 
 /* =========================
@@ -367,16 +359,22 @@ input {
 <body>
 
 <!-- =========================
-     TEMPORARY 10 SECOND INTRO
+     TEMPORARY INTRO
 ========================= -->
 
-<div class="intro" id="intro">
+<div
+  class="intro"
+  id="intro"
+>
 
   <div class="logo">
     Jell & James Movie
   </div>
 
-  <div class="room-status" id="roomStatus">
+  <div
+    class="room-status"
+    id="roomStatus"
+  >
     Connecting...
   </div>
 
@@ -391,7 +389,10 @@ input {
 
 <section class="movie-section">
 
-  <div class="movie-card" id="movieContainer">
+  <div
+    class="movie-card"
+    id="movieContainer"
+  >
 
     <div class="movie-placeholder">
       Paste a movie/video URL below to start watching.
@@ -428,7 +429,7 @@ input {
 
 
 <!-- =========================
-     VIDEO CALL SIDE
+     VIDEO CALL
 ========================= -->
 
 <aside class="side">
@@ -443,7 +444,7 @@ input {
     id="videoGrid"
   >
 
-    <!-- YOUR VIDEO -->
+    <!-- LOCAL VIDEO -->
 
     <div
       class="video-tile"
@@ -479,7 +480,7 @@ input {
 
   <div class="controls">
 
-    <!-- MIC -->
+    <!-- MICROPHONE -->
 
     <button
       class="control"
@@ -591,7 +592,7 @@ input {
 
 
   <!-- =========================
-       INVITATION LINK
+       INVITATION
   ========================= -->
 
   <div class="invite-box">
@@ -640,15 +641,38 @@ input {
 
 <script>
 
+/*
+==================================================
+ IMPORTANT
+==================================================
+
+PALITAN ITO NG ACTUAL WSS ADDRESS
+NG IYONG SIGNALING SERVER.
+
+HALIMBAWA:
+
+wss://your-server.example
+
+HINDI GAGANA ANG VIDEO CALL HANGGA'T
+HINDI ITO TOTOONG SERVER ADDRESS.
+==================================================
+*/
+
+const SIGNALING_SERVER =
+  "wss://YOUR-SIGNALING-SERVER.example";
+
+
 /* =========================
-   ROOM VARIABLES
+   VARIABLES
 ========================= */
 
-let peer = null;
+let ws = null;
+let pc = null;
 let localStream = null;
-let roomId = null;
 
-let connections = new Map();
+let roomId = null;
+let isHost = false;
+let connected = false;
 
 
 const params =
@@ -678,26 +702,6 @@ function generateRoomId() {
 
 
 /* =========================
-   INVITE LINK
-========================= */
-
-function updateInvite() {
-
-  const link =
-    window.location.origin +
-    window.location.pathname +
-    "?room=" +
-    encodeURIComponent(roomId);
-
-
-  document.getElementById(
-    "inviteLink"
-  ).value = link;
-
-}
-
-
-/* =========================
    STATUS
 ========================= */
 
@@ -707,7 +711,6 @@ function setStatus(text) {
     "connectionStatus"
   ).textContent = text;
 
-
   document.getElementById(
     "roomStatus"
   ).textContent = text;
@@ -716,7 +719,28 @@ function setStatus(text) {
 
 
 /* =========================
-   CAMERA
+   INVITE LINK
+========================= */
+
+function updateInvite() {
+
+  const link =
+    window.location.origin +
+    window.location.pathname +
+    "?room=" +
+    encodeURIComponent(
+      roomId
+    );
+
+  document.getElementById(
+    "inviteLink"
+  ).value = link;
+
+}
+
+
+/* =========================
+   CAMERA + MICROPHONE
 ========================= */
 
 async function startCamera() {
@@ -741,18 +765,19 @@ async function startCamera() {
 
 
     setStatus(
-      "Room ready"
+      "Camera and microphone ready"
     );
 
   }
 
   catch (error) {
 
-    console.error(error);
-
+    console.error(
+      error
+    );
 
     setStatus(
-      "Camera/microphone permission is required"
+      "Camera/microphone permission required"
     );
 
   }
@@ -761,257 +786,492 @@ async function startCamera() {
 
 
 /* =========================
-   PEER
+   WEBRTC
 ========================= */
 
-function createPeer() {
+function createPeerConnection() {
 
-  if (!roomId) {
+  if (pc) {
+    return;
+  }
 
-    roomId =
-      generateRoomId();
+
+  pc =
+    new RTCPeerConnection({
+
+      iceServers: [
+
+        {
+          urls:
+            "stun:stun.l.google.com:19302"
+        },
+
+        {
+          urls:
+            "stun:stun1.l.google.com:19302"
+        }
+
+      ]
+
+    });
 
 
-    history.replaceState(
-      {},
-      "",
-      window.location.pathname +
-      "?room=" +
-      encodeURIComponent(roomId)
-    );
+  if (localStream) {
+
+    localStream
+      .getTracks()
+      .forEach(
+        track => {
+
+          pc.addTrack(
+            track,
+            localStream
+          );
+
+        }
+      );
 
   }
 
 
-  updateInvite();
+  pc.onicecandidate =
+    event => {
+
+      if (
+        event.candidate &&
+        ws &&
+        ws.readyState ===
+        WebSocket.OPEN
+      ) {
+
+        ws.send(
+          JSON.stringify({
+
+            type:
+              "candidate",
+
+            room:
+              roomId,
+
+            candidate:
+              event.candidate
+
+          })
+        );
+
+      }
+
+    };
 
 
-  peer =
-    new Peer(roomId);
+  pc.ontrack =
+    event => {
+
+      addGuestVideo(
+        event.streams[0]
+      );
+
+    };
 
 
-  peer.on(
-    "open",
+  pc.onconnectionstatechange =
     () => {
 
-      setStatus(
-        "Room ready"
-      );
+      if (
+        pc.connectionState ===
+        "connected"
+      ) {
 
-    }
-  );
+        connected = true;
 
+        setStatus(
+          "Connected"
+        );
 
-  peer.on(
-    "error",
-    error => {
-
-      console.error(
-        error
-      );
+      }
 
 
       if (
-        error.type ===
-        "unavailable-id"
+        pc.connectionState ===
+        "disconnected" ||
+        pc.connectionState ===
+        "failed" ||
+        pc.connectionState ===
+        "closed"
       ) {
 
-        joinExistingRoom();
+        connected = false;
 
-      }
-
-      else {
+        removeGuestVideo();
 
         setStatus(
-          "Connection error"
+          "Guest disconnected"
         );
 
       }
 
-    }
-  );
-
-
-  peer.on(
-    "call",
-    call => {
-
-      if (!localStream) {
-        return;
-      }
-
-
-      call.answer(
-        localStream
-      );
-
-
-      setupCall(
-        call
-      );
-
-    }
-  );
+    };
 
 }
 
 
 /* =========================
-   JOIN EXISTING ROOM
+   SIGNALING SERVER
 ========================= */
 
-function joinExistingRoom() {
+function connectSignaling() {
 
-  const newPeer =
-    new Peer();
-
-
-  peer =
-    newPeer;
-
-
-  newPeer.on(
-    "open",
-    () => {
-
-      setStatus(
-        "Joining room..."
-      );
-
-
-      const call =
-        newPeer.call(
-          roomId,
-          localStream
-        );
-
-
-      if (call) {
-
-        setupCall(
-          call
-        );
-
-      }
-
-    }
-  );
-
-
-  newPeer.on(
-    "call",
-    call => {
-
-      call.answer(
-        localStream
-      );
-
-
-      setupCall(
-        call
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================
-   CALL
-========================= */
-
-function setupCall(call) {
-
-  call.on(
-    "stream",
-    remoteStream => {
-
-      addRemoteVideo(
-        call.peer,
-        remoteStream
-      );
-
-
-      connections.set(
-        call.peer,
-        call
-      );
-
-
-      updatePeopleCount();
-
-    }
-  );
-
-
-  call.on(
-    "close",
-    () => {
-
-      removeRemoteVideo(
-        call.peer
-      );
-
-
-      connections.delete(
-        call.peer
-      );
-
-
-      updatePeopleCount();
-
-    }
-  );
-
-
-  call.on(
-    "error",
-    error => {
-
-      console.error(
-        error
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================
-   REMOTE VIDEO
-   MAX 2 PEOPLE
-========================= */
-
-function addRemoteVideo(
-  id,
-  stream
-) {
-
-  const videoGrid =
-    document.getElementById(
-      "videoGrid"
+  ws =
+    new WebSocket(
+      SIGNALING_SERVER
     );
 
 
-  /* ONE LOCAL + ONE GUEST */
+  ws.onopen =
+    () => {
+
+      ws.send(
+        JSON.stringify({
+
+          type:
+            "join",
+
+          room:
+            roomId
+
+        })
+      );
+
+
+      setStatus(
+        isHost
+          ? "Room ready"
+          : "Joining room..."
+      );
+
+    };
+
+
+  ws.onmessage =
+    async event => {
+
+      let data;
+
+      try {
+
+        data =
+          JSON.parse(
+            event.data
+          );
+
+      }
+
+      catch {
+
+        return;
+
+      }
+
+
+      /* ROOM JOINED */
+
+      if (
+        data.type ===
+        "joined"
+      ) {
+
+        if (
+          data.hasOther
+        ) {
+
+          await createOffer();
+
+        }
+
+        return;
+
+      }
+
+
+      /* OTHER USER JOINED */
+
+      if (
+        data.type ===
+        "peer-joined"
+      ) {
+
+        if (
+          !pc
+        ) {
+
+          await createOffer();
+
+        }
+
+        return;
+
+      }
+
+
+      /* OFFER */
+
+      if (
+        data.type ===
+        "offer"
+      ) {
+
+        await receiveOffer(
+          data.offer
+        );
+
+        return;
+
+      }
+
+
+      /* ANSWER */
+
+      if (
+        data.type ===
+        "answer"
+      ) {
+
+        if (!pc) {
+          return;
+        }
+
+
+        await pc.setRemoteDescription(
+          data.answer
+        );
+
+
+        setStatus(
+          "Connected"
+        );
+
+        return;
+
+      }
+
+
+      /* ICE */
+
+      if (
+        data.type ===
+        "candidate"
+      ) {
+
+        if (!pc) {
+          return;
+        }
+
+
+        try {
+
+          await pc.addIceCandidate(
+            data.candidate
+          );
+
+        }
+
+        catch (
+          error
+        ) {
+
+          console.error(
+            error
+          );
+
+        }
+
+        return;
+
+      }
+
+
+      /* ROOM FULL */
+
+      if (
+        data.type ===
+        "room-full"
+      ) {
+
+        setStatus(
+          "Room is full"
+        );
+
+        return;
+
+      }
+
+
+      /* USER LEFT */
+
+      if (
+        data.type ===
+        "peer-left"
+      ) {
+
+        removeGuestVideo();
+
+        setStatus(
+          "Waiting for guest..."
+        );
+
+      }
+
+    };
+
+
+  ws.onerror =
+    () => {
+
+      setStatus(
+        "Unable to connect to room server"
+      );
+
+    };
+
+
+  ws.onclose =
+    () => {
+
+      connected = false;
+
+    };
+
+}
+
+
+/* =========================
+   CREATE OFFER
+========================= */
+
+async function createOffer() {
+
+  createPeerConnection();
+
+
+  const offer =
+    await pc.createOffer();
+
+
+  await pc.setLocalDescription(
+    offer
+  );
+
+
+  ws.send(
+    JSON.stringify({
+
+      type:
+        "offer",
+
+      room:
+        roomId,
+
+      offer:
+        offer
+
+    })
+  );
+
+}
+
+
+/* =========================
+   RECEIVE OFFER
+========================= */
+
+async function receiveOffer(
+  offer
+) {
+
+  createPeerConnection();
+
+
+  await pc.setRemoteDescription(
+    offer
+  );
+
+
+  const answer =
+    await pc.createAnswer();
+
+
+  await pc.setLocalDescription(
+    answer
+  );
+
+
+  ws.send(
+    JSON.stringify({
+
+      type:
+        "answer",
+
+      room:
+        roomId,
+
+      answer:
+        answer
+
+    })
+  );
+
+}
+
+
+/* =========================
+   GUEST VIDEO
+========================= */
+
+function addGuestVideo(
+  stream
+) {
 
   if (
-    videoGrid.querySelectorAll(
-      ".video-tile"
-    ).length >= 2
+    document.getElementById(
+      "guestTile"
+    )
   ) {
+
+    const existing =
+      document.querySelector(
+        "#guestTile video"
+      );
+
+    if (
+      existing &&
+      existing.srcObject !==
+      stream
+    ) {
+
+      existing.srcObject =
+        stream;
+
+    }
 
     return;
 
   }
 
 
-  if (
+  const grid =
     document.getElementById(
-      "tile-" + id
-    )
+      "videoGrid"
+    );
+
+
+  /*
+    LOCAL + ONE GUEST ONLY
+  */
+
+  if (
+    grid.querySelectorAll(
+      ".video-tile"
+    ).length >= 2
   ) {
 
     return;
@@ -1028,9 +1288,8 @@ function addRemoteVideo(
   tile.className =
     "video-tile";
 
-
   tile.id =
-    "tile-" + id;
+    "guestTile";
 
 
   const video =
@@ -1042,10 +1301,8 @@ function addRemoteVideo(
   video.autoplay =
     true;
 
-
   video.playsInline =
     true;
-
 
   video.srcObject =
     stream;
@@ -1060,7 +1317,6 @@ function addRemoteVideo(
   name.className =
     "video-name";
 
-
   name.textContent =
     "Guest";
 
@@ -1069,85 +1325,53 @@ function addRemoteVideo(
     video
   );
 
-
   tile.appendChild(
     name
   );
 
 
-  videoGrid.appendChild(
+  grid.appendChild(
     tile
   );
 
+
+  document.getElementById(
+    "peopleCount"
+  ).textContent =
+    "2 people in room";
+
 }
 
 
 /* =========================
-   REMOVE VIDEO
+   REMOVE GUEST
 ========================= */
 
-function removeRemoteVideo(id) {
+function removeGuestVideo() {
 
-  const tile =
+  const guest =
     document.getElementById(
-      "tile-" + id
+      "guestTile"
     );
 
 
-  if (tile) {
+  if (guest) {
 
-    tile.remove();
+    guest.remove();
 
   }
+
+
+  document.getElementById(
+    "peopleCount"
+  ).textContent =
+    "1 person in room";
 
 }
 
 
 /* =========================
-   CONNECT
-========================= */
-
-function connectToRoom() {
-
-  if (
-    !peer ||
-    !localStream
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    peer.id === roomId
-  ) {
-
-    return;
-
-  }
-
-
-  const call =
-    peer.call(
-      roomId,
-      localStream
-    );
-
-
-  if (call) {
-
-    setupCall(
-      call
-    );
-
-  }
-
-}
-
-
-/* =========================
-   MICROPHONE
+   MIC
 ========================= */
 
 function toggleMic() {
@@ -1180,35 +1404,20 @@ function toggleMic() {
   );
 
 
-  const button =
-    document.getElementById(
-      "micButton"
-    );
+  document.getElementById(
+    "micButton"
+  ).classList.toggle(
+    "off",
+    enabled
+  );
 
 
-  if (enabled) {
-
-    button.classList.add(
-      "off"
-    );
-
-
-    button.title =
-      "Unmute";
-
-  }
-
-  else {
-
-    button.classList.remove(
-      "off"
-    );
-
-
-    button.title =
-      "Mute";
-
-  }
+  document.getElementById(
+    "micButton"
+  ).title =
+    enabled
+      ? "Unmute"
+      : "Mute";
 
 }
 
@@ -1247,49 +1456,28 @@ function toggleCamera() {
   );
 
 
-  const button =
-    document.getElementById(
-      "cameraButton"
-    );
+  document.getElementById(
+    "cameraButton"
+  ).classList.toggle(
+    "off",
+    enabled
+  );
 
 
-  const off =
-    document.getElementById(
-      "localOff"
-    );
+  document.getElementById(
+    "cameraButton"
+  ).title =
+    enabled
+      ? "Turn camera on"
+      : "Turn camera off";
 
 
-  if (enabled) {
-
-    button.classList.add(
-      "off"
-    );
-
-
-    button.title =
-      "Turn camera on";
-
-
-    off.style.display =
-      "flex";
-
-  }
-
-  else {
-
-    button.classList.remove(
-      "off"
-    );
-
-
-    button.title =
-      "Turn camera off";
-
-
-    off.style.display =
-      "none";
-
-  }
+  document.getElementById(
+    "localOff"
+  ).style.display =
+    enabled
+      ? "flex"
+      : "none";
 
 }
 
@@ -1312,7 +1500,6 @@ async function copyInvite() {
       input.value
     );
 
-
     setStatus(
       "Invitation link copied"
     );
@@ -1323,11 +1510,9 @@ async function copyInvite() {
 
     input.select();
 
-
     document.execCommand(
       "copy"
     );
-
 
     setStatus(
       "Invitation link copied"
@@ -1339,35 +1524,32 @@ async function copyInvite() {
 
 
 /* =========================
-   PEOPLE COUNT
-========================= */
-
-function updatePeopleCount() {
-
-  const count =
-    document.querySelectorAll(
-      ".video-tile"
-    ).length;
-
-
-  document.getElementById(
-    "peopleCount"
-  ).textContent =
-    count +
-    (
-      count === 1
-        ? " person in room"
-        : " people in room"
-    );
-
-}
-
-
-/* =========================
-   LEAVE
+   LEAVE ROOM
 ========================= */
 
 function leaveRoom() {
+
+  if (ws) {
+
+    try {
+      ws.close();
+    }
+
+    catch {}
+
+  }
+
+
+  if (pc) {
+
+    try {
+      pc.close();
+    }
+
+    catch {}
+
+  }
+
 
   if (localStream) {
 
@@ -1381,34 +1563,6 @@ function leaveRoom() {
   }
 
 
-  connections.forEach(
-    call => {
-
-      try {
-
-        call.close();
-
-      }
-
-      catch {}
-
-    }
-  );
-
-
-  if (peer) {
-
-    try {
-
-      peer.destroy();
-
-    }
-
-    catch {}
-
-  }
-
-
   window.location.href =
     window.location.pathname;
 
@@ -1416,7 +1570,7 @@ function leaveRoom() {
 
 
 /* =========================
-   MOVIE PLAYER
+   MOVIE
 ========================= */
 
 function loadMovie() {
@@ -1535,14 +1689,8 @@ function loadMovie() {
   video.src =
     url;
 
-
   video.controls =
     true;
-
-
-  video.autoplay =
-    false;
-
 
   video.playsInline =
     true;
@@ -1574,55 +1722,73 @@ async function initialize() {
       "Camera requires HTTPS"
     );
 
+    return;
+
+  }
+
+
+  if (!roomId) {
+
+    roomId =
+      generateRoomId();
+
+    isHost =
+      true;
+
+
+    history.replaceState(
+      {},
+      "",
+      window.location.pathname +
+      "?room=" +
+      encodeURIComponent(
+        roomId
+      )
+    );
+
+  }
+
+
+  updateInvite();
+
+
+  try {
+
+    await startCamera();
+
+  }
+
+  catch {
 
     return;
 
   }
 
 
-  await startCamera();
-
-
-  createPeer();
-
-
-  setTimeout(
-    () => {
-
-      connectToRoom();
-
-    },
-    1500
-  );
-
-
-  updatePeopleCount();
-
-
-  /*
-    HIDE JELL & JAMES + ROOM STATUS
-    AFTER 10 SECONDS
-  */
-
-  setTimeout(
-    () => {
-
-      const intro =
-        document.getElementById(
-          "intro"
-        );
-
-
-      intro.classList.add(
-        "hidden"
-      );
-
-    },
-    10000
-  );
+  connectSignaling();
 
 }
 
+
+/* =========================
+   10 SECOND INTRO
+========================= */
+
+setTimeout(
+  () => {
+
+    document.getElementById(
+      "intro"
+    ).classList.add(
+      "hidden"
+    );
+
+  },
+  10000
+);
+
+
+/* START */
 
 initialize();
 
