@@ -19,7 +19,7 @@
     --text: #263128;
     --black: #080a08;
     --danger: #b85c5c;
-    --shadow: 0 8px 25px rgba(45, 55, 46, .12);
+    --shadow: 0 8px 25px rgba(45,55,46,.12);
 }
 
 * {
@@ -97,7 +97,6 @@ header h1 {
 button {
     border: none;
     border-radius: 8px;
-
     padding: 10px 14px;
 
     background: var(--sage-primary);
@@ -130,11 +129,8 @@ button:active {
 
 .status {
     padding: 7px 11px;
-
     background: rgba(255,255,255,.12);
-
     border-radius: 20px;
-
     font-size: .78rem;
     white-space: nowrap;
 }
@@ -146,14 +142,12 @@ button:active {
 .page {
     width: 100%;
     max-width: 1600px;
-
     margin: 0 auto;
-
-    padding: 20px;
+    padding: 25px;
 }
 
 /* =========================
-   MOVIE AREA
+   MOVIE
 ========================= */
 
 .movie-card {
@@ -200,7 +194,7 @@ button:active {
 
     aspect-ratio: 16 / 9;
 
-    min-height: 320px;
+    min-height: 400px;
 
     background: #000;
 
@@ -215,23 +209,19 @@ button:active {
     height: 100%;
 
     border: 0;
-
     display: block;
-
     background: #000;
 }
 
 .movie-placeholder {
     max-width: 650px;
-
     padding: 30px;
 
     text-align: center;
-
     color: var(--sage-light);
 }
 
-.movie-placeholder .movie-icon {
+.movie-icon {
     font-size: 50px;
     margin-bottom: 15px;
 }
@@ -246,7 +236,7 @@ button:active {
 }
 
 /* =========================
-   MOVIE URL CONTROLS
+   MOVIE URL
 ========================= */
 
 .movie-url {
@@ -260,7 +250,6 @@ button:active {
 
 .movie-url input {
     flex: 1;
-
     min-width: 0;
 
     padding: 11px 13px;
@@ -282,21 +271,25 @@ button:active {
 }
 
 /* =========================
-   VIDEO CALL SECTION
+   SECTION TITLE
 ========================= */
 
 .section-title {
-    margin-top: 28px;
-    margin-bottom: 12px;
+    margin-top: 45px;
+    margin-bottom: 15px;
+
+    padding: 0 3px;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    gap: 15px;
 }
 
 .section-title h2 {
     color: var(--sage-dark);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 
 .section-title span {
@@ -304,17 +297,18 @@ button:active {
     font-size: .8rem;
 }
 
+/* =========================
+   VIDEO CALL
+========================= */
+
 .call-grid {
     display: grid;
 
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
-    gap: 16px;
+    gap: 18px;
 }
-
-/* =========================
-   VIDEO CARDS
-========================= */
 
 .video-card {
     position: relative;
@@ -343,10 +337,7 @@ button:active {
 
     background: #111;
 
-    /*
-     * IMPORTANT:
-     * Camera is NOT mirrored.
-     */
+    /* NOT MIRRORED */
     transform: scaleX(1);
 }
 
@@ -355,6 +346,7 @@ button:active {
     inset: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -374,7 +366,7 @@ button:active {
     text-align: center;
 }
 
-.video-placeholder .person-icon {
+.person-icon {
     font-size: 38px;
 }
 
@@ -411,8 +403,8 @@ button:active {
 }
 
 .camera-controls button {
-    width: 38px;
-    height: 36px;
+    width: 40px;
+    height: 38px;
 
     padding: 0;
 
@@ -429,13 +421,13 @@ button:active {
 }
 
 /* =========================
-   ROOM PANEL
+   ROOM
 ========================= */
 
 .room-panel {
-    margin-top: 28px;
+    margin-top: 45px;
 
-    padding: 20px;
+    padding: 25px;
 
     background: white;
 
@@ -450,7 +442,7 @@ button:active {
 
     font-size: 1.1rem;
 
-    margin-bottom: 5px;
+    margin-bottom: 7px;
 }
 
 .room-panel p {
@@ -458,7 +450,7 @@ button:active {
 
     font-size: .85rem;
 
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
 .room-actions {
@@ -466,13 +458,13 @@ button:active {
 
     flex-wrap: wrap;
 
-    gap: 8px;
+    gap: 9px;
 }
 
 .room-actions input {
     flex: 1;
 
-    min-width: 200px;
+    min-width: 220px;
 
     padding: 10px 12px;
 
@@ -483,9 +475,9 @@ button:active {
 }
 
 .room-info {
-    margin-top: 14px;
+    margin-top: 16px;
 
-    padding: 11px;
+    padding: 12px;
 
     background: var(--sage-bg);
 
@@ -503,11 +495,21 @@ button:active {
 }
 
 /* =========================
+   EXTRA SPACE
+   Makes page comfortably
+   scrollable
+========================= */
+
+.extra-space {
+    height: 180px;
+}
+
+/* =========================
    FOOTER
 ========================= */
 
 footer {
-    padding: 25px 5px 35px;
+    padding: 25px 5px 45px;
 
     text-align: center;
 
@@ -529,6 +531,7 @@ footer {
     padding: 20px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -626,15 +629,16 @@ footer {
 @media (min-width: 1100px) {
 
     .page {
-        padding: 25px;
+        padding: 30px;
     }
 
     .movie-screen {
-        min-height: 500px;
+        min-height: 550px;
     }
 
     .call-grid {
-        grid-template-columns: repeat(2, minmax(300px, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(350px, 1fr));
     }
 }
 
@@ -657,11 +661,11 @@ footer {
     }
 
     .page {
-        padding: 14px;
+        padding: 15px;
     }
 
     .movie-screen {
-        min-height: 260px;
+        min-height: 280px;
     }
 }
 
@@ -686,14 +690,12 @@ footer {
 
     .header-actions {
         flex-direction: column;
-
         align-items: stretch;
     }
 
     .header-actions button,
     .status {
         width: 100%;
-
         text-align: center;
     }
 
@@ -740,10 +742,25 @@ footer {
     .modal-actions {
         grid-template-columns: 1fr;
     }
+
+    .section-title {
+        margin-top: 35px;
+
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .room-panel {
+        margin-top: 35px;
+    }
+
+    .extra-space {
+        height: 120px;
+    }
 }
 
 /* =========================
-   VERY SMALL PHONES
+   SMALL PHONE
 ========================= */
 
 @media (max-width: 380px) {
@@ -756,7 +773,7 @@ footer {
         padding: 15px;
     }
 
-    .movie-placeholder .movie-icon {
+    .movie-icon {
         font-size: 35px;
     }
 }
@@ -764,6 +781,10 @@ footer {
 </head>
 
 <body>
+
+<!-- =========================
+     HEADER
+========================= -->
 
 <header>
 
@@ -784,13 +805,17 @@ footer {
         <button
             class="secondary"
             onclick="copyInviteLink()">
+
             🔗 Copy Invite
+
         </button>
 
         <div
             class="status"
             id="roomStatus">
+
             Choose a room
+
         </div>
 
     </div>
@@ -800,9 +825,9 @@ footer {
 
 <main class="page">
 
-    <!-- =====================
+    <!-- =========================
          MOVIE
-    ====================== -->
+    ========================= -->
 
     <section class="movie-card">
 
@@ -817,6 +842,7 @@ footer {
             </div>
 
         </div>
+
 
         <div
             class="movie-screen"
@@ -842,6 +868,7 @@ footer {
 
         </div>
 
+
         <div class="movie-url">
 
             <input
@@ -849,8 +876,11 @@ footer {
                 id="movieUrlInput"
                 placeholder="Paste movie or video link here...">
 
-            <button onclick="loadMovieFromInput()">
+            <button
+                onclick="loadMovieFromInput()">
+
                 ▶ Play Movie
+
             </button>
 
         </div>
@@ -858,9 +888,9 @@ footer {
     </section>
 
 
-    <!-- =====================
+    <!-- =========================
          VIDEO CALL
-    ====================== -->
+    ========================= -->
 
     <div class="section-title">
 
@@ -869,7 +899,7 @@ footer {
         </h2>
 
         <span>
-            Camera and microphone are shared with your friend
+            Camera and microphone
         </span>
 
     </div>
@@ -911,13 +941,17 @@ footer {
                 <button
                     onclick="toggleCam()"
                     title="Camera">
+
                     📷
+
                 </button>
 
                 <button
                     onclick="toggleMic()"
                     title="Microphone">
+
                     🎤
+
                 </button>
 
             </div>
@@ -958,9 +992,9 @@ footer {
     </section>
 
 
-    <!-- =====================
+    <!-- =========================
          ROOM
-    ====================== -->
+    ========================= -->
 
     <div class="section-title">
 
@@ -969,7 +1003,7 @@ footer {
         </h2>
 
         <span>
-            Create a room or join your friend's room
+            Create or join a room
         </span>
 
     </div>
@@ -982,34 +1016,45 @@ footer {
         </h2>
 
         <p>
-            Create a room and send the invite link
-            to your friend.
+            Create a room and send the invite
+            link to your friend.
         </p>
+
 
         <div class="room-actions">
 
             <button onclick="createRoom()">
+
                 ✨ Create Room
+
             </button>
+
 
             <input
                 type="text"
                 id="joinRoomInput"
                 placeholder="Enter room ID">
 
+
             <button
                 class="secondary"
                 onclick="joinRoomFromInput()">
+
                 Join Room
+
             </button>
 
         </div>
+
 
         <div
             class="room-info"
             id="roomInfo">
 
-            <strong>Room:</strong>
+            <strong>
+                Room:
+            </strong>
+
             <span id="roomIdDisplay">
                 No room created yet
             </span>
@@ -1019,16 +1064,23 @@ footer {
     </section>
 
 
+    <!-- EXTRA SCROLL SPACE -->
+
+    <div class="extra-space"></div>
+
+
     <footer>
+
         Jell & James Movie • Watch together
+
     </footer>
 
 </main>
 
 
-<!-- =====================
+<!-- =========================
      ROOM MODAL
-====================== -->
+========================= -->
 
 <div
     class="modal"
@@ -1045,21 +1097,28 @@ footer {
             a room ID to join your friend.
         </p>
 
+
         <input
             type="text"
             id="modalJoinRoomInput"
             placeholder="Enter room ID">
 
+
         <div class="modal-actions">
 
             <button onclick="createRoom()">
+
                 Create Room
+
             </button>
+
 
             <button
                 class="secondary"
                 onclick="joinFromModal()">
+
                 Join Room
+
             </button>
 
         </div>
@@ -1164,12 +1223,11 @@ window.addEventListener(
         const urlMovie =
             params.get("movie");
 
+
         if (urlMovie) {
 
             currentMovie =
-                decodeURIComponent(
-                    urlMovie
-                );
+                urlMovie;
 
             movieInput.value =
                 currentMovie;
@@ -1181,7 +1239,9 @@ window.addEventListener(
 
         }
 
+
         await startCamera();
+
 
         if (urlRoom) {
 
@@ -1211,7 +1271,7 @@ window.addEventListener(
 
 
 /* =====================================================
-   ROOM ID
+   GENERATE ROOM
 ===================================================== */
 
 function generateRoomId() {
@@ -1240,14 +1300,17 @@ function createRoom() {
 
     }
 
+
     roomId =
         generateRoomId();
 
     isHost =
         true;
 
+
     roomModal.style.display =
         "none";
+
 
     initializePeer(
         roomId,
@@ -1271,6 +1334,7 @@ function joinRoomFromInput() {
     const value =
         input.value.trim();
 
+
     if (!value) {
 
         showToast(
@@ -1278,11 +1342,11 @@ function joinRoomFromInput() {
         );
 
         return;
+
     }
 
-    joinRoom(
-        value
-    );
+
+    joinRoom(value);
 
 }
 
@@ -1297,6 +1361,7 @@ function joinFromModal() {
     const value =
         input.value.trim();
 
+
     if (!value) {
 
         showToast(
@@ -1304,11 +1369,11 @@ function joinFromModal() {
         );
 
         return;
+
     }
 
-    joinRoom(
-        value
-    );
+
+    joinRoom(value);
 
 }
 
@@ -1321,8 +1386,10 @@ function joinRoom(id) {
     isHost =
         false;
 
+
     roomModal.style.display =
         "none";
+
 
     initializePeer(
         roomId,
@@ -1346,8 +1413,10 @@ function initializePeer(
             ? "Creating room..."
             : "Joining room...";
 
+
     roomIdDisplay.textContent =
         id;
+
 
     peer =
         new Peer(
@@ -1365,15 +1434,19 @@ function initializePeer(
             roomId =
                 peerId;
 
+
             roomIdDisplay.textContent =
                 roomId;
+
 
             roomStatus.textContent =
                 host
                     ? "🟢 Room ready"
                     : "🟢 Connected";
 
+
             updateUrl();
+
 
             showToast(
                 host
@@ -1393,6 +1466,7 @@ function initializePeer(
                 conn
             );
 
+
             callRemoteUser(
                 conn.peer
             );
@@ -1410,11 +1484,14 @@ function initializePeer(
                 call.answer();
 
                 return;
+
             }
+
 
             call.answer(
                 localStream
             );
+
 
             call.on(
                 "stream",
@@ -1422,6 +1499,7 @@ function initializePeer(
 
                     remoteVideo.srcObject =
                         stream;
+
 
                     remotePlaceholder.style.display =
                         "none";
@@ -1442,6 +1520,7 @@ function initializePeer(
                 error
             );
 
+
             if (
                 error.type ===
                 "unavailable-id"
@@ -1459,6 +1538,7 @@ function initializePeer(
                 );
 
             }
+
 
             roomStatus.textContent =
                 "Connection error";
@@ -1491,6 +1571,7 @@ function setupConnection(
     connection =
         conn;
 
+
     conn.on(
         "open",
         () => {
@@ -1498,13 +1579,11 @@ function setupConnection(
             roomStatus.textContent =
                 "🟢 Friend connected";
 
+
             showToast(
                 "Friend connected!"
             );
 
-            /*
-             * Send current movie.
-             */
 
             if (currentMovie) {
 
@@ -1535,8 +1614,10 @@ function setupConnection(
                 currentMovie =
                     data.url;
 
+
                 movieInput.value =
                     currentMovie;
+
 
                 loadMovie(
                     currentMovie,
@@ -1556,8 +1637,10 @@ function setupConnection(
             roomStatus.textContent =
                 "Waiting for friend...";
 
+
             remotePlaceholder.style.display =
                 "flex";
+
 
             remoteVideo.srcObject =
                 null;
@@ -1582,7 +1665,9 @@ function callRemoteUser(
     ) {
 
         return;
+
     }
+
 
     try {
 
@@ -1592,6 +1677,7 @@ function callRemoteUser(
                 localStream
             );
 
+
         call.on(
             "stream",
             stream => {
@@ -1599,11 +1685,13 @@ function callRemoteUser(
                 remoteVideo.srcObject =
                     stream;
 
+
                 remotePlaceholder.style.display =
                     "none";
 
             }
         );
+
 
         call.on(
             "error",
@@ -1639,15 +1727,15 @@ async function startCamera() {
         !navigator.mediaDevices.getUserMedia
     ) {
 
-        localPlaceholder.innerHTML =
-            `
+        localPlaceholder.innerHTML = `
             <div class="person-icon">📷</div>
             <span>Camera unavailable</span>
-            `;
+        `;
 
         return;
 
     }
+
 
     try {
 
@@ -1662,8 +1750,7 @@ async function startCamera() {
                         height: {
                             ideal: 720
                         },
-                        facingMode:
-                            "user"
+                        facingMode: "user"
                     },
 
                     audio: {
@@ -1674,14 +1761,16 @@ async function startCamera() {
 
                 });
 
+
         localVideo.srcObject =
             localStream;
 
-        /*
-         * Explicitly prevent mirroring.
-         */
+
+        /* Prevent mirror */
+
         localVideo.style.transform =
             "scaleX(1)";
+
 
         localPlaceholder.style.display =
             "none";
@@ -1693,11 +1782,12 @@ async function startCamera() {
             error
         );
 
-        localPlaceholder.innerHTML =
-            `
+
+        localPlaceholder.innerHTML = `
             <div class="person-icon">📷</div>
             <span>Camera permission denied</span>
-            `;
+        `;
+
 
         showToast(
             "Allow camera and microphone access."
@@ -1717,18 +1807,23 @@ function toggleCam() {
     if (!localStream)
         return;
 
+
     const track =
         localStream
             .getVideoTracks()[0];
 
+
     if (!track)
         return;
+
 
     cameraEnabled =
         !cameraEnabled;
 
+
     track.enabled =
         cameraEnabled;
+
 
     showToast(
         cameraEnabled
@@ -1748,18 +1843,23 @@ function toggleMic() {
     if (!localStream)
         return;
 
+
     const track =
         localStream
             .getAudioTracks()[0];
 
+
     if (!track)
         return;
+
 
     micEnabled =
         !micEnabled;
 
+
     track.enabled =
         micEnabled;
+
 
     showToast(
         micEnabled
@@ -1771,13 +1871,14 @@ function toggleMic() {
 
 
 /* =====================================================
-   MOVIE LOADING
+   MOVIE INPUT
 ===================================================== */
 
 function loadMovieFromInput() {
 
     const url =
         movieInput.value.trim();
+
 
     if (!url) {
 
@@ -1786,7 +1887,9 @@ function loadMovieFromInput() {
         );
 
         return;
+
     }
+
 
     loadMovie(
         url,
@@ -1796,6 +1899,10 @@ function loadMovieFromInput() {
 }
 
 
+/* =====================================================
+   LOAD MOVIE
+===================================================== */
+
 function loadMovie(
     url,
     broadcast = true
@@ -1804,11 +1911,14 @@ function loadMovie(
     if (!url)
         return;
 
+
     currentMovie =
         url.trim();
 
+
     movieInput.value =
         currentMovie;
+
 
     movieContainer.innerHTML =
         "";
@@ -1830,6 +1940,7 @@ function loadMovie(
         let videoId =
             "";
 
+
         try {
 
             if (
@@ -1842,6 +1953,7 @@ function loadMovie(
                     new URL(
                         currentMovie
                     );
+
 
                 videoId =
                     parsed.searchParams.get(
@@ -1861,16 +1973,16 @@ function loadMovie(
 
         } catch (_) {}
 
+
         if (videoId) {
 
-            movieContainer.innerHTML =
-                `
+            movieContainer.innerHTML = `
                 <iframe
                     src="https://www.youtube.com/embed/${escapeAttribute(videoId)}?autoplay=1"
                     allow="autoplay; encrypted-media; picture-in-picture"
                     allowfullscreen>
                 </iframe>
-                `;
+            `;
 
         }
 
@@ -1895,14 +2007,14 @@ function loadMovie(
                 .split("?")[0]
                 .split("/")[0];
 
-        movieContainer.innerHTML =
-            `
+
+        movieContainer.innerHTML = `
             <iframe
                 src="https://player.vimeo.com/video/${escapeAttribute(id)}"
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowfullscreen>
             </iframe>
-            `;
+        `;
 
     }
 
@@ -1924,20 +2036,17 @@ function loadMovie(
                 )[1]
                 .split(/[?#/]/)[0];
 
-        /*
-         * Twitch requires the parent
-         * domain in the embed URL.
-         */
+
         const host =
             window.location.hostname;
 
-        movieContainer.innerHTML =
-            `
+
+        movieContainer.innerHTML = `
             <iframe
                 src="https://player.twitch.tv/?channel=${encodeURIComponent(channel)}&parent=${encodeURIComponent(host)}"
                 allowfullscreen>
             </iframe>
-            `;
+        `;
 
     }
 
@@ -1956,17 +2065,22 @@ function loadMovie(
                 "video"
             );
 
+
         video.src =
             currentMovie;
+
 
         video.controls =
             true;
 
+
         video.autoplay =
             true;
 
+
         video.playsInline =
             true;
+
 
         movieContainer.appendChild(
             video
@@ -1981,22 +2095,18 @@ function loadMovie(
 
     else {
 
-        movieContainer.innerHTML =
-            `
+        movieContainer.innerHTML = `
             <iframe
                 src="${escapeAttribute(currentMovie)}"
                 allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
                 allowfullscreen>
             </iframe>
-            `;
+        `;
 
     }
 
 
-    /*
-     * Tell the friend what movie
-     * was selected.
-     */
+    /* Send movie to friend */
 
     if (
         broadcast &&
@@ -2050,7 +2160,7 @@ function sendData(
 
 
 /* =====================================================
-   INVITE LINK
+   UPDATE URL
 ===================================================== */
 
 function updateUrl() {
@@ -2058,15 +2168,18 @@ function updateUrl() {
     if (!roomId)
         return;
 
+
     const url =
         new URL(
             window.location.href
         );
 
+
     url.searchParams.set(
         "room",
         roomId
     );
+
 
     if (currentMovie) {
 
@@ -2077,6 +2190,7 @@ function updateUrl() {
 
     }
 
+
     window.history.replaceState(
         {},
         "",
@@ -2085,6 +2199,10 @@ function updateUrl() {
 
 }
 
+
+/* =====================================================
+   COPY INVITE
+===================================================== */
 
 function copyInviteLink() {
 
@@ -2095,12 +2213,16 @@ function copyInviteLink() {
         );
 
         return;
+
     }
+
 
     updateUrl();
 
+
     const invite =
         window.location.href;
+
 
     if (
         navigator.clipboard &&
@@ -2137,6 +2259,10 @@ function copyInviteLink() {
 }
 
 
+/* =====================================================
+   FALLBACK COPY
+===================================================== */
+
 function fallbackCopy(
     text
 ) {
@@ -2150,7 +2276,7 @@ function fallbackCopy(
 
 
 /* =====================================================
-   HELPERS
+   ESCAPE HTML
 ===================================================== */
 
 function escapeAttribute(
@@ -2182,6 +2308,10 @@ function escapeAttribute(
 }
 
 
+/* =====================================================
+   TOAST
+===================================================== */
+
 function showToast(
     message
 ) {
@@ -2191,16 +2321,20 @@ function showToast(
             "toast"
         );
 
+
     toast.textContent =
         message;
+
 
     toast.classList.add(
         "show"
     );
 
+
     clearTimeout(
         window.toastTimer
     );
+
 
     window.toastTimer =
         setTimeout(
