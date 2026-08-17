@@ -1329,6 +1329,11 @@ function connectSignaling(){
         This happens immediately after the WebSocket opens.
         Camera permission is NOT required for this step.
       */
+      console.log(
+        "Joining signaling room:",
+        roomId
+      );
+
       sendSignal({
 
         type:"join",
@@ -1388,8 +1393,15 @@ function connectSignaling(){
           "guest"
         ){
 
+          peerPresent = true;
+
+          document.getElementById(
+            "peopleCount"
+          ).textContent =
+            "2 people in room";
+
           setStatus(
-            "Joined room — waiting for connection..."
+            "Joined room — connecting..."
           );
 
         }else{
@@ -1407,28 +1419,30 @@ function connectSignaling(){
 
       if(
         data.type ===
-        "peer-joined"
+        "user-connected"
       ){
 
-        peerPresent =
-          true;
+        peerPresent = true;
 
+        document.getElementById(
+          "peopleCount"
+        ).textContent =
+          "2 people in room";
 
         setStatus(
           "Friend joined — connecting..."
         );
 
-
         /*
-          The host is the only side that starts
-          the initial offer.
+          The server sends user-connected to the host
+          after the guest has successfully joined.
+          The host creates the initial WebRTC offer.
         */
         if(isHost){
 
           await createOffer();
 
         }
-
 
         return;
 
@@ -1486,7 +1500,7 @@ function connectSignaling(){
 
       if(
         data.type ===
-        "room-full"
+        "full"
       ){
 
         setStatus(
@@ -1501,11 +1515,16 @@ function connectSignaling(){
 
       if(
         data.type ===
-        "peer-left"
+        "user-disconnected"
       ){
 
         peerPresent =
           false;
+
+        document.getElementById(
+          "peopleCount"
+        ).textContent =
+          "1 person in room";
 
 
         if(pc){
