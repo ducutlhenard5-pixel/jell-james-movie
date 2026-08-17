@@ -719,33 +719,45 @@ function joinRoom(){
 
   }
 
+  let room = "";
 
   try{
 
+    // Accept either a full invitation URL or a plain room ID.
     const url =
-      new URL(value);
-
-    const room =
-      url.searchParams.get(
-        "room"
+      new URL(
+        value,
+        window.location.href
       );
 
-    if(room){
+    room =
+      url.searchParams.get(
+        "room"
+      ) || "";
 
-      roomId = room;
+  }catch(error){
 
-    }else{
-
-      roomId = value;
-
-    }
-
-  }catch{
-
-    roomId = value;
+    console.error(
+      "Invalid invitation:",
+      error
+    );
 
   }
 
+  // If there is no ?room= parameter, treat the entered value as the room ID.
+  roomId =
+    room ||
+    value;
+
+  if(!roomId){
+
+    alert(
+      "Invalid room ID."
+    );
+
+    return;
+
+  }
 
   isHost = false;
 
@@ -760,13 +772,30 @@ function joinRoom(){
 
 function openRoom(){
 
+  // Always keep the current room ID in the URL.
+  // This makes the invitation link point to the exact same room.
+  if(!roomId){
+    setStatus("Invalid room ID");
+    return;
+  }
+
+  const roomUrl =
+    new URL(
+      window.location.href
+    );
+
+  roomUrl.search = "";
+  roomUrl.searchParams.set(
+    "room",
+    roomId
+  );
+
   history.replaceState(
     {},
     "",
-    "?room=" +
-    encodeURIComponent(
-      roomId
-    )
+    roomUrl.pathname +
+    "?" +
+    roomUrl.searchParams.toString()
   );
 
 
@@ -796,15 +825,23 @@ function openRoom(){
 
 function updateInvite(){
 
+  if(!roomId) return;
+
+  const inviteUrl =
+    new URL(
+      window.location.href
+    );
+
+  inviteUrl.search = "";
+  inviteUrl.searchParams.set(
+    "room",
+    roomId
+  );
+
   document.getElementById(
     "inviteLink"
   ).value =
-    location.origin +
-    location.pathname +
-    "?room=" +
-    encodeURIComponent(
-      roomId
-    );
+    inviteUrl.href;
 
 }
 
