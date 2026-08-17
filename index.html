@@ -719,45 +719,33 @@ function joinRoom(){
 
   }
 
-  let room = "";
 
   try{
 
-    // Accept either a full invitation URL or a plain room ID.
     const url =
-      new URL(
-        value,
-        window.location.href
-      );
+      new URL(value);
 
-    room =
+    const room =
       url.searchParams.get(
         "room"
-      ) || "";
+      );
 
-  }catch(error){
+    if(room){
 
-    console.error(
-      "Invalid invitation:",
-      error
-    );
+      roomId = room;
 
-  }
+    }else{
 
-  // If there is no ?room= parameter, treat the entered value as the room ID.
-  roomId =
-    room ||
-    value;
+      roomId = value;
 
-  if(!roomId){
+    }
 
-    alert(
-      "Invalid room ID."
-    );
+  }catch{
 
-    return;
+    roomId = value;
 
   }
+
 
   isHost = false;
 
@@ -772,30 +760,13 @@ function joinRoom(){
 
 function openRoom(){
 
-  // Always keep the current room ID in the URL.
-  // This makes the invitation link point to the exact same room.
-  if(!roomId){
-    setStatus("Invalid room ID");
-    return;
-  }
-
-  const roomUrl =
-    new URL(
-      window.location.href
-    );
-
-  roomUrl.search = "";
-  roomUrl.searchParams.set(
-    "room",
-    roomId
-  );
-
   history.replaceState(
     {},
     "",
-    roomUrl.pathname +
-    "?" +
-    roomUrl.searchParams.toString()
+    "?room=" +
+    encodeURIComponent(
+      roomId
+    )
   );
 
 
@@ -825,23 +796,15 @@ function openRoom(){
 
 function updateInvite(){
 
-  if(!roomId) return;
-
-  const inviteUrl =
-    new URL(
-      window.location.href
-    );
-
-  inviteUrl.search = "";
-  inviteUrl.searchParams.set(
-    "room",
-    roomId
-  );
-
   document.getElementById(
     "inviteLink"
   ).value =
-    inviteUrl.href;
+    location.origin +
+    location.pathname +
+    "?room=" +
+    encodeURIComponent(
+      roomId
+    );
 
 }
 
@@ -945,88 +908,105 @@ async function startCamera(){
 
 
 /* =========================
-   WEBRTC
+   WEBRTC + SIGNALING
 ========================= */
+
+let pendingCandidates = [];
+let remoteDescriptionSet = false;
+let makingOffer = false;
+
+function sendSignal(payload){
+
+  if(
+    !ws ||
+    ws.readyState !== WebSocket.OPEN
+  ){
+    console.warn(
+      "WebSocket not ready:",
+      payload.type
+    );
+    return false;
+  }
+
+  ws.send(
+    JSON.stringify(payload)
+  );
+
+  return true;
+}
 
 function createPeerConnection(){
 
-  if(pc) return;
-
+  if(pc){
+    return pc;
+  }
 
   pc =
     new RTCPeerConnection({
-
       iceServers:[
-
         {
-          urls:
-          "stun:stun.l.google.com:19302"
-        },
-
-        {
-          urls:
-          "stun:stun1.l.google.com:19302"
+          urls:[
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302"
+          ]
         }
-
       ]
-
     });
 
+  remoteDescriptionSet = false;
+  pendingCandidates = [];
 
-  localStream
-    .getTracks()
-    .forEach(track=>{
+  if(localStream){
 
-      pc.addTrack(
-        track,
-        localStream
-      );
+    localStream
+      .getTracks()
+      .forEach(track=>{
+        pc.addTrack(
+          track,
+          localStream
+        );
+      });
 
-    });
-
+  }
 
   pc.onicecandidate =
     event=>{
 
+      if(event.candidate){
+
+        sendSignal({
+          type:"candidate",
+          room:roomId,
+          candidate:event.candidate
+        });
+
+      }
+
+    };
+
+  pc.ontrack =
+    event=>{
+
       if(
-        event.candidate &&
-        ws &&
-        ws.readyState ===
-        WebSocket.OPEN
+        event.streams &&
+        event.streams[0]
       ){
 
-        ws.send(
-          JSON.stringify({
-
-            type:
-            "candidate",
-
-            room:
-            roomId,
-
-            candidate:
-            event.candidate
-
-          })
+        addGuestVideo(
+          event.streams[0]
         );
 
       }
 
     };
 
-
-  pc.ontrack =
-    event=>{
-
-      addGuestVideo(
-        event.streams[0]
-      );
-
-    };
-
-
   pc.onconnectionstatechange =
     ()=>{
+
+      console.log(
+        "WebRTC state:",
+        pc.connectionState
+      );
 
       if(
         pc.connectionState ===
@@ -1039,7 +1019,6 @@ function createPeerConnection(){
 
       }
 
-
       if(
         pc.connectionState ===
         "disconnected" ||
@@ -1047,18 +1026,257 @@ function createPeerConnection(){
         "failed"
       ){
 
+        setStatus(
+          "Connection lost"
+        );
+
         removeGuestVideo();
 
+      }
+
+    };
+
+  pc.oniceconnectionstatechange =
+    ()=>{
+
+      console.log(
+        "ICE state:",
+        pc.iceConnectionState
+      );
+
+      if(
+        pc.iceConnectionState ===
+        "failed"
+      ){
+
         setStatus(
-          "Guest disconnected"
+          "WebRTC connection failed"
         );
 
       }
 
     };
 
+  return pc;
 }
 
+async function flushPendingCandidates(){
+
+  if(
+    !pc ||
+    !remoteDescriptionSet
+  ){
+    return;
+  }
+
+  const candidates =
+    pendingCandidates;
+
+  pendingCandidates = [];
+
+  for(
+    const candidate of candidates
+  ){
+
+    try{
+
+      await pc.addIceCandidate(
+        candidate
+      );
+
+    }catch(error){
+
+      console.error(
+        "Queued ICE candidate error:",
+        error
+      );
+
+    }
+
+  }
+
+}
+
+async function createOffer(){
+
+  if(makingOffer){
+    return;
+  }
+
+  if(
+    !ws ||
+    ws.readyState !==
+    WebSocket.OPEN
+  ){
+    return;
+  }
+
+  makingOffer = true;
+
+  try{
+
+    createPeerConnection();
+
+    const offer =
+      await pc.createOffer();
+
+    await pc.setLocalDescription(
+      offer
+    );
+
+    sendSignal({
+      type:"offer",
+      room:roomId,
+      offer:pc.localDescription
+    });
+
+    setStatus(
+      "Connecting..."
+    );
+
+  }catch(error){
+
+    console.error(
+      "Offer error:",
+      error
+    );
+
+    setStatus(
+      "Unable to create connection"
+    );
+
+  }finally{
+
+    makingOffer = false;
+
+  }
+
+}
+
+async function receiveOffer(
+  offer
+){
+
+  try{
+
+    createPeerConnection();
+
+    await pc.setRemoteDescription(
+      new RTCSessionDescription(
+        offer
+      )
+    );
+
+    remoteDescriptionSet =
+      true;
+
+    await flushPendingCandidates();
+
+    const answer =
+      await pc.createAnswer();
+
+    await pc.setLocalDescription(
+      answer
+    );
+
+    sendSignal({
+      type:"answer",
+      room:roomId,
+      answer:pc.localDescription
+    });
+
+    setStatus(
+      "Connecting..."
+    );
+
+  }catch(error){
+
+    console.error(
+      "Offer handling error:",
+      error
+    );
+
+    setStatus(
+      "WebRTC setup failed"
+    );
+
+  }
+
+}
+
+async function receiveAnswer(
+  answer
+){
+
+  try{
+
+    if(!pc){
+      return;
+    }
+
+    await pc.setRemoteDescription(
+      new RTCSessionDescription(
+        answer
+      )
+    );
+
+    remoteDescriptionSet =
+      true;
+
+    await flushPendingCandidates();
+
+    setStatus(
+      "Connecting..."
+    );
+
+  }catch(error){
+
+    console.error(
+      "Answer error:",
+      error
+    );
+
+    setStatus(
+      "WebRTC answer failed"
+    );
+
+  }
+
+}
+
+async function receiveCandidate(
+  candidate
+){
+
+  if(
+    !pc ||
+    !remoteDescriptionSet
+  ){
+
+    pendingCandidates.push(
+      candidate
+    );
+
+    return;
+
+  }
+
+  try{
+
+    await pc.addIceCandidate(
+      candidate
+    );
+
+  }catch(error){
+
+    console.error(
+      "ICE candidate error:",
+      error
+    );
+
+  }
+
+}
 
 /* =========================
    SIGNALING
@@ -1066,49 +1284,88 @@ function createPeerConnection(){
 
 function connectSignaling(){
 
+  if(!roomId){
+
+    setStatus(
+      "No room ID"
+    );
+
+    return;
+
+  }
+
   ws =
     new WebSocket(
       SIGNALING_SERVER
     );
 
+  ws.onopen =
+    ()=>{
 
-  ws.onopen = ()=>{
+      console.log(
+        "WebSocket connected"
+      );
 
-    ws.send(
-      JSON.stringify({
-
+      sendSignal({
         type:"join",
-
         room:roomId
+      });
 
-      })
-    );
+      setStatus(
+        isHost
+        ? "Room ready"
+        : "Joining room..."
+      );
 
-
-    setStatus(
-      isHost
-      ? "Room ready"
-      : "Joining room..."
-    );
-
-  };
-
+    };
 
   ws.onmessage =
     async event=>{
 
-      const data =
-        JSON.parse(
+      let data;
+
+      try{
+
+        data =
+          JSON.parse(
+            event.data
+          );
+
+      }catch(error){
+
+        console.error(
+          "Invalid server message:",
           event.data
         );
 
+        return;
+
+      }
+
+      console.log(
+        "Signaling message:",
+        data
+      );
 
       if(
         data.type ===
         "joined"
       ){
 
-        if(data.hasOther){
+        setStatus(
+          data.role === "host"
+          ? "Waiting for someone to join..."
+          : "Joined room"
+        );
+
+        /*
+          Compatible with a server that reports
+          an existing peer in the joined response.
+        */
+        if(
+          data.hasOther &&
+          !isHost
+        ){
 
           await createOffer();
 
@@ -1117,23 +1374,29 @@ function connectSignaling(){
         return;
 
       }
-
 
       if(
         data.type ===
         "peer-joined"
       ){
 
-        if(!pc){
+        /*
+          Host creates the offer.
+          Guest waits for the offer.
+        */
+        if(isHost){
 
           await createOffer();
 
         }
 
+        setStatus(
+          "User joined — connecting..."
+        );
+
         return;
 
       }
-
 
       if(
         data.type ===
@@ -1148,50 +1411,31 @@ function connectSignaling(){
 
       }
 
-
       if(
         data.type ===
         "answer"
       ){
 
-        if(!pc) return;
-
-        await pc.setRemoteDescription(
+        await receiveAnswer(
           data.answer
-        );
-
-        setStatus(
-          "Connected"
         );
 
         return;
 
       }
-
 
       if(
         data.type ===
         "candidate"
       ){
 
-        if(!pc) return;
-
-        try{
-
-          await pc.addIceCandidate(
-            data.candidate
-          );
-
-        }catch(error){
-
-          console.error(error);
-
-        }
+        await receiveCandidate(
+          data.candidate
+        );
 
         return;
 
       }
-
 
       if(
         data.type ===
@@ -1206,11 +1450,23 @@ function connectSignaling(){
 
       }
 
-
       if(
         data.type ===
         "peer-left"
       ){
+
+        if(pc){
+
+          try{
+            pc.close();
+          }catch{}
+
+        }
+
+        pc = null;
+        remoteDescriptionSet = false;
+        pendingCandidates = [];
+        makingOffer = false;
 
         removeGuestVideo();
 
@@ -1218,95 +1474,48 @@ function connectSignaling(){
           "Waiting for someone to join..."
         );
 
+        return;
+
+      }
+
+      if(
+        data.type ===
+        "error"
+      ){
+
+        setStatus(
+          data.message ||
+          "Room error"
+        );
+
       }
 
     };
 
+  ws.onerror =
+    error=>{
 
-  ws.onerror = ()=>{
+      console.error(
+        "WebSocket error:",
+        error
+      );
 
-    setStatus(
-      "Unable to connect to room server"
-    );
+      setStatus(
+        "Unable to connect to room server"
+      );
 
-  };
+    };
 
-}
+  ws.onclose =
+    ()=>{
 
+      console.log(
+        "WebSocket closed"
+      );
 
-/* =========================
-   OFFER
-========================= */
-
-async function createOffer(){
-
-  createPeerConnection();
-
-
-  const offer =
-    await pc.createOffer();
-
-
-  await pc.setLocalDescription(
-    offer
-  );
-
-
-  ws.send(
-    JSON.stringify({
-
-      type:"offer",
-
-      room:roomId,
-
-      offer:offer
-
-    })
-  );
+    };
 
 }
-
-
-/* =========================
-   ANSWER
-========================= */
-
-async function receiveOffer(
-  offer
-){
-
-  createPeerConnection();
-
-
-  await pc.setRemoteDescription(
-    offer
-  );
-
-
-  const answer =
-    await pc.createAnswer();
-
-
-  await pc.setLocalDescription(
-    answer
-  );
-
-
-  ws.send(
-    JSON.stringify({
-
-      type:"answer",
-
-      room:roomId,
-
-      answer:answer
-
-    })
-  );
-
-}
-
-
 /* =========================
    GUEST VIDEO
 ========================= */
