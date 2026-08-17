@@ -760,13 +760,39 @@ function joinRoom(){
 
 function openRoom(){
 
+  if(!roomId){
+
+    setStatus(
+      "Invalid room ID"
+    );
+
+    return;
+
+  }
+
+
+  const roomUrl =
+    new URL(
+      window.location.href
+    );
+
+
+  roomUrl.search =
+    "";
+
+
+  roomUrl.searchParams.set(
+    "room",
+    roomId
+  );
+
+
   history.replaceState(
     {},
     "",
-    "?room=" +
-    encodeURIComponent(
-      roomId
-    )
+    roomUrl.pathname +
+    "?" +
+    roomUrl.searchParams.toString()
   );
 
 
@@ -785,6 +811,20 @@ function openRoom(){
   updateInvite();
 
 
+  /*
+    IMPORTANT:
+    Join the WebSocket room FIRST.
+    Camera/microphone permission must never
+    prevent User B from joining the room.
+  */
+  connectSignaling();
+
+
+  /*
+    Camera/mic is started separately.
+    If Messenger blocks permission, the user
+    can still remain joined to the room.
+  */
   startCamera();
 
 }
@@ -870,37 +910,100 @@ async function startCamera(){
 
   try{
 
+    if(
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ){
+
+      throw new Error(
+        "Camera/microphone API is unavailable."
+      );
+
+    }
+
     localStream =
-      await navigator.mediaDevices
-        .getUserMedia({
+      await navigator.mediaDevices.getUserMedia({
 
-          video:true,
+        video:true,
 
-          audio:true
+        audio:true
 
-        });
+      });
 
 
-    document.getElementById(
-      "localVideo"
-    ).srcObject =
-      localStream;
+    const localVideo =
+      document.getElementById(
+        "localVideo"
+      );
+
+    if(localVideo){
+
+      localVideo.srcObject =
+        localStream;
+
+      localVideo.muted =
+        true;
+
+      localVideo.playsInline =
+        true;
+
+      try{
+        await localVideo.play();
+      }catch{}
+
+    }
 
 
     setStatus(
-      "Camera and microphone ready"
+      isHost
+      ? "Room ready — camera ready"
+      : "Joined room — camera ready"
     );
 
 
-    connectSignaling();
+    /*
+      If WebRTC was already created while waiting
+      for camera permission, add the tracks now.
+    */
+    if(pc){
+
+      addLocalTracks();
+
+      /*
+        If the other person is already in the room,
+        renegotiate so the newly available camera/mic
+        tracks are included.
+      */
+      if(peerPresent){
+
+        await createOffer();
+
+      }
+
+    }
+
+    return localStream;
 
   }catch(error){
 
-    console.error(error);
+    console.error(
+      "Camera/microphone error:",
+      error
+    );
 
     setStatus(
-      "Camera/microphone permission required"
+      isHost
+      ? "Room ready — camera/mic permission needed"
+      : "Joined room — camera/mic permission needed"
     );
+
+    /*
+      IMPORTANT:
+      Do not stop the room connection if camera permission
+      is denied. The WebSocket room still remains joined.
+    */
+
+    return null;
 
   }
 
@@ -908,81 +1011,118 @@ async function startCamera(){
 
 
 /* =========================
-   WEBRTC + SIGNALING
+   WEBRTC
 ========================= */
 
+let peerPresent = false;
 let pendingCandidates = [];
 let remoteDescriptionSet = false;
 let makingOffer = false;
 
-function sendSignal(payload){
+
+function addLocalTracks(){
 
   if(
-    !ws ||
-    ws.readyState !== WebSocket.OPEN
+    !pc ||
+    !localStream
   ){
-    console.warn(
-      "WebSocket not ready:",
-      payload.type
-    );
-    return false;
+
+    return;
+
   }
 
-  ws.send(
-    JSON.stringify(payload)
-  );
 
-  return true;
+  const senders =
+    pc.getSenders();
+
+
+  localStream
+    .getTracks()
+    .forEach(track=>{
+
+      const alreadyAdded =
+        senders.some(
+          sender =>
+            sender.track &&
+            sender.track.kind ===
+            track.kind
+        );
+
+
+      if(!alreadyAdded){
+
+        pc.addTrack(
+          track,
+          localStream
+        );
+
+      }
+
+    });
+
 }
+
 
 function createPeerConnection(){
 
   if(pc){
+
+    addLocalTracks();
+
     return pc;
+
   }
+
 
   pc =
     new RTCPeerConnection({
+
       iceServers:[
+
         {
           urls:[
             "stun:stun.l.google.com:19302",
             "stun:stun1.l.google.com:19302"
           ]
         }
+
       ]
+
     });
 
-  remoteDescriptionSet = false;
-  pendingCandidates = [];
 
-  if(localStream){
+  remoteDescriptionSet =
+    false;
 
-    localStream
-      .getTracks()
-      .forEach(track=>{
-        pc.addTrack(
-          track,
-          localStream
-        );
-      });
+  pendingCandidates =
+    [];
 
-  }
+
+  addLocalTracks();
+
 
   pc.onicecandidate =
     event=>{
 
-      if(event.candidate){
+      if(
+        event.candidate
+      ){
 
         sendSignal({
+
           type:"candidate",
+
           room:roomId,
-          candidate:event.candidate
+
+          candidate:
+            event.candidate
+
         });
 
       }
 
     };
+
 
   pc.ontrack =
     event=>{
@@ -1000,13 +1140,15 @@ function createPeerConnection(){
 
     };
 
+
   pc.onconnectionstatechange =
     ()=>{
 
       console.log(
-        "WebRTC state:",
+        "WebRTC connection state:",
         pc.connectionState
       );
+
 
       if(
         pc.connectionState ===
@@ -1014,38 +1156,26 @@ function createPeerConnection(){
       ){
 
         setStatus(
-          "Connected"
+          "Connected — 2 people in room"
         );
 
       }
 
+
       if(
         pc.connectionState ===
-        "disconnected" ||
-        pc.connectionState ===
-        "failed"
+        "disconnected"
       ){
 
         setStatus(
-          "Connection lost"
+          "Connection temporarily disconnected"
         );
-
-        removeGuestVideo();
 
       }
 
-    };
-
-  pc.oniceconnectionstatechange =
-    ()=>{
-
-      console.log(
-        "ICE state:",
-        pc.iceConnectionState
-      );
 
       if(
-        pc.iceConnectionState ===
+        pc.connectionState ===
         "failed"
       ){
 
@@ -1057,8 +1187,52 @@ function createPeerConnection(){
 
     };
 
+
+  pc.oniceconnectionstatechange =
+    ()=>{
+
+      console.log(
+        "ICE connection state:",
+        pc.iceConnectionState
+      );
+
+    };
+
+
   return pc;
+
 }
+
+
+function sendSignal(
+  data
+){
+
+  if(
+    !ws ||
+    ws.readyState !==
+    WebSocket.OPEN
+  ){
+
+    console.warn(
+      "WebSocket is not ready:",
+      data.type
+    );
+
+    return false;
+
+  }
+
+
+  ws.send(
+    JSON.stringify(data)
+  );
+
+
+  return true;
+
+}
+
 
 async function flushPendingCandidates(){
 
@@ -1066,16 +1240,22 @@ async function flushPendingCandidates(){
     !pc ||
     !remoteDescriptionSet
   ){
+
     return;
+
   }
 
-  const candidates =
+
+  const queued =
     pendingCandidates;
 
-  pendingCandidates = [];
+
+  pendingCandidates =
+    [];
+
 
   for(
-    const candidate of candidates
+    const candidate of queued
   ){
 
     try{
@@ -1097,38 +1277,372 @@ async function flushPendingCandidates(){
 
 }
 
+
+/* =========================
+   SIGNALING
+========================= */
+
+function connectSignaling(){
+
+  if(!roomId){
+
+    setStatus(
+      "No room ID"
+    );
+
+    return;
+
+  }
+
+
+  if(
+    ws &&
+    (
+      ws.readyState ===
+      WebSocket.OPEN ||
+      ws.readyState ===
+      WebSocket.CONNECTING
+    )
+  ){
+
+    return;
+
+  }
+
+
+  ws =
+    new WebSocket(
+      SIGNALING_SERVER
+    );
+
+
+  ws.onopen =
+    ()=>{
+
+      console.log(
+        "WebSocket connected:",
+        SIGNALING_SERVER
+      );
+
+
+      /*
+        This happens immediately after the WebSocket opens.
+        Camera permission is NOT required for this step.
+      */
+      sendSignal({
+
+        type:"join",
+
+        room:roomId
+
+      });
+
+
+      setStatus(
+        isHost
+        ? "Room ready — waiting for friend..."
+        : "Joining room..."
+      );
+
+    };
+
+
+  ws.onmessage =
+    async event=>{
+
+      let data;
+
+
+      try{
+
+        data =
+          JSON.parse(
+            event.data
+          );
+
+      }catch(error){
+
+        console.error(
+          "Invalid signaling message:",
+          event.data
+        );
+
+        return;
+
+      }
+
+
+      console.log(
+        "Signaling message:",
+        data
+      );
+
+
+      if(
+        data.type ===
+        "joined"
+      ){
+
+        if(
+          data.role ===
+          "guest"
+        ){
+
+          setStatus(
+            "Joined room — waiting for connection..."
+          );
+
+        }else{
+
+          setStatus(
+            "Room ready — waiting for friend..."
+          );
+
+        }
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "peer-joined"
+      ){
+
+        peerPresent =
+          true;
+
+
+        setStatus(
+          "Friend joined — connecting..."
+        );
+
+
+        /*
+          The host is the only side that starts
+          the initial offer.
+        */
+        if(isHost){
+
+          await createOffer();
+
+        }
+
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "offer"
+      ){
+
+        peerPresent =
+          true;
+
+
+        await receiveOffer(
+          data.offer
+        );
+
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "answer"
+      ){
+
+        await receiveAnswer(
+          data.answer
+        );
+
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "candidate"
+      ){
+
+        await receiveCandidate(
+          data.candidate
+        );
+
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "room-full"
+      ){
+
+        setStatus(
+          "Room is full"
+        );
+
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "peer-left"
+      ){
+
+        peerPresent =
+          false;
+
+
+        if(pc){
+
+          try{
+            pc.close();
+          }catch{}
+
+        }
+
+
+        pc =
+          null;
+
+        pendingCandidates =
+          [];
+
+        remoteDescriptionSet =
+          false;
+
+        makingOffer =
+          false;
+
+
+        removeGuestVideo();
+
+
+        setStatus(
+          isHost
+          ? "Waiting for friend..."
+          : "Friend left the room"
+        );
+
+
+        return;
+
+      }
+
+
+      if(
+        data.type ===
+        "error"
+      ){
+
+        setStatus(
+          data.message ||
+          "Room error"
+        );
+
+      }
+
+    };
+
+
+  ws.onerror =
+    error=>{
+
+      console.error(
+        "WebSocket error:",
+        error
+      );
+
+
+      setStatus(
+        "Unable to connect to room server"
+      );
+
+    };
+
+
+  ws.onclose =
+    ()=>{
+
+      console.log(
+        "WebSocket closed"
+      );
+
+    };
+
+}
+
+
+/* =========================
+   OFFER
+========================= */
+
 async function createOffer(){
 
   if(makingOffer){
+
     return;
+
   }
+
 
   if(
     !ws ||
     ws.readyState !==
     WebSocket.OPEN
   ){
+
     return;
+
   }
 
-  makingOffer = true;
+
+  makingOffer =
+    true;
+
 
   try{
 
     createPeerConnection();
 
+    addLocalTracks();
+
+
     const offer =
       await pc.createOffer();
+
 
     await pc.setLocalDescription(
       offer
     );
 
+
     sendSignal({
+
       type:"offer",
+
       room:roomId,
-      offer:pc.localDescription
+
+      offer:
+        pc.localDescription
+
     });
+
 
     setStatus(
       "Connecting..."
@@ -1141,17 +1655,24 @@ async function createOffer(){
       error
     );
 
+
     setStatus(
-      "Unable to create connection"
+      "Unable to create WebRTC offer"
     );
 
   }finally{
 
-    makingOffer = false;
+    makingOffer =
+      false;
 
   }
 
 }
+
+
+/* =========================
+   ANSWER
+========================= */
 
 async function receiveOffer(
   offer
@@ -1161,29 +1682,68 @@ async function receiveOffer(
 
     createPeerConnection();
 
+
+    /*
+      Camera permission is optional for joining.
+      If permission is available, include the tracks.
+    */
+    if(
+      !localStream
+    ){
+
+      try{
+
+        await startCamera();
+
+      }catch(error){
+
+        console.warn(
+          "Camera unavailable:",
+          error
+        );
+
+      }
+
+    }
+
+
+    addLocalTracks();
+
+
     await pc.setRemoteDescription(
       new RTCSessionDescription(
         offer
       )
     );
 
+
     remoteDescriptionSet =
       true;
 
+
     await flushPendingCandidates();
+
 
     const answer =
       await pc.createAnswer();
+
 
     await pc.setLocalDescription(
       answer
     );
 
+
     sendSignal({
+
       type:"answer",
+
       room:roomId,
-      answer:pc.localDescription
+
+      answer:
+        pc.localDescription
+
     });
+
 
     setStatus(
       "Connecting..."
@@ -1192,9 +1752,10 @@ async function receiveOffer(
   }catch(error){
 
     console.error(
-      "Offer handling error:",
+      "Answer creation error:",
       error
     );
+
 
     setStatus(
       "WebRTC setup failed"
@@ -1204,6 +1765,7 @@ async function receiveOffer(
 
 }
 
+
 async function receiveAnswer(
   answer
 ){
@@ -1211,8 +1773,11 @@ async function receiveAnswer(
   try{
 
     if(!pc){
+
       return;
+
     }
+
 
     await pc.setRemoteDescription(
       new RTCSessionDescription(
@@ -1220,10 +1785,13 @@ async function receiveAnswer(
       )
     );
 
+
     remoteDescriptionSet =
       true;
 
+
     await flushPendingCandidates();
+
 
     setStatus(
       "Connecting..."
@@ -1232,9 +1800,10 @@ async function receiveAnswer(
   }catch(error){
 
     console.error(
-      "Answer error:",
+      "Remote answer error:",
       error
     );
+
 
     setStatus(
       "WebRTC answer failed"
@@ -1243,6 +1812,7 @@ async function receiveAnswer(
   }
 
 }
+
 
 async function receiveCandidate(
   candidate
@@ -1261,6 +1831,7 @@ async function receiveCandidate(
 
   }
 
+
   try{
 
     await pc.addIceCandidate(
@@ -1278,244 +1849,6 @@ async function receiveCandidate(
 
 }
 
-/* =========================
-   SIGNALING
-========================= */
-
-function connectSignaling(){
-
-  if(!roomId){
-
-    setStatus(
-      "No room ID"
-    );
-
-    return;
-
-  }
-
-  ws =
-    new WebSocket(
-      SIGNALING_SERVER
-    );
-
-  ws.onopen =
-    ()=>{
-
-      console.log(
-        "WebSocket connected"
-      );
-
-      sendSignal({
-        type:"join",
-        room:roomId
-      });
-
-      setStatus(
-        isHost
-        ? "Room ready"
-        : "Joining room..."
-      );
-
-    };
-
-  ws.onmessage =
-    async event=>{
-
-      let data;
-
-      try{
-
-        data =
-          JSON.parse(
-            event.data
-          );
-
-      }catch(error){
-
-        console.error(
-          "Invalid server message:",
-          event.data
-        );
-
-        return;
-
-      }
-
-      console.log(
-        "Signaling message:",
-        data
-      );
-
-      if(
-        data.type ===
-        "joined"
-      ){
-
-        setStatus(
-          data.role === "host"
-          ? "Waiting for someone to join..."
-          : "Joined room"
-        );
-
-        /*
-          Compatible with a server that reports
-          an existing peer in the joined response.
-        */
-        if(
-          data.hasOther &&
-          !isHost
-        ){
-
-          await createOffer();
-
-        }
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "peer-joined"
-      ){
-
-        /*
-          Host creates the offer.
-          Guest waits for the offer.
-        */
-        if(isHost){
-
-          await createOffer();
-
-        }
-
-        setStatus(
-          "User joined — connecting..."
-        );
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "offer"
-      ){
-
-        await receiveOffer(
-          data.offer
-        );
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "answer"
-      ){
-
-        await receiveAnswer(
-          data.answer
-        );
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "candidate"
-      ){
-
-        await receiveCandidate(
-          data.candidate
-        );
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "room-full"
-      ){
-
-        setStatus(
-          "Room is full"
-        );
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "peer-left"
-      ){
-
-        if(pc){
-
-          try{
-            pc.close();
-          }catch{}
-
-        }
-
-        pc = null;
-        remoteDescriptionSet = false;
-        pendingCandidates = [];
-        makingOffer = false;
-
-        removeGuestVideo();
-
-        setStatus(
-          "Waiting for someone to join..."
-        );
-
-        return;
-
-      }
-
-      if(
-        data.type ===
-        "error"
-      ){
-
-        setStatus(
-          data.message ||
-          "Room error"
-        );
-
-      }
-
-    };
-
-  ws.onerror =
-    error=>{
-
-      console.error(
-        "WebSocket error:",
-        error
-      );
-
-      setStatus(
-        "Unable to connect to room server"
-      );
-
-    };
-
-  ws.onclose =
-    ()=>{
-
-      console.log(
-        "WebSocket closed"
-      );
-
-    };
-
-}
 /* =========================
    GUEST VIDEO
 ========================= */
@@ -1894,7 +2227,7 @@ function loadMovie(){
   if(room){
 
     roomId =
-      room;
+      room.trim();
 
     isHost =
       false;
